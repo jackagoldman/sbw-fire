@@ -6,35 +6,35 @@ editor: visual
 
 # Background
 
-This code is for the analysis of nbr recovery tajectories for fires that burned in the boreal shield of Ontario between 1986 and 2012. Fires have either been defoliated previously or not defoliated. 
+This code is for the analysis of nbr recovery tajectories for fires that burned in the boreal shield of Ontario between 1986 and 2012. Fires have either been defoliated previously or not defoliated.
 
 The questions are:
 
-1) Do the recovery trajectories differ between defoliated and non-defoliated stands differ? 
+1)  Do the recovery trajectories differ between defoliated and non-defoliated stands differ?
 
-2) Is there a difference between recovery trajectories between the first 5 years following fire and the second five years following fire?
+2)  Is there a difference between recovery trajectories between the first 5 years following fire and the second five years following fire?
 
 3)....
 
-
 # Description of response variables
-Slope1: the slope of the first 5 years following year of burn calculated using a simple linear regression of nbr ~ time
-Slope2: the slope of the second 5 years following year of burn calculated using a simple linear regression of nbr ~ time
-Sens1: the slope of the first 5 years following year of burn calculated using a non-parametric theil-sen regression
-Sens2: the slope of the second5 years following year of burn calculated using a non-parametric theil-sen regression
+
+- **slope1**: the slope of the first 5 years following year of burn calculated using a simple linear regression of nbr 
+time 
+- **slope2**: the slope of the second 5 years following year of burn calculated using a simple linear regression of nbr time 
+- **sens1**: the slope of the first 5 years following year of burn calculated using a non-parametric theil-sen regression 
+- **sens2**: the slope of the second5 years following year of burn calculated using a non-parametric theil-sen regression
 
 # load packages
+
 ```{r}
 library(nlme)
 library(tidyverse)
 ```
 
+# Load the data
 
-
-# Load the data 
 ```{r}
 
 ```
 
-
-#
+# 

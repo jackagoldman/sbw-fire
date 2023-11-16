@@ -1,0 +1,66 @@
+---
+title: "Data-summary"
+format: html
+editor: visual
+---
+
+How many fires were defoliated?
+
+```{r}
+
+ggplot(nbr_defol, aes(as.factor(defol))) +
+   geom_bar( width=0.4) +
+      theme(aspect.ratio = 2/1) +
+  scale_x_discrete(labels=c("0" = "Not Defoliated", "1" = "Defoliated"))+
+  geom_text(stat='count', aes(label=..count..), vjust=-0.5) +
+  xlab("Observed Defoliation") + ylab("Number of Fires") + theme_classic()
+  
+```
+
+defoliated fires by ecoregion
+
+```{r}
+ggplot(nbr_defol, aes(x = as.factor(defol), fill = feco)) +
+   geom_bar( width=0.4) +
+      theme(aspect.ratio = 2/1) +
+  scale_x_discrete(labels=c("0" = "Not Defoliated", "1" = "Defoliated"))+
+  xlab("Observed Defoliation") + 
+  ylab("Number of Fires") + 
+  guides(fill=guide_legend(title="Ecoregion")) +
+  theme_classic()
+  
+```
+
+Diversity of time since defoliation
+
+```{r}
+nbr_defol |> 
+  filter(tsd > 0) |> 
+  ggplot(aes(tsd)) +
+  geom_histogram() +
+  scale_x_continuous(breaks = c(1, 2,3,4,5,6,7,8,9,10,11,12,13,14,15)) +
+  geom_text(stat='count', aes(label=..count..), vjust=-0.5) +
+  xlab("Time Since Defoliation") + 
+  ylab("Number of Fires") + 
+  theme_classic()
+```
+Diversity of years defoliated
+
+```{r}
+nbr_defol |> 
+  filter(years_defol> 0) |> 
+  ggplot(aes(years_defol)) +
+  geom_histogram() +
+  scale_x_continuous(breaks = c(1, 2,3,4,5,6,7,8,9,10,11,12,13,14,15)) +
+  geom_text(stat='count', aes(label=..count..), vjust=-0.5) +
+  xlab("Years Defoliated") + 
+  ylab("Number of Fires") + 
+  theme_classic()
+```
+
+```{r}
+t.test(RBR_quant ~ defol, data = nbr_defol)
+
+summary(lm(RBR_median ~ tsd +defol +fcon + years_defol, data = nbr_defol))
+```
+

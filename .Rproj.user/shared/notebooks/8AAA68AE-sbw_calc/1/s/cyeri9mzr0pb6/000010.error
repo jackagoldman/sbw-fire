@@ -1,0 +1,1 @@
+{"frames":[{"func":"select(rename(left_join(sbw_perc, sbw_perc2, by = \"Fire_ID\"), \n    Fire_Year = Fire_Year.x), -c(Fire_Year.y))","file":"","line_number":0,"end_line_number":0,"character_number":0,"end_character_number":0}],"message":"Error in rename(left_join(sbw_perc, sbw_perc2, by = \"Fire_ID\"), Fire_Year = Fire_Year.x) : \n  unused argument (Fire_Year = Fire_Year.x)\n"}

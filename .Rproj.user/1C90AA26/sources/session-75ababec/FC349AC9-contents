@@ -1,0 +1,214 @@
+---
+title: "Ordination Excercise"
+format: html
+self_containted: true
+editor: visual
+---
+
+# Principle components analysis
+
+## When should I use a unconstrained ordination or PCA?
+
+Principle components analysis (PCA) is used when you want have a dataframe or matrix that is composed of observations across sites. Recall the previous example.
+
+We sampled biodiversity of tree species across multiple sites. The data frame can have as many species (outcomes) as possible, in this case we have three, but there could be **HUNDREDS**
+
+| Sites  | Species 1 | Species 2 | Species 3 | .....  |
+|--------|:---------:|:---------:|:---------:|:------:|
+| Site 1 |     4     |     2     |     7     | ...... |
+| Site 2 |     7     |     6     |     1     | .....  |
+| Site 3 |     1     |     4     |     8     | .....  |
+| Site 4 |     0     |     2     |     6     | .....  |
+
+**Whenever** you are confronted with data that consist of multiple outcomes, but you do not know the relationship between these variables and you want to know the differences or (dis)similarity across sites, you would use a PCA. Once you have predictor variables, you would use a constrained ordination, which you can think of as a regression between a y matrix of observations (species) and an x matrix of predictors (environmental variables). We will not go into these types of problems.
+
+**all you need to remember is, when someone gives you data with multiple obervations across sites... UNCONSTRAINED ORDINATION using a PCA**
+
+In this this exercise we will be using the dune data provided by the `vegan` package.
+
+The `vegan` package is a community ecology package with functions that contains tools to preform multiple ordination methods such as nconstrained, and constrained ordinations. We will be using functions provided in the `vegan` package for this exercise.
+
+First thing we need to do is to install vegan
+
+```{r vegan, eval = FALSE}
+install.packages("vegan")
+```
+
+Load the vegan library
+
+```{r load vegan, eval = TRUE}
+library(vegan)
+```
+
+Next thing we will do is install and explore the dune data.
+
+```{r dune data, eval = TRUE}
+data(dune) # Vegetation and Environment in Dutch Dune Meadows
+str(dune)
+```
+
+We can see that the dune data consists of observations of 30 species at 20 sites in the dutch dune meadows.
+
+For now, lets just start with 10 species. For this we will select the first ten columns. To do this we use `[,1:10]`
+
+```{r, eval = TRUE}
+samp.dune <- dune[, 1:10]
+```
+
+If you look closely at the dataframe, we can see that there are a lot of zeros. Recall that this is a problem, called the "00" problem. Aside from PCA, other ordination techniques are unable to distinguish an abundance of 0 in a species at one end of a gradient versus another.
+
+What we need to do here before we use the PCA is to transform the data using the hellinger transformation method. The hellinger methods helps us minimize the effects of of vastly different total abundances, which in a lot of cases is driven by the abundance of 0's.
+
+So first step, apply the hellinger transformation. To do this we use the `decostand` function, and we specify the `method` with `"hellinger"`
+
+```{r, echo = TRUE, eval = TRUE}
+samp.dune.hel <- decostand(samp.dune, method = "hellinger")
+```
+
+In `R`,the `vegan::decostand()` function allows for many types of transformation. You can explore the types of transformations using `??vegan::decostand`
+
+To run the PCA we will call the function `rda` from the `vegan` package.
+
+```{r, echo = TRUE, eval = TRUE}
+pca.samp.dune <-  rda(samp.dune.hel)
+```
+
+Now lets look at the summary of our pca using the `summary` function.
+
+```{r}
+summary(pca.samp.dune)
+```
+
+The first lines of `summary.rda()` tell us about the Total variance and Unconstrained variance in our model.
+
+This is followed by the Eigenvalues, and their contribution to the variance.
+
+Remember, if we sum up our Eigenvalues we get the total variance explained, and if we divide the total by the Eigenvalue at for at each PC, we get the variance explained by each species!
+
+Let's try it out.
+
+First we extract the eigenvalues for each principle component and calculate the sum.
+
+```{r eig calc 1}
+eig1 <- pca.samp.dune$CA$eig[1]
+eig2 <- pca.samp.dune$CA$eig[2]
+eig3 <- pca.samp.dune$CA$eig[3]
+eig4 <- pca.samp.dune$CA$eig[4]
+eig5 <- pca.samp.dune$CA$eig[5]
+eig6 <- pca.samp.dune$CA$eig[6]
+eig7 <- pca.samp.dune$CA$eig[7]
+eig8 <- pca.samp.dune$CA$eig[8]
+eig9 <- pca.samp.dune$CA$eig[9]
+eig10 <- pca.samp.dune$CA$eig[10]
+
+
+
+sum <- eig1 + eig2 + eig3 + eig4 + eig5 + eig6 + eig7 + eig8 + eig9 + eig10
+```
+
+Then we divide the eigenvalue by the sum to get the variance for simplicity we will just look at the first two principle components, cool!
+
+```{r eig calc 2}
+var1 <- (eig1 / sum)
+var2 <- (eig2/sum)
+
+var1
+var2
+```
+
+Now compare these scores back to the summary output, they are the same!
+
+This tells us that PC1 explains 49% of the variance, and PC2 Explains 15%.
+
+*What else does summary tell us?*
+
+The next information is related to the scaling, to the species scores, and to the site scores.
+
+*Species* refer to your descriptors (i.e. the columns in your dataset), which here are the tree species.
+
+*Scores* refer to the position of every species along the principal components.
+
+*Sites* represent the rows in your dataset, which here are the different sites
+
+This information can be obtained with the `score()` function that we used before:
+
+```{r display species1}
+scores(pca.samp.dune,
+       display = "species")
+```
+
+```{r display species2}
+scores(pca.samp.dune,
+       display = "sites")
+```
+
+When we have multiple outcomes and sites, we generally have a lot of principle components. In this example we have 10! We are generally only interested in the principle components that account for the largest amount of variance in our data. The Kaiser-Guttman criterion is a method that we can apply to our data to select the most influential principle components.
+
+There are two steps when applying the Kaiser-Guttman criterion, the first step is to extract the Eigenvalues associated with all the principle components (in this case 10)
+
+```{r extract eigenvalues}
+eigs <- pca.samp.dune$CA$eig
+```
+
+The second step is to subset the eigenvalues above the mean eigenvalue
+
+```{r subset eigenvalues}
+eigs[eigs > mean(eigs)]
+```
+
+We can also plot this.
+
+```{r barplot, echo = TRUE}
+n <- length(eigs)
+mean_eigs <- mean(eigs)
+{barplot(eigs, main = "", col = "grey", las = 2) 
+abline(h = mean_eigs, col = "red3", lwd = 2) 
+legend("topright", "Average eigenvalue", lwd = 2, col = "red3",bty = n)}
+```
+
+Now that we have done our PCA, lets visualize it using a biplot. To visualize it we call the `biplot` function.
+
+```{r biplot}
+biplot(pca.samp.dune)
+```
+
+This plot tells us that whichs species are more similar across sites.
+
+The arrows are plotted to show the directionality and angle of the descriptors in the ordination.
+
+-   Descriptors at 180 degrees of each other are negatively correlated;
+-   Descriptors at 90 degrees of each other have zero correlation;
+-   Descriptors at 0 degrees of each other are positively correlated
+
+As you see above, the biplot only shows the first two principle components by default, we can change this to, for example, 1 and 3. We due this by calling the `choices` argument.
+
+```{r}
+biplot(pca.samp.dune, choices =c(1,3))
+```
+
+When visualizing pca data using `biplot` there are two types of scaling methods.
+
+The default method is type 2 scaling. This method asserts that the distances between sites are not approximations of Euclidean distances and that the angles between species vectors reflect their correlations.
+
+```{r type 2}
+biplot(pca.samp.dune, scaling = 2)
+```
+
+On the other hand type 1 scaling tries to preserve the Euclidean distance among sites so that the angles among descriptor species are not meaningful.
+
+```{r type 1}
+biplot(pca.samp.dune, scaling = 1)
+
+```
+
+## Challenge 1
+
+Now that you have seen how to preform a PCA, use the `BCI` data provided in the vegan package to preform a PCA. What did you find?
+
+The BCI data are Treecounts in 1 hectare plots in. the Barro Colorado Island and associated site information.
+
+```{r}
+data(BCI)
+
+str(BCI)
+```

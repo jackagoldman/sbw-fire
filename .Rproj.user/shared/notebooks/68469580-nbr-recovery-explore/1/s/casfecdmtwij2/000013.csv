@@ -1,0 +1,1 @@
+"0","nbr_defol <- left_join(data_fc, test, by = ""Fire_ID"")"

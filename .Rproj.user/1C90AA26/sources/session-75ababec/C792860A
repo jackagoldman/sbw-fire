@@ -1,0 +1,31 @@
+{
+    "id": "C792860A",
+    "path": "~/Work/PhD/sbw-fire-interactions/nbr-recovery/Scripts/sbw_calc.rmarkdown",
+    "project_path": "Scripts/sbw_calc.rmarkdown",
+    "type": "r_markdown",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1699388711860.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "rmdVisualMode": "true",
+        "rmdVisualWrapConfigured": "true",
+        "source_window_id": "",
+        "Source": "Source",
+        "docOutlineVisible": "1",
+        "rmdVisualCollapsedChunks": "",
+        "cursorPosition": "0,0",
+        "scrollLine": "0",
+        "rmdVisualModeLocation": "68:0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1699388722,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1699388722881,
+    "read_only": false,
+    "read_only_alternatives": []
+}

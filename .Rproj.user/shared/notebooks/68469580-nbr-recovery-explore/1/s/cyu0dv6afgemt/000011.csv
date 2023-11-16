@@ -1,0 +1,7 @@
+"0","nbr1.1 <- read.csv(""~/Work/PhD/sbw-fire-interactions/nbr-recovery/data/raw-recovery/boreal_fires_NBR_recovery_1yr_07_12.csv"") |> select(c(Fire_ID, nbr1))"
+"0",""
+"0","nbr1.2 <- read.csv(""~/Work/PhD/sbw-fire-interactions/nbr-recovery/data/raw-recovery/boreal_fires_NBR_recovery_1yr_86-96.csv"")|> select(c(Fire_ID, nbr1))"
+"0",""
+"0","nbr1.3 <- read.csv(""~/Work/PhD/sbw-fire-interactions/nbr-recovery/data/raw-recovery/boreal_fires_NBR_recovery_1yr_97_06.csv"")|> select(c(Fire_ID, nbr1))"
+"0",""
+"0","nbr1 <- rbind(nbr1.1, nbr1.2, nbr1.3)"

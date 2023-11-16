@@ -1,0 +1,32 @@
+{
+    "id": "1E02C450",
+    "path": "~/Work/PhD/sbw-fire-interactions/nbr-recovery/Scripts/nbr-recovery-analysis.qmd",
+    "project_path": "Scripts/nbr-recovery-analysis.qmd",
+    "type": "quarto_markdown",
+    "hash": "360926890",
+    "contents": "",
+    "dirty": false,
+    "created": 1699553164035.0,
+    "source_on_save": false,
+    "relative_order": 11,
+    "properties": {
+        "rmdVisualMode": "true",
+        "rmdVisualWrapConfigured": "true",
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "24,0",
+        "scrollLine": "0",
+        "docOutlineVisible": "1",
+        "rmdVisualCollapsedChunks": "",
+        "rmdVisualModeLocation": "540:0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1699555950,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1699555950816,
+    "read_only": false,
+    "read_only_alternatives": []
+}

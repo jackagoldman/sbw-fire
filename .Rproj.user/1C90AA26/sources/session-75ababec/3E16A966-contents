@@ -1,0 +1,312 @@
+---
+title: "explore-nbr-data"
+format: html
+editor: visual
+---
+
+Exploring the NBR recovery data
+
+Currently the data only is only for firest that burned between 1986-2012 using 10 year recovery intervals.Because of computational limits, currently there are 4 missing years, 1996, 2006, 2011, 2012.
+
+All processing conducted in Google earth engine
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+```
+
+
+
+Read in all files
+```{r}
+filenames <- list.files("data/raw-recovery-1-10/", pattern="*.csv", full.names=TRUE)
+ldf <- lapply(filenames, read.csv)
+data <- data.table::rbindlist(ldf, fill =TRUE)
+```
+
+Select required columns
+```{r}
+nbr_data = data |> select(c(Fire_ID, Fire_Year, nbr1:nbr9, preNBR)) 
+```
+
+
+
+add 1 yr nbr to data
+```{r}
+nbr_data <- data |> 
+  left_join(nbr1, by = "Fire_ID")
+
+nbr_data <- nbr_data[rowSums(is.na(nbr_data)) == 0, ] 
+
+```
+
+Read in fire data
+```{r}
+bs_data <- read.csv2("~/Desktop/OneDrive - University of Toronto/Data/ontario-fire-disturbance-data/burn-severity-data-85-2020/no-reburns-no-pb/OnShield_FIRE_BS_v1.csv")
+
+bs_data <- bs_data |> 
+  select(c(raster_id, RBR_median, feco, RBR_quant, area, coniferous)) |> 
+  mutate(Fire_ID = gsub('_[^_]*$', '', raster_id)) |> 
+  select(-c(raster_id))
+
+# join to existing data frame
+nbr_data2 = nbr_data|> left_join(bs_data, by = "Fire_ID") 
+
+
+#missing fires?
+missing = nbr_data2 |> anti_join(bs_data, by = "Fire_ID") |> pull(Fire_ID)
+
+bs_fid <- bs_data |> pull(Fire_ID)
+setdiff(missing, bs_fid)
+
+# why 589 and not 704 fires... Look at the 704 fires.
+nbr_data = nbr_data2 |> drop_na()
+
+
+```
+
+
+visualize recovery trends
+ 
+```{r}
+head(data)
+nbr_data_long = nbr_data |> relocate(RBR_median:coniferous, .before = nbr10) |> 
+  pivot_longer(!Fire_ID:coniferous, names_to = "Recovery_Time", values_to = "nbr" )
+
+#set time order for variables
+time_order <- c('preNBR', 'nbr1','nbr2', 'nbr3', 'nbr4', 'nbr5','nbr6', 'nbr7', 'nbr8', 'nbr9', 'nbr10')
+
+```
+
+get defoliation data 
+```{r}
+defol <- read.csv("data/clean/sbw-defol-data.csv")
+
+nbrsbw_data <-  nbr_data |> 
+  left_join(defol, by = "Fire_ID")
+
+write.csv(nbrsbw_data, "data/clean/nbr-sbw-data.csv")
+```
+
+
+time series
+Subset by defoliation presence vs absence
+
+```{r}
+nbr_defol <- nbrsbw_data |> 
+  select(c(nbr1:preNBR, defol,Fire_ID)) 
+
+nbr_ts <- nbr_defol |> select(c('Fire_ID' ,'defol', 'preNBR', 'nbr1','nbr2', 'nbr3', 'nbr4', 'nbr5','nbr6', 'nbr7', 'nbr8', 'nbr9', 'nbr10'))
+
+nbr_ts1 <- nbr_ts |> 
+  pivot_longer(-c(defol, Fire_ID)) |> 
+  filter(defol == "1")
+nbr_ts0 <- nbr_ts |> 
+  pivot_longer(-c(defol, Fire_ID)) |> 
+  filter(defol == "0")
+
+
+
+ggplot(nbr_ts) + 
+  aes(factor(name, level = time_order), 
+      y = value, group = Fire_ID) + 
+  geom_point() +
+  geom_smooth(method = lm, se = TRUE)
+
+summary(lm(value ~ name, data = nbr_ts))
+
+sum1 <- summarySE(nbr_ts1, measurevar="value", groupvars=c("name")) |> 
+  mutate(defol = 1)
+sum0 <- summarySE(nbr_ts0, measurevar="value", groupvars=c("name")) |> 
+  mutate(defol = 0)
+
+sum_nbr <- rbind(sum1, sum0)
+pd <- position_dodge(0.1) # move them .05 to the left and right
+
+ggplot(sum_nbr) + 
+  aes(factor(name, level = time_order), 
+      y = value, colour = as.factor(defol)) + 
+  geom_line(aes(factor(name, level = time_order), 
+      y = value, colour = as.factor(defol)), position=pd) +
+   geom_point(position=pd) +
+   geom_errorbar(aes(ymin=value-ci, ymax=value+ci), width=.1, position=pd) +
+  labs(y= " NBR Recovery Rate", x = "Time Period (pre-10yrs post)")  + 
+  theme(axis.text.x=element_text(angle=60,hjust=1))+ ggtitle("NBR recovery for 10 Years following fire") + 
+  guides(colour=guide_legend(title="Defoliation Presence/Absent")) +
+  theme_classic() 
+```
+
+time since defoliation for defoliated stands
+```{r}
+nbr_defol <- nbrsbw_data |> 
+  select(c(nbr1:preNBR, defol,tsd, Fire_ID)) 
+
+nbr_tsd <- nbr_defol |> select(c('Fire_ID' ,'defol', 'tsd', 'preNBR', 'nbr1','nbr2', 'nbr3', 'nbr4', 'nbr5','nbr6', 'nbr7', 'nbr8', 'nbr9', 'nbr10'))
+
+nbr_tsd1 <- nbr_tsd |> 
+  pivot_longer(-c(defol, tsd, Fire_ID)) |> 
+  filter(defol == "1") |> 
+  mutate(tsd_class = case_when(tsd <=3 ~ 1,
+                               tsd <=7 & tsd >= 4 ~ 2,
+                               tsd >= 8 & tsd <=11 ~ 3,
+                               tsd >=12 ~ 4))
+
+#0-3, 4-7, 8-11, 12-15. stocks 1987, watt et al 2019
+#3-9, window of opportunity -varies regionally and season. Spring greater fire risk without herbaceous understory
+
+sum_tsd <- summarySE(nbr_tsd1, measurevar="value", groupvars=c("name", "tsd_class")) 
+
+ggplot(sum_tsd) + 
+  aes(factor(name, level = time_order), 
+      y = value, colour = as.factor(tsd_class)) + 
+  geom_line(aes(factor(name, level = time_order), 
+      y = value, colour = as.factor(tsd_class)), position=pd) +
+   geom_point(position=pd) +
+   geom_errorbar(aes(ymin=value-ci, ymax=value+ci), width=.1, position=pd) +
+  labs(y= " NBR Recovery Rate", x = "Time Period (pre-10yrs post)")  + 
+  theme(axis.text.x=element_text(angle=60,hjust=1))+ ggtitle("NBR recovery for 10 Years following fire") + 
+  guides(colour=guide_legend(title="Time Since Defoliation")) +
+  theme_classic() 
+
+
+```
+Window of opportunity
+```{r}
+nbr_defol <- nbrsbw_data |> 
+  select(c(nbr1:preNBR, defol,tsd, Fire_ID)) 
+
+nbr_tsd <- nbr_defol |> select(c('Fire_ID' ,'defol', 'tsd', 'preNBR', 'nbr1','nbr2', 'nbr3', 'nbr4', 'nbr5','nbr6', 'nbr7', 'nbr8', 'nbr9', 'nbr10'))
+
+nbr_tsd2 <- nbr_tsd |> 
+  pivot_longer(-c(defol, tsd, Fire_ID)) |> 
+  filter(defol == "1") |> 
+  mutate(tsd_wopp= case_when(tsd <3 ~ 1,
+                               tsd >=3 & tsd <= 9 ~ 2,
+                               tsd >=10 ~ 3))
+
+#0-3, 4-7, 8-11, 12-15. stocks 1987, watt et al 2019
+#3-9, window of opportunity -varies regionally and season. Spring greater fire risk without herbaceous understory
+
+sum_tsd2 <- summarySE(nbr_tsd2, measurevar="value", groupvars=c("name", "tsd_wopp")) 
+
+ggplot(sum_tsd2) + 
+  aes(factor(name, level = time_order), 
+      y = value, colour = as.factor(tsd_wopp)) + 
+  geom_line(aes(factor(name, level = time_order), 
+      y = value, colour = as.factor(tsd_wopp)), position=pd) +
+   geom_point(position=pd) +
+   geom_errorbar(aes(ymin=value-ci, ymax=value+ci), width=.1, position=pd) +
+  labs(y= " NBR Recovery Rate", x = "Time Period (pre-10yrs post)")  + 
+  theme(axis.text.x=element_text(angle=60,hjust=1))+ ggtitle("NBR recovery for 10 Years following fire") + 
+  guides(colour=guide_legend(title="Time Since Defoliation")) +
+  theme_classic()
+```
+
+Years defoliated
+```{r}
+nbr_defol <- nbrsbw_data |> 
+  select(c(nbr1:preNBR, defol,years_defol, Fire_ID)) 
+
+nbr_dy <- nbr_defol |> select(c('Fire_ID' ,'defol', 'years_defol', 'preNBR', 'nbr1','nbr2', 'nbr3', 'nbr4', 'nbr5','nbr6', 'nbr7', 'nbr8', 'nbr9', 'nbr10'))
+
+nbr_dy1 <- nbr_dy |> 
+  pivot_longer(-c(defol, years_defol, Fire_ID)) |> 
+  filter(defol == "1") |> select(-c(defol))
+
+#0-3, 4-7, 8-11, 12-15. stocks 1987, watt et al 2019
+#3-9, window of opportunity -varies regionally and season. Spring greater fire risk without herbaceous understory
+
+sum_dy <- summarySE(nbr_dy1, measurevar="value", groupvars=c("name", "years_defol")) 
+
+#drop rows with NA?   
+
+ggplot(sum_dy) + 
+  aes(factor(name, level = time_order), 
+      y = value, colour = as.factor(years_defol)) + 
+  geom_line(aes(factor(name, level = time_order), 
+      y = value, colour = as.factor(years_defol)), position=pd) +
+   geom_point(position=pd) +
+   geom_errorbar(aes(ymin=value-ci, ymax=value+ci), width=.1, position=pd) +
+  labs(y= " NBR Recovery Rate", x = "Time Period (pre-10yrs post)")  + 
+  theme(axis.text.x=element_text(angle=60,hjust=1))+ ggtitle("NBR recovery for 10 Years following fire") + 
+  guides(colour=guide_legend(title="Time Since Defoliation")) +
+  theme_classic()
+```
+
+
+percent forest cover
+```{r}
+data_fc <- data2 |> 
+  mutate(fcon = case_when(coniferous <50 ~ "low_con", 
+                          coniferous >50 & coniferous < 75 ~ "med_con", coniferous >75 ~ "high_con"))
+
+# summarize recovery by class over forest cover for every nbr
+
+data_fc2 <-  data_fc |> 
+  group_by(fcon) |> 
+  summarise_each(funs(mean))
+
+data_fc3 = data_fc2 |> select(-c(RBR_median:coniferous, Fire_ID, Fire_Year)) |> pivot_longer(!fcon, names_to = "Recovery_Time", values_to = "nbr" )
+
+recoveryPlotFC <- ggplot(data=data_fc3,
+   aes(x= factor(Recovery_Time, level = time_order), y=nbr, group = fcon, colour = fcon)) + 
+  geom_line() +
+  labs(y= " NBR Recovery Rate", x = "Time Period (pre-10yrs post)")  + 
+  theme_bw(base_size = 16) + theme(axis.text.x=element_text(angle=60,hjust=1))+ ggtitle("NBR recovery for 10 Years following fire")
+
+recoveryPlotFC
+```
+
+
+Slope analysis
+For this, I will get the slope from a regression and compare slope for each fire or year for the first 5 years and the second five years and 10 years.
+
+To do this we need to make a year column which corresponds to NBR, that goes from 1 to 10 paired to the nbr observation year. Then we need to make a column with just NBR
+```{r}
+
+```
+
+
+Join nbr and defol
+```{r}
+nbr_defol <- left_join(data_fc, test, by = "Fire_ID")
+```
+
+```{r}
+
+nbr_defol2 <-  nbr_defol |> 
+  select(-c(Fire_ID)) |> 
+  group_by(defol) |> 
+  summarise_each(funs(mean)) 
+
+nbr_defol3 = nbr_defol2 |> select(c(nbr10:preNBR, defol, fcon)) |> pivot_longer(!c(defol, fcon), names_to = "Recovery_Time", values_to = "nbr" )
+
+nbr_defol3$defol <- as.factor(nbr_defol3$defol)
+
+#scale nbr
+nbr_defol3 <- nbr_defol3 |> 
+  rowwise() |> 
+  mutate(nbr = nbr*1000)
+
+
+#
+summary(lm(nbr~Recovery_Time , data = nbr_defol3[nbr_defol3$defol == 1]))
+
+recoveryPlotdefol <- ggplot(data=nbr_defol3, aes(x= factor(Recovery_Time, level = time_order), y=nbr, group = defol, colour = defol)) + 
+  geom_line() +
+  labs(y= " NBR Recovery Rate", x = "Time Period (pre-10yrs post)")  + 
+  theme_bw(base_size = 16) + theme(axis.text.x=element_text(angle=60,hjust=1))+ ggtitle("NBR recovery for 10 Years following fire")
+
+recoveryPlotdefol
+```
+```{r}
+nbr_defol4 = nbr_defol |> select(c(nbr10:preNBR, defol)) |> pivot_longer(!c(defol), names_to = "Recovery_Time", values_to = "nbr" )
+
+summary(lm(nbr~Recovery_Time+defol, data = nbr_defol4))
+
+ggplot(nbr_defol4)+
+     geom_line(aes(x=Recovery_Time,y=nbr,group=defol)) +
+     geom_smooth(aes(x=Recovery_Time,y=nbr,group=defol),method="lm")
+
+```
+

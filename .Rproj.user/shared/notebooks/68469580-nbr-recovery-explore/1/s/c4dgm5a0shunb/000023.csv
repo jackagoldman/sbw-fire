@@ -1,0 +1,36 @@
+"0","data_fc <- data2 |> "
+"0","  mutate(fcon = case_when(coniferous <50 ~ ""low_con"", "
+"0","                          coniferous >50 & coniferous < 75 ~ ""med_con"", coniferous >75 ~ ""high_con""))"
+"0",""
+"0","# summarize recovery by class over forest cover for every nbr"
+"0",""
+"0","data_fc2 <-  data_fc |> "
+"0","  group_by(fcon) |> "
+"0","  summarise_each(funs(mean))"
+"2","Warning: `funs()` was deprecated in dplyr 0.8.0.
+Please use a list of either functions or lambdas: 
+
+  # Simple named list: 
+  list(mean = mean, median = median)
+
+  # Auto named with `tibble::lst()`: 
+  tibble::lst(mean, median)
+
+  # Using lambdas
+  list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))"
+"2","Warning: [38;5;250mThere were 6 warnings in `summarise()`.
+The first warning was:[39m
+[38;5;250m[36mℹ[38;5;250m In argument: `Fire_ID = mean(Fire_ID)`.
+[36mℹ[38;5;250m In group 1: `fcon = ""high_con""`.[39m
+Caused by warning in `mean.default()`:
+[33m![39m argument is not numeric or logical: returning NA
+[38;5;250m[36mℹ[38;5;250m Run ]8;;ide:run:dplyr::last_dplyr_warnings()dplyr::last_dplyr_warnings()]8;; to see the 5 remaining warnings.[39m"
+"0","data_fc3 = data_fc2 |> select(-c(RBR_median:coniferous, Fire_ID, Fire_Year)) |> pivot_longer(!fcon, names_to = ""Recovery_Time"", values_to = ""nbr"" )"
+"0",""
+"0","recoveryPlotFC <- ggplot(data=data_fc3,"
+"0","   aes(x= factor(Recovery_Time, level = time_order), y=nbr, group = fcon, colour = fcon)) + "
+"0","  geom_line() +"
+"0","  labs(y= "" NBR Recovery Rate"", x = ""Time Period (pre-10yrs post)"")  + "
+"0","  theme_bw(base_size = 16) + theme(axis.text.x=element_text(angle=60,hjust=1))+ ggtitle(""NBR recovery for 10 Years following fire"")"
+"0",""
+"0","recoveryPlotFC"

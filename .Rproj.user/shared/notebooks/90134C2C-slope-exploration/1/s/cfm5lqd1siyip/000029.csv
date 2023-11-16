@@ -1,0 +1,5 @@
+"0","res <- nbr_slope(nbrsbw_data)
+"
+"2","Warning: [38;5;250m`cols` is now required when using `unnest()`.
+[36mℹ[38;5;250m Please use `cols = c(fId, slope1, slope2, se1, se2, sens1, sens2, uppr1, uppr2,
+  lwr1, lwr2, sens10, uppr10, lwr10)`.[39m"

@@ -1,0 +1,124 @@
+---
+title: "Project_Outline"
+format: html
+editor: visual
+bibliography: references.bib
+---
+
+# Analysis/Project Overview
+
+This project will consist of two main components:
+
+1.   Structural equation model to explore the causal relationship between defoliation and burn severity.
+
+    -   Model 1: Simplified DAG (see DAG step 1)
+
+    -    Model 2: Add prefire/post defoliation weather and post fire weather ( Question - is post fire weather more important for recovery? , Do the effects of Defoliation Intensity vary according to prefire weather?)
+
+    -   Model 3: Different slopes. Slope 1-5 years vs slope 6-10 years.
+
+2.  Anova/T.tests. Multiple tests between an amongst groups
+
+# Structural Equation Model
+
+### Model 1
+
+The first part of the analysis looks the effects of defoliation intensity on burn severity and forest recovery following fire. Defoliation alters fuel structure and fuel load and is expected to cause influence fire behaviour. Previous studies in Ontario have shown that defoliation can alter fire behaviour for up to 15 following defoliation [@james2017], this period is commonly referred to as the "window of opportunity".
+
+Spruce budworm defoliation is multivariate in nature. The effects of spruce budworm defoliation can be described by the presence and absence of defoliation, the time since defoliation to the time of fire and the number of years that an area was defoliated (a proxy for defoliation load). It is common practice for studies that concerned with the effects of spruce budworm defoliation on wildfire to use a since predictor, or build multiple sequential models to incorporate the multivariate nature of defoliation [@james2017 @james2011 @candau2018].
+
+Structural equation models allow for the multivariate nature of defoliation by creating composite variable that allows us to combine the variation explained by multiple predictors into a synthetic index. Using structural equation models, we will combine create a synthetic index called defoliation intensity which combines defoliation presence/absence, time since defoliation and number of years defoliated.
+
+We will fit these models to data of consisting of 34 paired defoliated/non-defoliated fires that burned in Ontario between 1986-2012. We will then model the causal effects of defoliation intensity on burn severity and forest recovery following fire. Forest recovery is measured by taking the mean composite of the normalized burn ratio for a given summer for 10 years for following fire. We then use a Theil-Sen regression to calculate the sen's slope across the 10 years which we call the slope of recovery or forest recovery.
+
+In our model, defoliation intensity will effect for burn severity and forest recovery. Below is the directed acyclic graph (DAG) of our a priori causal hypothesis.
+
+```{r}
+DiagrammeR::grViz("../Figures/chapter3-step1-dag.gv")
+```
+
+In this DAG we see that time since defoliation, presence/absence of defoliation (defoliated) and number of years defoliated are combined to form the synthetic index (defoliation intensity) which is then used to predict the effects on burn severity and forest recovery. Defolaition intensity will directly effect forest recovery by altering stand structure and forest composition prior to fire, which will impact the number and distributionspecies and their seed banks that are able to establish post fire, thus affecting the recovery trajectory. Similarly, defoliation intensity will effect burn severity by either increasing or decreasing severity which will lead to a change in the recovery trajectory by either increasing or decreasing the slope of recovery.
+
+To begin our analysis we need to combine the data.
+
+First we need to load the required packages:
+
+```{r}
+install.packages(c("nlme", "piecewiseSEM", "feather", "tidyverse", "dplyr"))
+library(piecewiseSEM)
+library(nlme)
+library(tidyverse)
+library(dplyr)
+library(feather)
+```
+
+Load in the burn severity data and defoliation data and fire ID data.
+
+```{r}
+
+```
+
+We also want to include fire area and fire year as random effects in our analysis. This is because burn severity will median and extremes will differ based on the size of the area effected/modelled. Also, different years may see different trends in either recovery or severity due to climate patterns and other influences of year-to-year variation.
+
+Our spatial information has multiple geometry columns. One columns refers to the polygon itself (fire perimeter) and the other to the fire centroid. Shapefiles are unable to store more then one spatial column, therefore we use a `.feather` file. Feather file's were developed for use in large relational databases by the apache arrow project to store multiple spatial columns in a single table.
+
+To read in feather file we need to use the `feather` package and function `read_feather.`
+
+```{r}
+
+```
+
+To combine the datasets based on the ID column we will use the `left_join` function from the `tidyverse` package.
+
+Join tables using `left_join` . The `by =` argument specifies the column that we want to use as the joining column. Left join takes a data frame (df1) and join it to another dataframe (df2) by the ID column that must be present in both datafames. The columns of second datafarme (df2) are then added to the left hand side of the first dataframe (df1).
+
+```{r}
+#example
+data <- df1 |> 
+  left_join(df2, by = c("ID"))
+```
+
+To preform our SEM firest we need to explore the relationship between predictors and the response to see if they meet the assumptions required to use a linear model [@zuur2016].
+
+```{r}
+
+```
+
+Once we have determined that our data is able to fit a linear model, we then use the `piecewiseSEM` package to fit our linear mixed effects models using the `lme` function from the `nlme` package. Read more abound `piecewiseSEM` here [@lefcheck2016].
+
+First we have to build our composite variable.
+
+```{r}
+comp_model <- lm(Severity ~ tsd + defol + years_defol, data = data)
+
+beta_td <- summary(cover_model)$coefficients[2, 1]
+
+beta_defol <- summary(cover_model)$coefficients[3, 1]
+
+beta_years <- summary(cover_model)$coefficients[4, 1]
+
+composite <- beta_td * data$tsd + beta_defol * data$defol + beta_years * data$years_defol
+```
+
+In our mixed effects models we specific a random intercept slope model with a random slope of year and intercept of fire size using the syntax `random = -1| Fire_Year/Size`. We also specify the estimation method which is maximum likelihood using `method = 'ML'`.
+
+```{r}
+sem <- piecewiseSEM::psem(
+  
+  nlme::lme(severity ~ composite + random = -1 | Fire_Year/Size, method = "ML")
+  nlme::lme(slope ~ severity + random = -1 | Fire_Year/Size, method = "ML")
+)
+
+```
+
+We can look at the results of our sem using the `summary` function.
+
+```{r}
+summary(sem)
+```
+
+### Model 2
+
+### Model 3
+
+# Anova/T.Test

@@ -1,0 +1,15 @@
+// step 1 dag
+digraph "chapter3-step1-dag" {
+	T [label="Time since defoliation" shape=rect]
+	D [label=Defoliated shape=rect]
+	Y [label="Number of Years Defoliated" shape=rect]
+	C [label="Defoliation Intensity" shape=rect]
+	B [label="Burn Severity" color=red shape=rect]
+	R [label="Forest Recovery" color=red shape=ellipse]
+	T -> C
+	D -> C
+	Y -> C
+	C -> B
+	B -> R
+	C -> R
+}

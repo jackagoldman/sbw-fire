@@ -1,0 +1,143 @@
+---
+title: "patterns"
+format: html
+editor: visual
+---
+
+# Patterns of burn severity and forest recovery between defoliated and non defoliated areas
+
+## Required packages
+
+```{r}
+library(tidyverse)
+
+```
+
+## Data prep
+
+Read in the data frames
+
+```{r}
+id <- read.csv("/Users/jgoldman/Library/CloudStorage/OneDrive-UniversityofToronto/Data/fire-only-sbw-only-perimeters/database_files/fire_key.csv")
+
+defol <- read.csv("/Users/jgoldman/Library/CloudStorage/OneDrive-UniversityofToronto/Data/fire-only-sbw-only-perimeters/database_files/defol_table.csv")
+
+severity <- read.csv("/Users/jgoldman/Library/CloudStorage/OneDrive-UniversityofToronto/Data/fire-only-sbw-only-perimeters/database_files/severity_table.csv")
+
+recovery <- read.csv("/Users/jgoldman/Library/CloudStorage/OneDrive-UniversityofToronto/Data/fire-only-sbw-only-perimeters/database_files/nbr_table.csv")
+```
+
+# Burn Severity
+
+Join data frames
+
+```{r}
+df <- left_join(id, defol, by = c("id", "fire_name"))
+df <- left_join(df, severity, by = c("id", "fire_name"))
+```
+
+We will preform a paired t.test, for this we have to make sure that the data is organized properly. A paired t.test assumes that we have matches subjects (fires) that have different treatments (defoliated/non-defoliated). The paired t.test is equivalent to testing whether difference between each pair of observations has a populatipon mean of 0. Using base `R` we can make sure that the data is organized correctly by sorting the data.
+
+```{r order data}
+df <- df[order(df$id, df$fire_name),]
+```
+
+Hypothesis 1: Difference in median severity between defoliated and non defoliated
+
+```{r}
+res_median <- t.test(df$defol, df$rbrMedian, paired = TRUE) 
+res_median
+```
+
+There is a difference between defoliated and non defoliated, alternative hypothesis accepted P \<0.001
+
+```{r}
+res_median
+
+
+df |> mutate(defol = case_when(defol == 1 ~ "Defoliated",
+                               defol == 0 ~ "Non-Defoliated")) |> 
+  ggplot(aes(x = defol, y = rbrMedian)) +
+  geom_boxplot() 
+```
+
+Hypothesis 2: Difference in extreme severity between defoliated and non defoliated
+
+```{r}
+res_extreme <- t.test(df$defol, df$rbrExtreme, paired  = TRUE)
+res_extreme
+```
+
+There is a difference between defoliated and non defoliated, alternative hypothesis accepted P \<0.001
+
+Hypothesis 3: Difference in coefficient of variation between defoliated and non defoliated
+
+```{r}
+res_cv <- t.test(df$defol, df$rbrCV, paired = TRUE)
+res_cv
+```
+
+There is a difference between rbr cv between defoliated and non defoliated fires P = 0.003
+
+## Time since defoliation
+
+Select only defoliated fires
+
+```{r}
+defol_only <-  df |> 
+  filter(defol == 1)
+```
+
+```{r}
+defol_only |> ggplot(aes(x = tsd, y = rbrMedian)) + 
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm")
+```
+
+No trend
+
+```{r}
+defol_only |> ggplot(aes(x = tsd, y = rbrExtreme)) + 
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm")
+```
+
+```{r}
+defol_only |> ggplot(aes(x = tsd, y = rbrCV)) + 
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm")
+```
+
+Add new column that is groups of tsd from 0-5, 6-10, 11-15
+
+```{r}
+defol_only <- defol_only |> 
+  mutate(window = case_when(tsd >= 0 & tsd <= 5 ~ "1",
+                            tsd >= 6 & tsd <= 10 ~ "2",
+                            tsd >= 11 & tsd <=15 ~ "3" ))
+
+```
+
+Anova
+
+```{r}
+med_window = aov(rbrMedian ~ window, data = defol_only)
+summary(med_window)
+TukeyHSD(med_window, conf.level=.95)
+```
+
+```{r}
+ext_window = aov(rbrExtreme ~ window, data = defol_only)
+summary(ext_window)
+TukeyHSD(ext_window, conf.level=.95)
+```
+
+```{r}
+cv_window = aov(rbrCV ~ window, data = defol_only)
+summary(cv_window)
+TukeyHSD(cv_window, conf.level=.95)
+```
+
+No significant differences in any measure of burn severity between windows.
+
+# Recovery

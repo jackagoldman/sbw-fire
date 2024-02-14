@@ -23,7 +23,7 @@ fire_area <- function(x){
   
   # make sure function does not use scientific notation 
   op <- options(scipen=999)
-  on.exit(options(op))
+  on.exit(options(op), add = TRUE)
   
  ######################## calculate area 
   x <-  x |> 

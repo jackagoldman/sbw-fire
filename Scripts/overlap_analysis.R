@@ -42,8 +42,6 @@ data_d <- data_intersection_v1 |>
 fire_key <-  read_csv("/Users/jgoldman/Library/CloudStorage/OneDrive-UniversityofToronto/Data/fire-only-sbw-only-perimeters/database_files/fire_key.csv")
 defol_table <- read_csv("/Users/jgoldman/Library/CloudStorage/OneDrive-UniversityofToronto/Data/fire-only-sbw-only-perimeters/database_files/defol_table.csv")
 
-
-
 # fire_key subset 1-34
 
 fire_key_sub <- fire_key |> 
@@ -102,4 +100,22 @@ mf_int <- st_intersection(missing_fires, defol_gt) |>
   mutate(insect_year = year) 
 
 
-# these fire were remove because the 
+# these fire were remove because the time since defoliation was greater than 15 years
+
+
+################## ADD DEFOL COLUMN #############
+
+data_d <-  data_d |> 
+  mutate(defoliated = rep(1,33))
+data_nd <- data_nd |> 
+  mutate(defoliated = rep(0, 33))
+
+# relocate geo column
+
+data_d <- data_d |> 
+  relocate(geometry, .after = defoliated)
+
+data_nd <- data_nd |> 
+  relocate(geometry, .after = defoliated)
+
+

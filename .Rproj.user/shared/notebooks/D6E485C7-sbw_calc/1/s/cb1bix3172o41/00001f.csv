@@ -1,5 +1,0 @@
-"0","sbw_perc <- sbw_perc |> 
-  left_join(sbw_perc2, by = Fire_ID)
-"
-"2","Error: object 'Fire_ID' not found
-"

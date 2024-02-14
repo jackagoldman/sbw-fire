@@ -1,3 +1,0 @@
-"0","filenames <- list.files(""data/raw-recovery/"", pattern=""*.csv"", full.names=TRUE)"
-"0","ldf <- lapply(filenames, read.csv)"
-"0","data <- data.table::rbindlist(ldf, fill =TRUE)"

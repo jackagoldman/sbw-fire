@@ -1,1 +1,0 @@
-"0","data = data |> select(c(Fire_ID, Fire_Year, nbr1:nbr9, preNBR)) "

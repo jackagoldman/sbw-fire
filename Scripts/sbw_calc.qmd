@@ -32,8 +32,10 @@ sbw_perc2 <- sbw_fire2 |>
   st_drop_geometry()
 
 sbw_perc <- sbw_perc |> 
-  left_join(sbw_perc2, by = "Fire_ID") |> 
-  rename(Fire_Year = Fire_Year.x) |> 
+  left_join(sbw_perc2, by = "Fire_ID") 
+
+sbw_perc <- sbw_perc |> 
+  dplyr::rename("Fire_Year" = "Fire_Year.x") |> 
   select(-c(Fire_Year.y))
 
 ```
@@ -44,6 +46,8 @@ Was fire defoliated?
 
 ```{r}
 #function takes sbw data with columns SBW_yyyy_p
+# function is currently set to select all fires regardles overlap percentage
+
 defol_calc <- function(data){
   require(tidyverse)
   #create new column
@@ -107,7 +111,11 @@ defol_calc <- function(data){
 
   # get column with true or false if it fire was defoliated greater than 25% 
   # in given year
-  x <- mutate(x, defol = rowAny(across(where(is.numeric), ~ .x > 25)))
+  x <- x |> dplyr::mutate(defol = rowAny(across(where(is.numeric), ~ .x > 0)))
+  #x <- x[rowSums(x = Filter(f = is.numeric, x = x) > 0) > 0,]
+
+
+
   
   #mutate true false to equal 1 for defol and 0 for non defol
   x <- mutate(x, defol = case_when(defol == TRUE ~ 1,

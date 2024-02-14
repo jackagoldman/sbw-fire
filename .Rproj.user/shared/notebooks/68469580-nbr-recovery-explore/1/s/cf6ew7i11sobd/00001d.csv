@@ -1,7 +1,0 @@
-"0","recoveryPlotdefol <- ggplot(data=nbr_defol3, aes(x= factor(Recovery_Time, level = time_order), y=nbr, group = defol, colour = defol)) + 
-  geom_line() +
-  labs(y= "" NBR Recovery Rate"", x = ""Time Period (pre-10yrs post)"")  + 
-  theme_bw(base_size = 16) + theme(axis.text.x=element_text(angle=60,hjust=1))+ ggtitle(""NBR recovery for 10 Years following fire"")
-"
-"2","Error: object 'nbr_defol3' not found
-"

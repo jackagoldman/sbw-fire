@@ -1,1 +1,0 @@
-{"frames":[{"func":"ggplot(data = nbr_defol3, aes(x = factor(Recovery_Time, level = time_order), \n    y = nbr, group = defol, colour = defol))","file":"","line_number":0,"end_line_number":0,"character_number":0,"end_character_number":0}],"message":"Error: object 'nbr_defol3' not found\n"}

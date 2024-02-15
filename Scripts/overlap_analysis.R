@@ -118,4 +118,10 @@ data_d <- data_d |>
 data_nd <- data_nd |> 
   relocate(geometry, .after = defoliated)
 
+##################### merge crs ###############
+
+data_nd <-  data_nd |> 
+  st_transform(st_crs(data_d))
+
+
 

@@ -13,9 +13,12 @@ recoverySlope_lm <- function(data){
   require(trend)
   require(tidyverse)
   
+  # organize data frame for analysis 
+  # split data frame by id 1-33, and then 34-66.
+  # should this be its own function?
   x <- data |> 
-    select(c(Fire_ID, nbr10, nbr1, nbr2, nbr3, nbr4, nbr5, nbr6, nbr7, nbr8, nbr9)) |> 
-    pivot_longer(!Fire_ID, names_to = "Recovery_Time", values_to = "nbr" ) |> 
+    select(c(fire_name, nbr1, nbr2, nbr3, nbr4, nbr5, nbr6, nbr7, nbr8, nbr9,nbr10)) |> 
+    pivot_longer(!fire_name, names_to = "Recovery_Time", values_to = "nbr" ) |> 
     mutate(recovery_interval = case_when(Recovery_Time == "nbr1" ~ 1, 
                                          Recovery_Time == "nbr2" ~ 1,
                                          Recovery_Time == "nbr3" ~ 1, 
@@ -27,20 +30,17 @@ recoverySlope_lm <- function(data){
                                          Recovery_Time == "nbr9" ~ 2,
                                          Recovery_Time == "nbr10" ~ 2,))
   
- 
-  
+  # create empty list
   mylist <- list()
   
-
-
-  #loop
+  # calculate slopes
   for(i in 1:nrow(x)){
      #subset data
     row <- x[i,]
     #get fire id
-    fId <- row |> select(c(Fire_ID)) |> slice(1)
+    fId <- row |> select(c(fire_name)) |> slice(1)
     # subset data for fire id
-    row2 <- x |> filter(Fire_ID == c(fId))
+    row2 <- x |> filter(fire_name == c(fId))
     #run first model
     mod1 <- lm(nbr ~ (recovery_interval == 1), data = row2)
     #run second model
@@ -59,17 +59,17 @@ recoverySlope_lm <- function(data){
     se2 <- sqrt(diag(vcov(mod2)))[2]
     
 
-    vec <- c(fId, slope1, slope2, se1, se2, sens1, sens2, uppr1, uppr2, lwr1, lwr2, sens10, uppr10, lwr10)
-    names(vec) <- c("fId", "slope1", "slope2", "se1", "se2", "sens1", "sens2", "uppr1", "uppr2", "lwr1", "lwr2", "sens10", "uppr10", "lwr10")
+    vec <- c(fId, slope1, slope2, se1, se2)
+    names(vec) <- c("fId", "slope1", "slope2", "se1", "se2")
     
-    vec <-  vec[1:14]
+    vec <-  vec[1:5]
     
     mylist[[i]] <- vec
     i+1
   }
   res <- do.call(rbind, mylist)
   res <- res |> as.tibble(.name_repair = 'unique') |>  
-    group_by(fId) %>% 
+    group_by(fId) |> 
     slice_head(n = 1) |> 
     unnest( )
  

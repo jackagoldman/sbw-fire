@@ -1,7 +1,16 @@
 # Data prep for slope function
 
 
+#' Read in data
+#'
+#' @param file 
+#'
+#' @return dataframe
+#' @export
+#'
+#' @examples
 getData <- function(file){
+  
   readr::read_csv(file)
 }
 

@@ -10,15 +10,14 @@
 #' @examples
 recoverySlope_lm <- function(data){
   
-  require(trend)
-  require(tidyverse)
+  
   
 
   # create empty list
   mylist <- list()
   
   # calculate slopes
-  for(i in 1:nrow(x)){
+  for(i in 1:nrow(data)){
      #subset data
     row <- x[i,]
     #get fire id
@@ -70,9 +69,6 @@ recoverySlope_lm <- function(data){
 #' @examples
 recoverySlope_sens <- function(data){
   
-  
-  require(trend)
-  require(tidyverse)
   
   mylist <- list()
   

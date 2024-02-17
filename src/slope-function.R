@@ -10,20 +10,17 @@
 #' @examples
 recoverySlope_lm <- function(data){
   
-  
-  
-
   # create empty list
   mylist <- list()
   
   # calculate slopes
   for(i in 1:nrow(data)){
      #subset data
-    row <- x[i,]
+    row <- data[i,]
     #get fire id
     fId <- row |> select(c(id)) |> slice(1)
     # subset data for fire id
-    row2 <- x |> filter(id == c(fId))
+    row2 <- data |> filter(id == c(fId))
     #run first model
     mod1 <- lm(nbr ~ (recovery_interval == 1), data = row2)
     #run second model
@@ -81,7 +78,6 @@ recoverySlope_sens <- function(data){
     # subset data for fire id
     row2 <- data |> filter(id == c(fId))
   
-  
   # sens slope 1-5, 6-10
   
   data1 <- row2 |> filter(recovery_interval == 1) |> select(c(nbr))
@@ -90,16 +86,11 @@ recoverySlope_sens <- function(data){
   ts1 <- ts(data1, start =1, frequency = 10) 
   ts2 <- ts(data2, start =1, frequency = 10)
   
-  
-  
   sslope1 <- sens.slope(ts1, conf.level = 0.95) 
   sslope2 <- sens.slope(ts2, conf.level = 0.95)
   
-  
   sens1 <- sslope1$estimates
   sens2 <- sslope2$estimates
-  
-  
   
   uppr1 <- sslope1$conf.int[2]
   uppr2 <- sslope2$conf.int[2]
@@ -110,12 +101,9 @@ recoverySlope_sens <- function(data){
   
   data10 <- row2 |>  select(c(nbr))
   
-  
   ts10 <- ts(data10, start =1, frequency = 10) 
   
-  
   sslope10 <- sens.slope(ts10, conf.level = 0.95) 
-  
   
   sens10 <- sslope10$estimates
   
@@ -134,4 +122,36 @@ res <- res |> as.tibble(.name_repair = 'unique') |>
   group_by(fId) %>% 
   slice_head(n = 1) |> 
   unnest( )
+}
+
+matchIds <- function(data){
+  
+  data <- dplyr::select(data, c("id", "fire_name"))
+  
+  return(data)
+}
+
+
+slopePostProcess <- function(dataLm, dataSens, ids, DATA_DIR){
+  
+  # rename fId column to id
+  dataLm2 <- dplyr::rename(dataLm, id = fId )
+  dataSens2 <- dplyr::rename(dataSens, id = fId)
+  
+  # add fire_name to columns
+  processedLm <- dplyr::left_join(dataLm2, ids, by = "id")
+  processedSens <- dplyr::left_join(dataSens2, ids, by ="id")
+  
+  # move columns
+  processedLm <- dplyr::relocate(processedLm, fire_name, .after ="id")
+  processedSens <- dplyr::relocate(processedSens, fire_name, .after ="id")
+  
+  # build outputpath
+  pathLm <- paste0(DATA_DIR, "recovery_lm.csv")
+  pathSens <- paste0(DATA_DIR, "recovery_sensSlope.csv")
+  
+  # output dataframes
+  write.csv(processedLm, pathLm)
+  write.csv(processedSens, pathSens)
+
 }

@@ -209,7 +209,44 @@ recovery_visBox <- function(df, resSlope, resSev){
 
 
 
-trend_plot <-  function(data){
+
+#' trend visualization data preparation
+#'
+#' @param recovery_data 
+#' @param defol_data 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+trendPrep <- function(recovery_data, defol_data){
+  
+  # clean defoliated data and join to recovery data
+  defol_data <- dplyr::select(defol_data, c("id", "defoliated", "tsd", "cumltve_yrs"))
+  redData <- dplyr::left_join(recovery_data, defol_data, by = "id")
+  
+  # pivot raw nbr data from wide to long
+  recData <- tidyr::pivot_longer(recovery_data, !c("id", "defoliated", "tsd", "cumltve_yrs"),
+                                 names_to = "Recovery_Time", values_to = "nbr" )
+  #set time order for variables
+  time_order <- c('preNBR', 'nbr1','nbr2', 'nbr3', 'nbr4', 'nbr5','nbr6', 'nbr7', 'nbr8', 'nbr9', 'nbr10')
+
+  
+  
+  
+}
+
+
+
+#' Trend plots
+#'
+#' @param trendPrep_data 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+trend_plot <-  function(trendPrep_data){
   
   
   

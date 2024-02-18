@@ -35,19 +35,35 @@ vis_prep <- function(severity, defoliation, slope){
 #' @examples
 vis_ttestRes <- function(resSev, resSlope){
   
-  emptyTib <- tibble(
-    .y. = character(),
-    group1 = character(),
-    group2 = character(),
-    n1 = integer(),
-    n2 = integer(),
-    statistic = double(),
-    df = double(),
-    p = double(),
-    p.signif = character()
-  )
+  y <- rep("len", 3)
+  group1 <- rep("Defoliated", 3)
+  group2 <- rep("Non-Defoliated",3)
+  n1 = rep(33, 3)
+  n2 = rep(33, 3)
+  df = rep(65, 3)
   
-  tibRes <- 
+  createTib <- function(x, nrow){
+    x <- dplyr::slice(x, nrow)
+    title <- dplyr::select(x, c(Test))
+    statistic <-  x$`T-value`
+    p <- x$`P-value`
+    p <- stringr::str_remove(p, "<")
+    p.signif <- if(p <= 0.0001){
+      p.signif = "***"
+    }else if(p <= 0.01 & p >= 0.001){
+      p.signif = "**" 
+    }else if(p <= 0.05 & p >=0.01){
+      p.signif = "*"
+    }
+    
+    tibRes <- tibble(y, group1, group2, n1, n2, statistic, df, p, p.signif)
+    
+    tibRes <- dplyr::rename(tibRes, ".y." = "y")
+    
+    return(tibRes)
+  }
+  
+
   
   
   

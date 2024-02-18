@@ -42,11 +42,11 @@ createTib <- function(results, nrowSub){
   n2 = 33
   df = 65
   
-  if(nrowSub == "10yr"){
+  if(nrowSub == "all"){
     nrow = 1
-  } else if(nrowSub == "1-5yr"){
+  } else if(nrowSub == "1"){
     nrow = 2
-  } else if(nrowSub == "6-10yr"){
+  } else if(nrowSub == "2"){
     nrow = 3
   } else if(nrowSub == "Median"){
     nrow = 1
@@ -57,7 +57,7 @@ createTib <- function(results, nrowSub){
   }
   
  
-    x <- dplyr::slice(res, nrow)
+    x <- dplyr::slice(results, nrow)
     title <- dplyr::select(x, c(Test))
     statistic <-  x$`T-value`
     p <- x$`P-value`
@@ -79,7 +79,6 @@ createTib <- function(results, nrowSub){
   
 
 
-
 #' Boxplots comparing t-tests
 #'
 #' @param df 
@@ -88,44 +87,62 @@ createTib <- function(results, nrowSub){
 #' @export
 #'
 #' @examples
-recovery_visBox <- function(df){
+recovery_visBox <- function(df, resSlope, resSev){
   
   
-  defolPlot_med <-  ggplot2::ggplot(df, aes(x = defolaited, y = rbr_median))+
+  # defol plot med
+  sigVals_med <- createTib(resSev, "Median")
+  defolPlot_med <- ggplot2::ggplot(df, aes(x = defolaited, y = rbr_median))+
     geom_boxplot() +
     labs(x = "Median Severity", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
     theme(plot.title = element_text(hjust = 0.5)) +
-    theme_bw()
+    theme_bw() + ggpubr::stat_pvalue_manual(sigVals_med, label = "p")
   
+  # defol plot ext
+  sigVals_ext <- createTib(resSev, "Extreme")
   defolPlot_ext <-  ggplot2::ggplot(df, aes(x = defoliated, y = rbr_extreme))+
     geom_boxplot() +
     labs(x = "Extreme Severity", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
     theme(plot.title = element_text(hjust = 0.5)) +
-    theme_bw()
+    theme_bw()+ ggpubr::stat_pvalue_manual(sigVals_ext, label = "p")
   
+  # defol plot variability
+  sigVals_cv <- createTib(resSev, "Variability")
   defolPlot_cv <-  ggplot2::ggplot(df, aes(x = defoliated, y = rbr_cv))+
     geom_boxplot() +
     labs(x = "Variability in burn Severity", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
     theme(plot.title = element_text(hjust = 0.5)) +
-    theme_bw()
+    theme_bw() + + ggpubr::stat_pvalue_manual(sigVals_cv, label = "p")
   
+  # defol plot sens 10
+  sigVals_s10 <- createTib(resSlope, "All")
   defolPlot_sens10 <-  ggplot2::ggplot(df, aes(x =defoliated, y = sens10))+
     geom_boxplot() +
     labs(x = "10yr slope of recovery", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
     theme(plot.title = element_text(hjust = 0.5)) +
-    theme_bw()
+    theme_bw() + ggpubr::stat_pvalue_manual(sigVals_s10, label = "p")
   
+  # defol plot sens 1
+  sigVals_s1 <- createTib(resSlope, "1")
   defolPlot_sens1 <- ggplot2::ggplot(df, aes(x = defoliated, y = sens1))+
     geom_boxplot() +
     labs(x = "1-5yr slope of recovery", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
     theme(plot.title = element_text(hjust = 0.5)) +
-    theme_bw()
+    theme_bw() + ggpubr::stat_pvalue_manual(sigVals_s1, label = "p")
+  
+  # defol plot sens 2
+  sigVals_s2 <- createTib(resSlope, "2") 
+  sigVals_s2 <- dplyr::mutate(sigVals_s2, y.position = c(29, 35, 39)) # this needs a position on graph
+  
+  # get max mean, lwr and upper ci from boxplot to get the location for where to put the annotation
   
   defolPlot_sens2 <- ggplot2::ggplot(df, aes(x = defoliated, y = sens2))+
     geom_boxplot() +
     labs(x = "6-10yr slope of recovery", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
     theme(plot.title = element_text(hjust = 0.5)) +
-    theme_bw()
+    theme_bw() 
+  
+  defolPlot_sens2 <- defolPlot_sens2 + ggpubr::stat_pvalue_manual(sigVals_s2, label = "p")
   
   
   

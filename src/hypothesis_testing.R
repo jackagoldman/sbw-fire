@@ -1,8 +1,16 @@
 ## hypothesis testing
 
 
-order_data = function(df1, df2){
-  
+#' Join defoliation data and order for t-test
+#'
+#' @param df1 
+#' @param df2 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+order_data <- function(df1, df2){
   defol <- dplyr::select(df2, c("id", "defoliated"))
   df <- dplyr::left_join(df1,defol, by ="id") 
   df <- df[order(df$fire_name),]
@@ -10,7 +18,17 @@ order_data = function(df1, df2){
 }
 
 
+
+#' Burn severity t-test function
+#'
+#' @param df 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 severity_ttest <-  function(df){
+  
   # make sure function does not use scientific notation 
   op <- options(scipen=999)
   on.exit(options(op), add = TRUE)
@@ -62,6 +80,15 @@ severity_ttest <-  function(df){
   return(results)
 }
 
+
+#' Sens slope t-test function
+#'
+#' @param df 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 recovery_ttest <- function(df){
   
   # make sure function does not use scientific notation 

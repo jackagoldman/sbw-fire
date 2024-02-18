@@ -26,24 +26,38 @@ vis_prep <- function(severity, defoliation, slope){
 
 #' Clean results from ttest
 #'
-#' @param resSev 
-#' @param resSlope 
+#' @param results 
+#' @param nrowSub
 #'
 #' @return
 #' @export
 #'
 #' @examples
-vis_ttestRes <- function(resSev, resSlope){
+createTib <- function(results, nrowSub){
   
-  y <- rep("len", 3)
-  group1 <- rep("Defoliated", 3)
-  group2 <- rep("Non-Defoliated",3)
-  n1 = rep(33, 3)
-  n2 = rep(33, 3)
-  df = rep(65, 3)
+  y <- "len"
+  group1 <- "Defoliated"
+  group2 <- "Non-Defoliated"
+  n1 = 33
+  n2 = 33
+  df = 65
   
-  createTib <- function(x, nrow){
-    x <- dplyr::slice(x, nrow)
+  if(nrowSub == "10yr"){
+    nrow = 1
+  } else if(nrowSub == "1-5yr"){
+    nrow = 2
+  } else if(nrowSub == "6-10yr"){
+    nrow = 3
+  } else if(nrowSub == "Median"){
+    nrow = 1
+  }else if(nrowSub == "Extreme"){
+    nrow = 1
+  } else if (nrowSub == "Variability"){
+    nrow = 3
+  }
+  
+ 
+    x <- dplyr::slice(res, nrow)
     title <- dplyr::select(x, c(Test))
     statistic <-  x$`T-value`
     p <- x$`P-value`
@@ -63,13 +77,6 @@ vis_ttestRes <- function(resSev, resSlope){
     return(tibRes)
   }
   
-
-  
-  
-  
-  
-  
-}
 
 
 

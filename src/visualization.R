@@ -111,7 +111,7 @@ recovery_visBox <- function(df, resSlope, resSev){
   
   # defol plot ext
   sigVals_ext <- createTib(resSev, "Extreme")
-  defolPlot_ext <-  ggplot2::ggplot(df, aes(x = defoliated, y = rbr_extreme))+
+  defolPlot_ext <- ggplot2::ggplot(df, aes(x = defoliated, y = rbr_extreme))+
     geom_boxplot() +
     labs(x = "Extreme Severity", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
     theme_bw()+

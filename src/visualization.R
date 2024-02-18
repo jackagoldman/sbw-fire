@@ -1,13 +1,14 @@
 # visualization
+#'@author Jack A. Goldman
 
 
 #' prep data for visualization
 #'
-#' @param severity 
-#' @param defoliation 
-#' @param slope 
+#' @param severity data frame with burn severity data, must have cols: id, fire_name, rbr_median, rbr_extreme, rbr_cv
+#' @param defoliation data frame with defoliation data. must have cols: id, defoliation, tsd, cumltve_yrs
+#' @param slope data frame with slope data, must have cols id, sens10, sens1, sens2
 #'
-#' @return
+#' @return combined df joined by id
 #' @export
 #'
 #' @examples
@@ -26,11 +27,11 @@ vis_prep <- function(severity, defoliation, slope){
 
 #' Clean results from ttest
 #'
-#' @param results 
-#' @param nrowSub
+#' @param results dataframe. Ttest results from hypothesis testing. cols: test, t-value, df, p-value
+#' @param nrowSub row to subset. must be one of All. 1 (slope 1-5), 2(slope6-10), Median, Extreme or Variability.
 #'
-#' @return
-#' @export
+#' @return tibble for with column .y., group 1, group 2, n1, n2, df, statistic, p, p.signif
+#' 
 #'
 #' @examples
 createTib <- function(results, nrowSub){
@@ -95,60 +96,122 @@ recovery_visBox <- function(df, resSlope, resSev){
   defolPlot_med <- ggplot2::ggplot(df, aes(x = defolaited, y = rbr_median))+
     geom_boxplot() +
     labs(x = "Median Severity", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
-    theme(plot.title = element_text(hjust = 0.5)) +
-    theme_bw() + ggpubr::stat_pvalue_manual(sigVals_med, label = "p")
+    theme_bw() +
+    theme(plot.title = element_text(hjust = 0.5)) 
+  
+  # get max mean, lwr and upper ci from boxplot to get the location for where to put the annotation
+  limits <- layer_scales(defolPlot_senmed)$y$get_limits()[[2]] + 2
+  
+  # set location for comparison
+  sigVals_med <- dplyr::mutate(sigVals_med, y.position = c(limits)) # this needs a position on graph
+  
+  # annotate plot
+  defolPlot_med <- defolPlot_med + ggpubr::stat_pvalue_manual(sigVals_med, label = "p")
+  
   
   # defol plot ext
   sigVals_ext <- createTib(resSev, "Extreme")
   defolPlot_ext <-  ggplot2::ggplot(df, aes(x = defoliated, y = rbr_extreme))+
     geom_boxplot() +
     labs(x = "Extreme Severity", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
-    theme(plot.title = element_text(hjust = 0.5)) +
-    theme_bw()+ ggpubr::stat_pvalue_manual(sigVals_ext, label = "p")
+    theme_bw()+
+    theme(plot.title = element_text(hjust = 0.5)) 
+  
+  # get max mean, lwr and upper ci from boxplot to get the location for where to put the annotation
+  limits <- layer_scales(defolPlot_senext)$y$get_limits()[[2]] + 2
+  
+  # set location for comparison
+  sigVals_ext <- dplyr::mutate(sigVals_ext, y.position = c(limits)) # this needs a position on graph
+  
+  # annotate plot
+  defolPlot_ext <- defolPlot_ext + ggpubr::stat_pvalue_manual(sigVals_ext, label = "p")
+  
   
   # defol plot variability
   sigVals_cv <- createTib(resSev, "Variability")
   defolPlot_cv <-  ggplot2::ggplot(df, aes(x = defoliated, y = rbr_cv))+
     geom_boxplot() +
     labs(x = "Variability in burn Severity", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
-    theme(plot.title = element_text(hjust = 0.5)) +
-    theme_bw() + + ggpubr::stat_pvalue_manual(sigVals_cv, label = "p")
+    theme_bw() +
+    theme(plot.title = element_text(hjust = 0.5)) 
+  
+  # get max mean, lwr and upper ci from boxplot to get the location for where to put the annotation
+  limits <- layer_scales(defolPlot_sencv)$y$get_limits()[[2]] + 2
+  
+  # set location for comparison
+  sigVals_cv <- dplyr::mutate(sigVals_cv, y.position = c(limits)) # this needs a position on graph
+  
+  # annotate plot
+  defolPlot_cv <- defolPlot_cv + ggpubr::stat_pvalue_manual(sigVals_cv, label = "p")
+  
   
   # defol plot sens 10
   sigVals_s10 <- createTib(resSlope, "All")
   defolPlot_sens10 <-  ggplot2::ggplot(df, aes(x =defoliated, y = sens10))+
     geom_boxplot() +
     labs(x = "10yr slope of recovery", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
-    theme(plot.title = element_text(hjust = 0.5)) +
-    theme_bw() + ggpubr::stat_pvalue_manual(sigVals_s10, label = "p")
+    theme_bw() +
+    theme(plot.title = element_text(hjust = 0.5)) 
+  
+  # get max mean, lwr and upper ci from boxplot to get the location for where to put the annotation
+  limits <- layer_scales(defolPlot_sens10)$y$get_limits()[[2]] + 2
+  
+  # set location for comparison
+  sigVals_s10 <- dplyr::mutate(sigVals_s10, y.position = c(limits)) # this needs a position on graph
+  
+  # annotate plot
+  defolPlot_sens10 <- defolPlot_sens10 + ggpubr::stat_pvalue_manual(sigVals_s10, label = "p")
+  
   
   # defol plot sens 1
   sigVals_s1 <- createTib(resSlope, "1")
   defolPlot_sens1 <- ggplot2::ggplot(df, aes(x = defoliated, y = sens1))+
     geom_boxplot() +
     labs(x = "1-5yr slope of recovery", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
-    theme(plot.title = element_text(hjust = 0.5)) +
-    theme_bw() + ggpubr::stat_pvalue_manual(sigVals_s1, label = "p")
+    theme_bw() +
+    theme(plot.title = element_text(hjust = 0.5)) 
+  # get max mean, lwr and upper ci from boxplot to get the location for where to put the annotation
+  limits <- layer_scales(defolPlot_sens1)$y$get_limits()[[2]] + 2
+  
+  # set location for comparison
+  sigVals_s1 <- dplyr::mutate(sigVals_s1, y.position = c(limits)) # this needs a position on graph
+  
+  # annotate plot
+  defolPlot_sens1 <- defolPlot_sens1 + ggpubr::stat_pvalue_manual(sigVals_s1, label = "p")
+  
   
   # defol plot sens 2
   sigVals_s2 <- createTib(resSlope, "2") 
-  sigVals_s2 <- dplyr::mutate(sigVals_s2, y.position = c(29, 35, 39)) # this needs a position on graph
-  
-  # get max mean, lwr and upper ci from boxplot to get the location for where to put the annotation
-  
+
   defolPlot_sens2 <- ggplot2::ggplot(df, aes(x = defoliated, y = sens2))+
     geom_boxplot() +
     labs(x = "6-10yr slope of recovery", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
-    theme(plot.title = element_text(hjust = 0.5)) +
-    theme_bw() 
+    theme_bw() +
+    theme(plot.title = element_text(hjust = 0.5)) 
   
+  # get max mean, lwr and upper ci from boxplot to get the location for where to put the annotation
+  limits <- layer_scales(defolPlot_sens2)$y$get_limits()[[2]] + 2
+  
+  # set location for comparison
+  sigVals_s2 <- dplyr::mutate(sigVals_s2, y.position = c(limits)) # this needs a position on graph
+  
+  # annotate plot
   defolPlot_sens2 <- defolPlot_sens2 + ggpubr::stat_pvalue_manual(sigVals_s2, label = "p")
   
   
-  
+  # combine plots to 6 panel figure
   plot <- ggpubr::ggarrange(defolPlot_med, defolPlot_ext, defolPlot_cv, 
                     defolPlot_sens10, defolPlot_sens1, defolPlot_sens2, ncol = 3, nrow =3)
   
   return(plot)
+  
+}
+
+
+
+trend_plot <-  function(data){
+  
+  
+  
   
 }

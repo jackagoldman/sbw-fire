@@ -124,6 +124,9 @@ res <- res |> as.tibble(.name_repair = 'unique') |>
   unnest( )
 }
 
+
+
+
 matchIds <- function(data){
   
   data <- dplyr::select(data, c("id", "fire_name"))

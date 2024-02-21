@@ -3,7 +3,7 @@
 
 #' Join defoliation data and order for t-test
 #'
-#' @param df1 
+#' @param df1 either burn severity of slope results
 #' @param df2 
 #'
 #' @return

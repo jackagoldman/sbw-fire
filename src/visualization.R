@@ -223,16 +223,26 @@ trendPrep <- function(recovery_data, defol_data){
   
   # clean defoliated data and join to recovery data
   defol_data <- dplyr::select(defol_data, c("id", "defoliated", "tsd", "cumltve_yrs"))
-  redData <- dplyr::left_join(recovery_data, defol_data, by = "id")
+  recData <- dplyr::left_join(recovery_data, defol_data, by = "id")
   
   # pivot raw nbr data from wide to long
-  recData <- tidyr::pivot_longer(recovery_data, !c("id", "defoliated", "tsd", "cumltve_yrs"),
-                                 names_to = "Recovery_Time", values_to = "nbr" )
+  #recData <- tidyr::pivot_longer(recovery_data, !c("id", "defoliated", "tsd", "cumltve_yrs"),
+                                 #names_to = "Recovery_Time", values_to = "nbr" )
   #set time order for variables
   time_order <- c('preNBR', 'nbr1','nbr2', 'nbr3', 'nbr4', 'nbr5','nbr6', 'nbr7', 'nbr8', 'nbr9', 'nbr10')
 
+  recTs <-  dplyr::select(recData, c('fire_name', 'defoliated', 'preNBR', 'nbr1','nbr2', 'nbr3', 'nbr4', 'nbr5','nbr6', 'nbr7', 'nbr8', 'nbr9', 'nbr10'))
+  
+  recTs_1 <- recTs |> 
+    tidyr::pivot_longer(-c(defoliated, fire_name)) |> 
+    dplyr::filter(defoliated == "1") 
   
   
+ recTs_0 <- recTs |>
+   tidyr::pivot_longer(-c(defoliated, fire_name)) |> 
+    dplyr::filter(defoliated == "0")
+  
+ return(list(recTs_1,recTs_0))
   
 }
 
@@ -248,6 +258,22 @@ trendPrep <- function(recovery_data, defol_data){
 #' @examples
 trend_plot <-  function(trendPrep_data){
   
+  ggplot(nbr_ts) + 
+    aes(factor(name, level = time_order), 
+        y = value, group = Fire_ID) + 
+    geom_point() +
+    geom_smooth(method = lm, se = TRUE)
+  
+  summary(lm(value ~ name, data = nbr_ts))
+  
+  sum1 <- summarySE(nbr_ts1, measurevar="value", groupvars=c("name")) |> 
+    mutate(defol = 1)
+  sum0 <- summarySE(nbr_ts0, measurevar="value", groupvars=c("name")) |> 
+    mutate(defol = 0)
+  
+  
+  sum_nbr <- rbind(sum1, sum0)
+  pd <- position_dodge(0.1) # move them .05 to the left and right
   
   
   

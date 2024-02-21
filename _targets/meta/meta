@@ -1,0 +1,16 @@
+name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
+.Random.seed|object|ed334ff72baeabf2|||||||||||||||
+cleanData|stem|94dc382d7f521610|9553a15a2190bf51|5fdd9c7715dace9c|-1238940090||t19770.0373188226s|2312b72c94a875ca|6242|rds|local|vector|||0.021||
+data|stem|bed8d26d97ac237b|b037d15277b5d0b8|5a6d751b5c26cd10|33550471||t19770.0373185509s|66a33d849417603b|6564|rds|local|vector|||0.099||
+DATA_DIR|object|3ce81c7f8a9be35b|||||||||||||||
+file|stem|70eef5a753cac3d6|15ca43d37905357b|ef46db3751d8e999|1735323524|data/paired_fires/fire_recovery.csv|t19769.6407833548s|944702666ce74809|15509|file|local|vector|||0.086|package dplyr was built under R version 4.3.1. package trend was built under R version 4.3.1|
+getData|function|d4b632b9a9bb3f37|||||||||||||||
+ids|stem|23af9bd7205d31b9|4851861f3e24d8ff|715d2d23e9db9d4c|127298475||t19770.0962686986s|59cbb219352b458e|695|rds|local|vector|||0.004||
+lm_recovery|stem|ca1c0b0ad4d364f9|2ea6b0831f098e12|1b7e4501970f02d3|-590345062||t19770.0393453236s|207a6ca4f5410eed|2003|rds|local|vector|||1.358|as.tibble was deprecated in tibble 2.0.0.ℹ Please use as_tibble instead.ℹ The signature and semantics have changed, see as_tibble.. cols is now required when using unnest.ℹ Please use cols  cfId, slope1, slope2, se1, se2.|
+matchIds|function|dcad42c014eddd5f|||||||||||||||
+output|stem|d36ea1299fa8d732|3e55602db209f4b0|20b2b748e73e877b|3939470||t19770.1177905649s|44e327d1ee1978d7|43|rds|local|vector|||0.021||
+recoverySlope_lm|function|291cd77f9dffd1cd|||||||||||||||
+recoverySlope_sens|function|1ac34e9eecdea84b|||||||||||||||
+sens_recovery|stem|c502c389989d2cf4|8ad202bc93e05bdc|78ef8a5e63cfc218|1249831624||t19770.0393803066s|ee2e52779bcc455e|5285|rds|local|vector|||3.02|cols is now required when using unnest.ℹ Please use cols  cfId, sens1, sens2, uppr1, uppr2, lwr1, lwr2, sens10,  uppr10, lwr10.|
+slopePostProcess|function|9c32d64a04f05af5|||||||||||||||
+slopePrep|function|20a786a6dd2972d6|||||||||||||||

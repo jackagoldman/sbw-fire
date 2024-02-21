@@ -268,17 +268,18 @@ trend_plot <-  function(ts_data){
   sum_nbr <- rbind(sum1, sum0)
   pd <- ggplot2::position_dodge(0.1) # move them .05 to the left and right
   
-  ggplot2::ggplot(sum_nbr, aes(name, level = time_order), 
-        y = value, colour = as.factor(defol)) + 
+  plot <- ggplot2::ggplot(data = sum_nbr, aes(factor(name, level = time_order),y = value, colour = as.factor(defoliated))) +
     ggplot2::geom_line(aes(factor(name, level = time_order), 
-                  y = value, colour = as.factor(defol)), position=pd) +
+                  y = value, colour = as.factor(defoliated)), position=pd) +
    ggplot2::geom_point(position=pd) +
     ggplot2::geom_errorbar(aes(ymin=value-ci, ymax=value+ci), width=.1, position=pd) +
     ggplot2::labs(y= " NBR Recovery Rate", x = "Time Period (pre-10yrs post)")  + 
-    ggplot2::theme(axis.text.x=element_text(angle=60,hjust=1))+ ggtitle("NBR recovery for 10 Years following fire") + 
+    ggplot2::theme(axis.text.x=element_text(angle=60,hjust=1))+ 
+    ggplot2::ggtitle("NBR recovery for 10 Years following fire") + 
     ggplot2::guides(colour=guide_legend(title="Defoliation Presence/Absent")) +
     ggplot2::theme_classic() 
   
+  return(plot)
 }
 
 

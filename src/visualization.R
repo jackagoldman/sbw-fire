@@ -225,28 +225,14 @@ trendPrep <- function(recovery_data, defol_data){
   defol_data <- dplyr::select(defol_data, c("id", "defoliated", "tsd", "cumltve_yrs"))
   recData <- dplyr::left_join(recovery_data, defol_data, by = "id")
   
-  # pivot raw nbr data from wide to long
-  #recData <- tidyr::pivot_longer(recovery_data, !c("id", "defoliated", "tsd", "cumltve_yrs"),
-                                 #names_to = "Recovery_Time", values_to = "nbr" )
   #set time order for variables
   time_order <- c('preNBR', 'nbr1','nbr2', 'nbr3', 'nbr4', 'nbr5','nbr6', 'nbr7', 'nbr8', 'nbr9', 'nbr10')
 
   recTs <-  dplyr::select(recData, c('fire_name', 'defoliated', 'preNBR', 'nbr1','nbr2', 'nbr3', 'nbr4', 'nbr5','nbr6', 'nbr7', 'nbr8', 'nbr9', 'nbr10'))
   
-  recTs_1 <- recTs |> 
-    tidyr::pivot_longer(-c(defoliated, fire_name)) |> 
-    dplyr::filter(defoliated == "1") 
-  
-  
- recTs_0 <- recTs |>
-   tidyr::pivot_longer(-c(defoliated, fire_name)) |> 
-    dplyr::filter(defoliated == "0")
-  
- return(list(recTs_1,recTs_0))
+ return(recTs)
   
 }
-
-
 
 #' Trend plots
 #'
@@ -256,25 +242,89 @@ trendPrep <- function(recovery_data, defol_data){
 #' @export
 #'
 #' @examples
-trend_plot <-  function(trendPrep_data){
+trend_plot <-  function(ts_data){
   
-  ggplot(nbr_ts) + 
-    aes(factor(name, level = time_order), 
-        y = value, group = Fire_ID) + 
-    geom_point() +
-    geom_smooth(method = lm, se = TRUE)
   
-  summary(lm(value ~ name, data = nbr_ts))
+  recTs_1 <- recTs |> 
+    tidyr::pivot_longer(-c(defoliated, fire_name)) |> 
+    dplyr::filter(defoliated == "1") 
   
-  sum1 <- summarySE(nbr_ts1, measurevar="value", groupvars=c("name")) |> 
-    mutate(defol = 1)
-  sum0 <- summarySE(nbr_ts0, measurevar="value", groupvars=c("name")) |> 
-    mutate(defol = 0)
+  
+  recTs_0 <- recTs |>
+    tidyr::pivot_longer(-c(defoliated, fire_name)) |> 
+    dplyr::filter(defoliated == "0")
+ 
+  
+  sum1 <- summarySE(recTs_1, measurevar="value", groupvars=c("name")) |> 
+    dplyr::mutate(defoliated = 1)
+  sum0 <- summarySE(recTs_0, measurevar="value", groupvars=c("name")) |> 
+    dplyr::mutate(defoliated = 0)
   
   
   sum_nbr <- rbind(sum1, sum0)
   pd <- position_dodge(0.1) # move them .05 to the left and right
   
   
+  sum_nbr <- rbind(sum1, sum0)
+  pd <- ggplot2::position_dodge(0.1) # move them .05 to the left and right
+  
+  ggplot2::ggplot(sum_nbr, aes(name, level = time_order), 
+        y = value, colour = as.factor(defol)) + 
+    ggplot2::geom_line(aes(factor(name, level = time_order), 
+                  y = value, colour = as.factor(defol)), position=pd) +
+   ggplot2::geom_point(position=pd) +
+    ggplot2::geom_errorbar(aes(ymin=value-ci, ymax=value+ci), width=.1, position=pd) +
+    ggplot2::labs(y= " NBR Recovery Rate", x = "Time Period (pre-10yrs post)")  + 
+    ggplot2::theme(axis.text.x=element_text(angle=60,hjust=1))+ ggtitle("NBR recovery for 10 Years following fire") + 
+    ggplot2::guides(colour=guide_legend(title="Defoliation Presence/Absent")) +
+    ggplot2::theme_classic() 
   
 }
+
+
+
+
+
+# Summarizes data.
+## Gives count, mean, standard deviation, standard error of the mean, and confidence interval (default 95%).
+##   data: a data frame.
+##   measurevar: the name of a column that contains the variable to be summariezed
+##   groupvars: a vector containing names of columns that contain grouping variables
+##   na.rm: a boolean that indicates whether to ignore NA's
+##   conf.interval: the percent range of the confidence interval (default is 95%)
+summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
+                      conf.interval=.95, .drop=TRUE) {
+  library(plyr)
+  
+  # New version of length which can handle NA's: if na.rm==T, don't count them
+  length2 <- function (x, na.rm=FALSE) {
+    if (na.rm) sum(!is.na(x))
+    else       length(x)
+  }
+  
+  # This does the summary. For each group's data frame, return a vector with
+  # N, mean, and sd
+  datac <- ddply(data, groupvars, .drop=.drop,
+                 .fun = function(xx, col) {
+                   c(N    = length2(xx[[col]], na.rm=na.rm),
+                     mean = mean   (xx[[col]], na.rm=na.rm),
+                     sd   = sd     (xx[[col]], na.rm=na.rm)
+                   )
+                 },
+                 measurevar
+  )
+  
+  # Rename the "mean" column    
+  datac <- rename(datac, c("mean" = measurevar))
+  
+  datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
+  
+  # Confidence interval multiplier for standard error
+  # Calculate t-statistic for confidence interval: 
+  # e.g., if conf.interval is .95, use .975 (above/below), and use df=N-1
+  ciMult <- qt(conf.interval/2 + .5, datac$N-1)
+  datac$ci <- datac$se * ciMult
+  
+  return(datac)
+}
+

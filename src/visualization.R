@@ -129,7 +129,7 @@ recovery_visBox <- function(df, resSlope, resSev){
   
   # defol plot variability
   sigVals_cv <- createTib(resSev, "Variability")
-  defolPlot_cv <-  ggplot2::ggplot(df, aes(x = defoliated, y = rbr_cv))+
+  defolPlot_cv <- ggplot2::ggplot(df, aes(x = defoliated, y = rbr_cv))+
     geom_boxplot() +
     labs(x = "Variability in burn Severity", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
     theme_bw() +
@@ -147,7 +147,7 @@ recovery_visBox <- function(df, resSlope, resSev){
   
   # defol plot sens 10
   sigVals_s10 <- createTib(resSlope, "All")
-  defolPlot_sens10 <-  ggplot2::ggplot(df, aes(x =defoliated, y = sens10))+
+  defolPlot_sens10 <- ggplot2::ggplot(df, aes(x =defoliated, y = sens10))+
     geom_boxplot() +
     labs(x = "10yr slope of recovery", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
     theme_bw() +
@@ -242,7 +242,7 @@ trendPrep <- function(recovery_data, defol_data){
 #' @export
 #'
 #' @examples
-trend_plot <-  function(ts_data){
+trend_plot <- function(ts_data){
   
   
   recTs_1 <- recTs |> 

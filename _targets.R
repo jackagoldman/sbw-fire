@@ -60,6 +60,6 @@ list(
   # trend plot
   tar_target(name = trendPlot, trend_plot(ts_data)),
   #render report
-  tarchetypes::tar_render(project_report, "proejct_report.Rmd") 
+  tarchetypes::tar_render(project_report, "project_report.Rmd") 
   
 )

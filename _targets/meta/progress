@@ -18,9 +18,6 @@ slo_ttest|stem|slo_ttest|0|skipped
 trendPlot|stem|trendPlot|0|skipped
 lm_recovery|stem|lm_recovery|0|skipped
 sens_recovery|stem|sens_recovery|0|skipped
-project_report|stem|project_report|0|dispatched
-project_report|stem|project_report|0|completed
-boxplot|stem|boxplot|0|dispatched
-boxplot|stem|boxplot|0|completed
-output|stem|output|0|dispatched
-output|stem|output|0|completed
+project_report|stem|project_report|0|skipped
+boxplot|stem|boxplot|0|skipped
+output|stem|output|0|skipped

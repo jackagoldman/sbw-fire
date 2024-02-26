@@ -1,0 +1,70 @@
+---
+title: "project_report"
+author: "Jack A Goldman"
+date: "2024-02-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# The impact of the spatial legacies of spruce budworm defoliation on wildfire burn severity and post-fire recovery
+
+## Background
+
+Wildfire behaviour is driven in part by the abundance, structure and connectivity of combustible fuels, therefore it is expected that spruce budworm defoliation will have strong bottom up effects on wildfire behaviour. However, current evidence on the impact that the spatial legacies of spruce budworm defoliation have on wildfire behaviour reports positive, negative and neutral effects. Limited evidence for the impact of SBW on wildfire behaviour may be result of the measure used to describe wildfire behaviour or how SBW defoliation was quantified. We attempt to tease apart the relationship between SBW defoliation and wildfire behaviour by 1) modelling burn severity and post-fire recovery and 2) creating a synthetic index of SBW defoliation by combining different attributed used to describe defoliation into a compositie variable. To date, there are a lack of studies that have investigate the role of SBW defoliation on either wildfire burn severity or post-fire recovery. Likewise, to our knowledge no study have tried to model SBW defoliation using a composite variable that accounts for the different was to quantify SBW defoliation.
+
+## Questions
+
+The overarching question is: *how do the spatial legacies of spruce budworm defoliation influence wildfire burn severity and forest recovery in the boreal forest?*
+
+Specifically we will address the following questions:
+
+1.  How does spruce budworm defoliation influence burn severity?
+    I.  Is there a difference in median severity between defoliated and non-defoliated fires?
+    II. Is there a difference in severity extremes between defoliated and non-defoliated fires
+    III. Is there a difference in variability in burn severity between defoliated and non-defoliated fires
+2.  How does spruce budworm defoliation influence post-fire recovery?
+    1.  Is there a difference in forest recovery 10 years post-fire between defoliated and non-defoliated fires?
+    2.  Is there a difference in forest recovery between 1-5 years and 6-10 years between defoliated and non-defoliated fires?
+3.  Is the strength of the relationship between defoliation intensity (synthetic index) and burn severity or forest recovery greater than independent metrics of defoliation?
+4.  Does defoliation intensity (synthetic index) capture more variation in burn severity and forest recovery relative to defoliation metrics modeled independently?
+
+## Methods
+
+This study focuses on wildfire that burned in the boreal shield ecoregion of Ontario. Our analysis was restricted to wildfires that burned between 1986 and 2013 because (1) 1985 was chosen as the first fire year in our dataset because it is the first year that remotely sensed burn severity data are available and (2) in order to calculate forest recovery for 10 years following fire, 2013 is the last year where we were able to calculate remotely sensed imagery. We identified wildfires that contains areas that were previously defoliated and areas that were not defoliated. By analyzing wildfires that had both defoliated and non-defoliated areas, we were able to
+
+I will identify fires that overlap the defoliated area. I will limit the time since defoliation to 15 years, which has been identified as the latest time that the effects of defoliation on wildfire would be observed. I will only focus on large fire events (\> 10 000 ha) [98].
+
+Remotely sensed burn severity data will be retrieved using Google Earth Engine and Landsat. To retrieve remotely sensed burn severity data for each fire, I will separate each individual fire event into the defoliation affected area and the unaffected area and retrieve burn severity maps for each perimeter. Burn severity data will be generated at the pixel level using Landsat data at 30m spatial resolution. I will then extract the burn severity value for each pixel and assign it to either the defoliated or non-defoliated category.
+
+I will quantify time since defoliation as the difference between fire year and the last year a cell was defoliated. I will also include fire seasonality (Spring, Summer, Fall). Using the centroid of each 30m pixel I will interpolate drought code for the day that the fire burned. This will allow me to control for trends in weather at the time of the fire. Using Daymet V4, I will retrieve climate averages for the years between defoliation and fire in Google Earth Engine. The exact climate metrics are yet to be determined. I will gather elevation data for each pixel as well as slope and aspect in google earth engine using the Canadian Digital Elevation Model provided by NRCAN.
+
+In the first part of our analysis we tested multiple hypotheses concerned with how burn severity or forest recovery differs following fires that burned in defoliated vs. non defoliated areas. To determine defoliated and non-defoliated areas, we identified areas where defoliation events overlapped wildfire perimeters and took the difference between the
+
+### Structural Equation Model
+
+The second part of the analysis looks the effects of defoliation intensity on burn severity and forest recovery following fire. Defoliation alters fuel structure and fuel load and is expected to cause influence fire behaviour. Previous studies in Ontario have shown that defoliation can alter fire behaviour for up to 15 following defoliation [@james2017], this period is commonly referred to as the "window of opportunity".
+
+Spruce budworm defoliation is multivariate in nature. The effects of spruce budworm defoliation can be described by the presence and absence of defoliation, the time since defoliation to the time of fire and the number of years that an area was defoliated (a proxy for defoliation load). It is common practice for studies that concerned with the effects of spruce budworm defoliation on wildfire to use a since predictor, or build multiple sequential models to incorporate the multivariate nature of defoliation [@james2017 @james2011 @candau2018].
+
+Structural equation models allow for the multivariate nature of defoliation by creating composite variable that allows us to combine the variation explained by multiple predictors into a synthetic index. Using structural equation models, we will combine create a synthetic index called defoliation intensity which combines defoliation presence/absence, time since defoliation and number of years defoliated.
+
+We will fit these models to data of consisting of 34 paired defoliated/non-defoliated fires that burned in Ontario between 1986-2012. We will then model the causal effects of defoliation intensity on burn severity and forest recovery following fire. Forest recovery is measured by taking the mean composite of the normalized burn ratio for a given summer for 10 years for following fire. We then use a Theil-Sen regression to calculate the sen's slope across the 10 years which we call the slope of recovery or forest recovery.
+
+In our model, defoliation intensity will effect for burn severity and forest recovery. Below is the directed acyclic graph (DAG) of our a priori causal hypothesis.
+
+```{r}
+DiagrammeR::grViz("../Figures/chapter3-step1-dag.gv")
+```
+
+In this DAG we see that time since defoliation, presence/absence of defoliation (defoliated) and number of years defoliated are combined to form the synthetic index (defoliation intensity) which is then used to predict the effects on burn severity and forest recovery. Defolaition intensity will directly effect forest recovery by altering stand structure and forest composition prior to fire, which will impact the number and distribution species and their seed banks that are able to establish post fire, thus affecting the recovery trajectory. Similarly, defoliation intensity will effect burn severity by either increasing or decreasing severity which will lead to a change in the recovery trajectory by either increasing or decreasing the slope of recovery.
+
+## Preliminary results
+
+Hypothesis 1: Difference in median severity between defoliated and non defoliated
+
+```{r}
+targets::tar_read(sev_ttest)
+```

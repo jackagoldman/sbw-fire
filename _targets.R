@@ -3,7 +3,7 @@ library(tarchetypes)
 
 # Set target options:
 tar_option_set(
-  packages = c("tibble", "dplyr", "trend", "readr", "tidyr") 
+  packages = c("tibble", "dplyr", "trend", "readr", "tidyr", "quarto") 
 )
 
 # R functions
@@ -48,12 +48,18 @@ list(
   tar_target(name = slope_data, "data/paired_fires/recovery_sensSlope.csv", format = "file"),
   # read in slope data
   tar_target(name = slope_df, getData(slope_data)),
+  # join slope data
+  tar_target(name = slope_order, order_data(slope_df, defol_df)),
+  tar_target(name = slo_ttest, recovery_ttest(slope_order)),
   # prep data for visualiation
-  tar_target(name = vis_data, vis_prep(sev_df, defol_sf, slope_df)),
+  tar_target(name = vis_data, vis_prep(sev_df, defol_df, slope_df)),
   # make boxplots
-  tar_target(name = boxplot, recovery_visBox(vis_data, slope_df, sev_ttest)),
+  tar_target(name = boxplot, recovery_visBox(vis_data, slo_ttest, sev_ttest)),
   # trend prep
-  tar_target(name = ts_data , trendPrep(data)),
+  tar_target(name = ts_data , trendPrep(data, defol_df)),
   # trend plot
-  tar_target(name = trendPlot, trend_plot(ts_data))
+  tar_target(name = trendPlot, trend_plot(ts_data)),
+  #render report
+  tarchetypes::tar_render(project_report, "proejct_report.Rmd") 
+  
 )

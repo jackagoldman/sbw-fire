@@ -59,7 +59,6 @@ createTib <- function(results, nrowSub){
   
  
     x <- dplyr::slice(results, nrow)
-    title <- dplyr::select(x, c(Test))
     statistic <-  x$`T-value`
     p <- x$`P-value`
     p <- stringr::str_remove(p, "<")
@@ -89,18 +88,18 @@ createTib <- function(results, nrowSub){
 #'
 #' @examples
 recovery_visBox <- function(df, resSlope, resSev){
-  
+  require(ggplot2)
   
   # defol plot med
   sigVals_med <- createTib(resSev, "Median")
-  defolPlot_med <- ggplot2::ggplot(df, aes(x = defolaited, y = rbr_median))+
+  defolPlot_med <- ggplot(df, aes(x = defoliated, y = rbr_median))+
     geom_boxplot() +
     labs(x = "Median Severity", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
     theme_bw() +
     theme(plot.title = element_text(hjust = 0.5)) 
   
   # get max mean, lwr and upper ci from boxplot to get the location for where to put the annotation
-  limits <- layer_scales(defolPlot_senmed)$y$get_limits()[[2]] + 2
+  limits <- layer_scales(defolPlot_med)$y$get_limits()[[2]] + 2
   
   # set location for comparison
   sigVals_med <- dplyr::mutate(sigVals_med, y.position = c(limits)) # this needs a position on graph
@@ -111,14 +110,14 @@ recovery_visBox <- function(df, resSlope, resSev){
   
   # defol plot ext
   sigVals_ext <- createTib(resSev, "Extreme")
-  defolPlot_ext <- ggplot2::ggplot(df, aes(x = defoliated, y = rbr_extreme))+
+  defolPlot_ext <- ggplot(df, aes(x = defoliated, y = rbr_extreme))+
     geom_boxplot() +
     labs(x = "Extreme Severity", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
     theme_bw()+
     theme(plot.title = element_text(hjust = 0.5)) 
   
   # get max mean, lwr and upper ci from boxplot to get the location for where to put the annotation
-  limits <- layer_scales(defolPlot_senext)$y$get_limits()[[2]] + 2
+  limits <- layer_scales(defolPlot_ext)$y$get_limits()[[2]] + 2
   
   # set location for comparison
   sigVals_ext <- dplyr::mutate(sigVals_ext, y.position = c(limits)) # this needs a position on graph
@@ -129,14 +128,14 @@ recovery_visBox <- function(df, resSlope, resSev){
   
   # defol plot variability
   sigVals_cv <- createTib(resSev, "Variability")
-  defolPlot_cv <- ggplot2::ggplot(df, aes(x = defoliated, y = rbr_cv))+
+  defolPlot_cv <- ggplot(df, aes(x = defoliated, y = rbr_cv))+
     geom_boxplot() +
     labs(x = "Variability in burn Severity", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
     theme_bw() +
     theme(plot.title = element_text(hjust = 0.5)) 
   
   # get max mean, lwr and upper ci from boxplot to get the location for where to put the annotation
-  limits <- layer_scales(defolPlot_sencv)$y$get_limits()[[2]] + 2
+  limits <- layer_scales(defolPlot_cv)$y$get_limits()[[2]] + 2
   
   # set location for comparison
   sigVals_cv <- dplyr::mutate(sigVals_cv, y.position = c(limits)) # this needs a position on graph
@@ -146,8 +145,8 @@ recovery_visBox <- function(df, resSlope, resSev){
   
   
   # defol plot sens 10
-  sigVals_s10 <- createTib(resSlope, "All")
-  defolPlot_sens10 <- ggplot2::ggplot(df, aes(x =defoliated, y = sens10))+
+  sigVals_s10 <- createTib(resSlope, "all")
+  defolPlot_sens10 <- ggplot(df, aes(x =defoliated, y = sens10))+
     geom_boxplot() +
     labs(x = "10yr slope of recovery", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
     theme_bw() +
@@ -165,7 +164,7 @@ recovery_visBox <- function(df, resSlope, resSev){
   
   # defol plot sens 1
   sigVals_s1 <- createTib(resSlope, "1")
-  defolPlot_sens1 <- ggplot2::ggplot(df, aes(x = defoliated, y = sens1))+
+  defolPlot_sens1 <- ggplot(df, aes(x = defoliated, y = sens1))+
     geom_boxplot() +
     labs(x = "1-5yr slope of recovery", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
     theme_bw() +
@@ -183,7 +182,7 @@ recovery_visBox <- function(df, resSlope, resSev){
   # defol plot sens 2
   sigVals_s2 <- createTib(resSlope, "2") 
 
-  defolPlot_sens2 <- ggplot2::ggplot(df, aes(x = defoliated, y = sens2))+
+  defolPlot_sens2 <- ggplot(df, aes(x = defoliated, y = sens2))+
     geom_boxplot() +
     labs(x = "6-10yr slope of recovery", y = "Presence/Absence", title = "Defoliation Presence/Absence") +
     theme_bw() +
@@ -245,39 +244,65 @@ trendPrep <- function(recovery_data, defol_data){
 trend_plot <- function(ts_data){
   
   
-  recTs_1 <- recTs |> 
+  recTs_1 <- ts_data |> 
     tidyr::pivot_longer(-c(defoliated, fire_name)) |> 
     dplyr::filter(defoliated == "1") 
   
   
-  recTs_0 <- recTs |>
+  recTs_0 <- ts_data |>
     tidyr::pivot_longer(-c(defoliated, fire_name)) |> 
     dplyr::filter(defoliated == "0")
  
   
   sum1 <- summarySE(recTs_1, measurevar="value", groupvars=c("name")) |> 
-    dplyr::mutate(defoliated = 1)
+    dplyr::mutate(defoliated = 1) |> 
+    dplyr::mutate(ordr = dplyr::case_when(name == "nbr1" ~ 2,
+                                    name == "preNBR" ~ 1,
+                                    name == "nbr2" ~ 3, 
+                                    name == "nbr3" ~ 4,
+                                    name == "nbr4" ~ 5,
+                                    name == "nbr5" ~ 6,
+                                    name == "nbr6" ~ 7, 
+                                    name == "nbr7" ~ 8,
+                                    name == "nbr8" ~ 9,
+                                    name == "nbr9" ~ 10, 
+                                    name == "nbr10" ~ 11)) |> 
+    arrange(ordr) |> 
+    dplyr::mutate(name, levels = name) |> 
+    dplyr::select(-c(ordr, levels))
+
   sum0 <- summarySE(recTs_0, measurevar="value", groupvars=c("name")) |> 
-    dplyr::mutate(defoliated = 0)
-  
-  
-  sum_nbr <- rbind(sum1, sum0)
-  pd <- position_dodge(0.1) # move them .05 to the left and right
-  
+    dplyr::mutate(defoliated = 0)|> 
+    dplyr::mutate(ordr = dplyr::case_when(name == "nbr1" ~ 2,
+                                          name == "preNBR" ~ 1,
+                                          name == "nbr2" ~ 3, 
+                                          name == "nbr3" ~ 4,
+                                          name == "nbr4" ~ 5,
+                                          name == "nbr5" ~ 6,
+                                          name == "nbr6" ~ 7, 
+                                          name == "nbr7" ~ 8,
+                                          name == "nbr8" ~ 9,
+                                          name == "nbr9" ~ 10, 
+                                          name == "nbr10" ~ 11)) |> 
+    arrange(ordr) |> 
+    dplyr::mutate(name, levels = name) |> 
+    dplyr::select(-c(ordr, levels))
+
   
   sum_nbr <- rbind(sum1, sum0)
   pd <- ggplot2::position_dodge(0.1) # move them .05 to the left and right
   
-  plot <- ggplot2::ggplot(data = sum_nbr, aes(factor(name, level = time_order),y = value, colour = as.factor(defoliated))) +
-    ggplot2::geom_line(aes(factor(name, level = time_order), 
-                  y = value, colour = as.factor(defoliated)), position=pd) +
-   ggplot2::geom_point(position=pd) +
-    ggplot2::geom_errorbar(aes(ymin=value-ci, ymax=value+ci), width=.1, position=pd) +
-    ggplot2::labs(y= " NBR Recovery Rate", x = "Time Period (pre-10yrs post)")  + 
-    ggplot2::theme(axis.text.x=element_text(angle=60,hjust=1))+ 
-    ggplot2::ggtitle("NBR recovery for 10 Years following fire") + 
-    ggplot2::guides(colour=guide_legend(title="Defoliation Presence/Absent")) +
-    ggplot2::theme_classic() 
+
+require(ggplot2)
+  
+  plot <- ggplot(sum_nbr,aes(factor(name, level = time_order), 
+        y = value, colour = as.factor(defoliated))) + 
+    geom_point(position=pd) +
+    geom_errorbar(aes(ymin=value-ci, ymax=value+ci), width=.1, position=pd) +
+    labs(y= " NBR Recovery Rate", x = "Time Period (pre-10yrs post)")  + 
+    theme(axis.text.x=element_text(angle=60,hjust=1))+ ggtitle("NBR recovery for 10 Years following fire") + 
+    guides(colour=guide_legend(title="Defoliation Presence/Absent")) +
+    theme_classic()
   
   return(plot)
 }

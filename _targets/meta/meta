@@ -1,0 +1,40 @@
+name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
+.Random.seed|object|f8604f24651b017f|||||||||||||||
+boxplot|stem|7c04f20829425d15|307a2130f4723f41|4c648ed5707b81b4|1882849275||t19776.2538292949s|c5b11fac212a3cb3|552146|rds|local|vector|||0.479|package ggplot2 was built under R version 4.3.1|
+cleanData|stem|94dc382d7f521610|9553a15a2190bf51|5fdd9c7715dace9c|-1238940090||t19770.0373188226s|2312b72c94a875ca|6242|rds|local|vector|||0.021||
+createTib|function|dda78c3bfc442c02|||||||||||||||
+data|stem|bed8d26d97ac237b|b037d15277b5d0b8|5a6d751b5c26cd10|33550471||t19770.0373185509s|66a33d849417603b|6564|rds|local|vector|||0.099||
+DATA_DIR|object|8d0b16e2e34ea5f8|||||||||||||||
+defol_data|stem|9e6f435a62412f9e|58260f73e589efa4|ef46db3751d8e999|-84671533|data/paired_fires/fire_defol.csv|t19769.6260397286s|05dddead137fffcf|1715|file|local|vector|||0||
+defol_df|stem|f1e2abfde98819e5|b310505243514a66|38503ffd4ff84002|265578792||t19776.0240098418s|e03af3a90f8bd741|969|rds|local|vector|||0.017||
+file|stem|70eef5a753cac3d6|15ca43d37905357b|ef46db3751d8e999|1735323524|data/paired_fires/fire_recovery.csv|t19769.6407833548s|944702666ce74809|15509|file|local|vector|||0.086|package dplyr was built under R version 4.3.1. package trend was built under R version 4.3.1|
+getData|function|d4b632b9a9bb3f37|||||||||||||||
+ids|stem|23af9bd7205d31b9|4851861f3e24d8ff|715d2d23e9db9d4c|127298475||t19770.0962686986s|59cbb219352b458e|695|rds|local|vector|||0.004||
+lm_recovery|stem|ca1c0b0ad4d364f9|2ea6b0831f098e12|1b7e4501970f02d3|-590345062||t19770.0393453236s|207a6ca4f5410eed|2003|rds|local|vector|||1.358|as.tibble was deprecated in tibble 2.0.0.ℹ Please use as_tibble instead.ℹ The signature and semantics have changed, see as_tibble.. cols is now required when using unnest.ℹ Please use cols  cfId, slope1, slope2, se1, se2.|
+matchIds|function|dcad42c014eddd5f|||||||||||||||
+order_data|function|de7d4bab997b7b2e|||||||||||||||
+output|stem|d36ea1299fa8d732|3e55602db209f4b0|bd8e60347693348d|3939470||t19776.2538295122s|44e327d1ee1978d7|43|rds|local|vector|||0.015||
+project_report|stem|64b7ac6453fa1265|23041e99207d2e89|598bb2a49de1db41|97448406|proejct_report.html*proejct_report.Rmd|t19776.253820907s|ab8282321f14e9a4|2792047|file|local|vector|||1.182||
+recovery_ttest|function|68716afe83dfe7ac|||||||||||||||
+recovery_visBox|function|a34dc7232973252e|||||||||||||||
+recoverySlope_lm|function|291cd77f9dffd1cd|||||||||||||||
+recoverySlope_sens|function|1ac34e9eecdea84b|||||||||||||||
+sens_recovery|stem|c502c389989d2cf4|8ad202bc93e05bdc|78ef8a5e63cfc218|1249831624||t19770.0393803066s|ee2e52779bcc455e|5285|rds|local|vector|||3.02|cols is now required when using unnest.ℹ Please use cols  cfId, sens1, sens2, uppr1, uppr2, lwr1, lwr2, sens10,  uppr10, lwr10.|
+sev_df|stem|cb1df8cf18fbbd9e|2165c5dc26b67743|f3629d03a87d94ae|1279755305||t19776.0240096257s|0131d98b4b4dc9f6|2527|rds|local|vector|||0.098||
+sev_order|stem|a68985c5736027ee|180f2f06df19d406|c6cc88c51b2b9371|-1741845067||t19776.024010305s|7f2a484b6af6e7e1|2317|rds|local|vector|||0.006||
+sev_ttest|stem|0a8be5f11053eca7|46bee33b4e4cb884|cec3183985b4f4d4|264167306||t19776.0394073498s|bd9cdb2e6c3ecc89|253|rds|local|vector|||0.017||
+severity_data|stem|e6d1b0e6f599eeda|f8479d83f5abde9b|ef46db3751d8e999|-323836516|data/paired_fires/fire_severity.csv|t19769.6375532199s|26495ecc5a6815fa|4900|file|local|vector|||0.092|package dplyr was built under R version 4.3.1. package trend was built under R version 4.3.1|
+severity_ttest|function|4f91bd762a17376b|||||||||||||||
+slo_ttest|stem|3625599622432a46|57e09bf48aa569f4|03936b34f819f3f4|-1809464938||t19776.2491305738s|036fa79c5dd9944c|238|rds|local|vector|||0.013||
+slope_data|stem|e398ef7d5c3984da|9f233ffbbcc0fcef|ef46db3751d8e999|-1713951195|data/paired_fires/recovery_sensSlope.csv|t19770.1177905545s|1f92ea9b4244a66f|12010|file|local|vector|||0||
+slope_df|stem|896708e530b4f9fe|cebc180869115b60|cd6ebeeb370a1814|1114952362||t19776.0240101997s|870b4c7f9ab1f6f8|5680|rds|local|vector|||0.028||
+slope_order|stem|6d48155d0c4298b9|2dd85dc845c8e5f2|a7c21a49e63735e7|-220059367||t19776.2488491104s|d73ead1037cc20ac|5450|rds|local|vector|||0.005||
+slopePostProcess|function|9c32d64a04f05af5|||||||||||||||
+slopePrep|function|20a786a6dd2972d6|||||||||||||||
+summarySE|function|b21c86fc802a79c5|||||||||||||||
+trend_plot|function|f9ab2e8ffb2bdf7a|||||||||||||||
+trendPlot|stem|88d90cf581508cf9|e1371293df490668|f21ea514455f92b8|-1730397295||t19776.2421806747s|8a0c859820c41d52|96807|rds|local|vector|||0.104|package plyr was built under R version 4.3.1. package ggplot2 was built under R version 4.3.1|
+trendPrep|function|c58ed64f559353ed|||||||||||||||
+ts_data|stem|3167a92191341c20|1740a42df7f8c75a|c357e682b59d251c|1309911760||t19776.0394071143s|bc904a872d6d330d|6222|rds|local|vector|||0.009||
+vis_data|stem|5e8f4a5b123ea1e7|59d94cced49baad4|0a86e475ff91f5ac|-1567248242||t19776.0250114506s|15f33c306bcba030|7211|rds|local|vector|||0.01||
+vis_prep|function|444b5aa3fe10ccd0|||||||||||||||

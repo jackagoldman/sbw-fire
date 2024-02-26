@@ -10,37 +10,17 @@
 #' @examples
 recoverySlope_lm <- function(data){
   
-  require(trend)
-  require(tidyverse)
-  
-  x <- data |> 
-    select(c(Fire_ID, nbr10, nbr1, nbr2, nbr3, nbr4, nbr5, nbr6, nbr7, nbr8, nbr9)) |> 
-    pivot_longer(!Fire_ID, names_to = "Recovery_Time", values_to = "nbr" ) |> 
-    mutate(recovery_interval = case_when(Recovery_Time == "nbr1" ~ 1, 
-                                         Recovery_Time == "nbr2" ~ 1,
-                                         Recovery_Time == "nbr3" ~ 1, 
-                                         Recovery_Time == "nbr4" ~ 1, 
-                                         Recovery_Time == "nbr5" ~ 1, 
-                                         Recovery_Time == "nbr6" ~ 2,
-                                         Recovery_Time == "nbr7" ~ 2, 
-                                         Recovery_Time == "nbr8" ~ 2,
-                                         Recovery_Time == "nbr9" ~ 2,
-                                         Recovery_Time == "nbr10" ~ 2,))
-  
- 
-  
+  # create empty list
   mylist <- list()
   
-
-
-  #loop
-  for(i in 1:nrow(x)){
+  # calculate slopes
+  for(i in 1:nrow(data)){
      #subset data
-    row <- x[i,]
+    row <- data[i,]
     #get fire id
-    fId <- row |> select(c(Fire_ID)) |> slice(1)
+    fId <- row |> select(c(id)) |> slice(1)
     # subset data for fire id
-    row2 <- x |> filter(Fire_ID == c(fId))
+    row2 <- data |> filter(id == c(fId))
     #run first model
     mod1 <- lm(nbr ~ (recovery_interval == 1), data = row2)
     #run second model
@@ -59,17 +39,17 @@ recoverySlope_lm <- function(data){
     se2 <- sqrt(diag(vcov(mod2)))[2]
     
 
-    vec <- c(fId, slope1, slope2, se1, se2, sens1, sens2, uppr1, uppr2, lwr1, lwr2, sens10, uppr10, lwr10)
-    names(vec) <- c("fId", "slope1", "slope2", "se1", "se2", "sens1", "sens2", "uppr1", "uppr2", "lwr1", "lwr2", "sens10", "uppr10", "lwr10")
+    vec <- c(fId, slope1, slope2, se1, se2)
+    names(vec) <- c("fId", "slope1", "slope2", "se1", "se2")
     
-    vec <-  vec[1:14]
+    vec <-  vec[1:5]
     
     mylist[[i]] <- vec
     i+1
   }
   res <- do.call(rbind, mylist)
   res <- res |> as.tibble(.name_repair = 'unique') |>  
-    group_by(fId) %>% 
+    group_by(fId) |> 
     slice_head(n = 1) |> 
     unnest( )
  
@@ -87,36 +67,16 @@ recoverySlope_lm <- function(data){
 recoverySlope_sens <- function(data){
   
   
-  require(trend)
-  require(tidyverse)
-  
-  x <- data |> 
-    select(c(Fire_ID, nbr10, nbr1, nbr2, nbr3, nbr4, nbr5, nbr6, nbr7, nbr8, nbr9)) |> 
-    pivot_longer(!Fire_ID, names_to = "Recovery_Time", values_to = "nbr" ) |> 
-    mutate(recovery_interval = case_when(Recovery_Time == "nbr1" ~ 1, 
-                                         Recovery_Time == "nbr2" ~ 1,
-                                         Recovery_Time == "nbr3" ~ 1, 
-                                         Recovery_Time == "nbr4" ~ 1, 
-                                         Recovery_Time == "nbr5" ~ 1, 
-                                         Recovery_Time == "nbr6" ~ 2,
-                                         Recovery_Time == "nbr7" ~ 2, 
-                                         Recovery_Time == "nbr8" ~ 2,
-                                         Recovery_Time == "nbr9" ~ 2,
-                                         Recovery_Time == "nbr10" ~ 2,))
-  
   mylist <- list()
   
-  
-  
-  #loop
-  for(i in 1:nrow(x)){
+  # calculate sens slope
+  for(i in 1:nrow(data)){
     #subset data
-    row <- x[i,]
+    row <- data[i,]
     #get fire id
-    fId <- row |> select(c(Fire_ID)) |> slice(1)
+    fId <- row |> select(c(id)) |> slice(1)
     # subset data for fire id
-    row2 <- x |> filter(Fire_ID == c(fId))
-  
+    row2 <- data |> filter(id == c(fId))
   
   # sens slope 1-5, 6-10
   
@@ -126,16 +86,11 @@ recoverySlope_sens <- function(data){
   ts1 <- ts(data1, start =1, frequency = 10) 
   ts2 <- ts(data2, start =1, frequency = 10)
   
-  
-  
   sslope1 <- sens.slope(ts1, conf.level = 0.95) 
   sslope2 <- sens.slope(ts2, conf.level = 0.95)
   
-  
   sens1 <- sslope1$estimates
   sens2 <- sslope2$estimates
-  
-  
   
   uppr1 <- sslope1$conf.int[2]
   uppr2 <- sslope2$conf.int[2]
@@ -146,21 +101,18 @@ recoverySlope_sens <- function(data){
   
   data10 <- row2 |>  select(c(nbr))
   
-  
   ts10 <- ts(data10, start =1, frequency = 10) 
   
-  
   sslope10 <- sens.slope(ts10, conf.level = 0.95) 
-  
   
   sens10 <- sslope10$estimates
   
   uppr10 <- sslope10$conf.int[2]
   lwr10 <- sslope10$conf.int[1]
-  vec <- c(fId, slope1, slope2, se1, se2, sens1, sens2, uppr1, uppr2, lwr1, lwr2, sens10, uppr10, lwr10)
-  names(vec) <- c("fId", "slope1", "slope2", "se1", "se2", "sens1", "sens2", "uppr1", "uppr2", "lwr1", "lwr2", "sens10", "uppr10", "lwr10")
+  vec <- c(fId, sens1, sens2, uppr1, uppr2, lwr1, lwr2, sens10, uppr10, lwr10)
+  names(vec) <- c("fId", "sens1", "sens2", "uppr1", "uppr2", "lwr1", "lwr2", "sens10", "uppr10", "lwr10")
   
-  vec <-  vec[1:14]
+  vec <-  vec[1:10]
   
   mylist[[i]] <- vec
   i+1
@@ -170,4 +122,39 @@ res <- res |> as.tibble(.name_repair = 'unique') |>
   group_by(fId) %>% 
   slice_head(n = 1) |> 
   unnest( )
+}
+
+
+
+
+matchIds <- function(data){
+  
+  data <- dplyr::select(data, c("id", "fire_name"))
+  
+  return(data)
+}
+
+
+slopePostProcess <- function(dataLm, dataSens, ids, DATA_DIR){
+  
+  # rename fId column to id
+  dataLm2 <- dplyr::rename(dataLm, id = fId )
+  dataSens2 <- dplyr::rename(dataSens, id = fId)
+  
+  # add fire_name to columns
+  processedLm <- dplyr::left_join(dataLm2, ids, by = "id")
+  processedSens <- dplyr::left_join(dataSens2, ids, by ="id")
+  
+  # move columns
+  processedLm <- dplyr::relocate(processedLm, fire_name, .after ="id")
+  processedSens <- dplyr::relocate(processedSens, fire_name, .after ="id")
+  
+  # build outputpath
+  pathLm <- paste0(DATA_DIR, "recovery_lm.csv")
+  pathSens <- paste0(DATA_DIR, "recovery_sensSlope.csv")
+  
+  # output dataframes
+  write.csv(processedLm, pathLm)
+  write.csv(processedSens, pathSens)
+
 }

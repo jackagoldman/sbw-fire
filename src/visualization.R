@@ -312,34 +312,84 @@ require(ggplot2)
 
 #' lollipop charts
 #'
-#' @param data 
-#' @param resSlope 
-#' @param resSev 
+#' @param data dataframe returned from vis_prep function
 #'
 #' @return
 #' @export
 #'
 #' @examples
-lollidot <- function(data, resSlope, resSev){
+lollidot <- function(data){
   
-  # arrange data by fire name
   data <- dplyr::arrange(data, fire_name)
   
-  #
+  # calculate difference between severity defoliated to non-defoliated
+  data1 <- data |> 
+    arrange(fire_name, defoliated) |>  
+    group_by(fire_name) |> 
+    mutate(med_diff = (diff(rbr_median))) |> 
+    mutate(ext_diff = (diff(rbr_extreme))) |> 
+    mutate(cv_diff = (diff(rbr_cv))) |> 
+    mutate(med_diff = (med_diff * -1)) |> 
+    mutate(ext_diff = (ext_diff * -1)) |> 
+    mutate(cv_diff = (cv_diff * -1)) |> 
+    mutate(med_diff_fct = case_when(med_diff <0 ~ "Decreased Severity",
+                                    med_diff >0 ~ "Increased Severity")) |> 
+  mutate(ext_diff_fct = case_when(ext_diff <0 ~ "Decreased Severity",
+                                  ext_diff >0 ~ "Increased Severity")) |> 
+    mutate(cv_diff_fct = case_when(cv_diff <0 ~ "Decreased Severity",
+                                    cv_diff >0 ~ "Increased Severity"))
   
-  ggplot(data) +
-    geom_segment( aes(x=defoliated, xend=defoliated, y=rbr_extreme, 
-                      yend=rbr_extreme, group = fire_name), color="grey") +
-    geom_point( aes(x=defoliated, y=rbr_extreme), color=rgb(0.2,0.7,0.1,0.5), size=3 ) +
-    geom_point( aes(x=defoliated, y=rbr_extreme), color=rgb(0.7,0.2,0.1,0.5), size=3 ) 
-    theme_ipsum() 
-    theme(
-      legend.position = "none",
-    ) +
-    xlab("") +
-    ylab("Value of Y")
   
   
+  
+  
+  # arrange data by fire name
+  data1 <- dplyr::arrange(data1, fire_name)
+  
+  # median
+  ggplot(data1, aes(x = defoliated, y = rbr_median)) + 
+    geom_point(aes(color = defoliated),size = 3, show.legend = FALSE)+
+    geom_line(aes(group = fire_name, color = med_diff_fct)) +
+    scale_color_manual(breaks = c("Increased Severity", "Decreased Severity"), values = c("Defoliated" = "#E69F00", 
+                                  "Non-Defoliated" = "#D55E00", 
+                                  "Decreased Severity" = "#CC79A7",
+                                  "Increased Severity" = "#009E73"))+
+    guides(color=guide_legend(title="Change in\nSeverity"))+
+    ylab("Median Severity") +
+    xlab("Paired Defoliated/Non-Defolaited Fires") +
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+    theme_bw()
+  
+  # extreme
+  ggplot(data1, aes(x = defoliated, y = rbr_extreme)) + 
+    geom_point(aes(color = defoliated),size = 3, show.legend = FALSE)+
+    geom_line(aes(group = fire_name, color = ext_diff_fct)) +
+    scale_color_manual(breaks = c("Increased Severity", "Decreased Severity"), values = c("Defoliated" = "#E69F00", 
+                                                                                          "Non-Defoliated" = "#D55E00", 
+                                                                                          "Decreased Severity" = "#CC79A7",
+                                                                                          "Increased Severity" = "#009E73"))+
+    guides(color=guide_legend(title="Change in\nSeverity"))+
+    ylab("Severity Extremes") +
+    xlab("Paired Defoliated/Non-Defolaited Fires") +
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+    theme_bw()
+  
+  # cv
+  ggplot(data1, aes(x = defoliated, y = rbr_cv)) + 
+    geom_point(aes(color = defoliated),size = 3, show.legend = FALSE)+
+    geom_line(aes(group = fire_name, color = cv_diff_fct)) +
+    scale_color_manual(breaks = c("Increased Severity", "Decreased Severity"), values = c("Defoliated" = "#E69F00", 
+                                                                                          "Non-Defoliated" = "#D55E00", 
+                                                                                          "Decreased Severity" = "#CC79A7",
+                                                                                          "Increased Severity" = "#009E73"))+
+    guides(color=guide_legend(title="Change in\nSeverity"))+
+    ylab("Variability in Severity") +
+    xlab("Paired Defoliated/Non-Defolaited Fires") +
+    ggtitle("Variability in Severity")+
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
+    theme_bw()
+  
+  # slope
   
 }
 

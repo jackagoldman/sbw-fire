@@ -1586,13 +1586,25 @@ impact of SBW on wildfire behaviour may be result of the measure used to
 describe wildfire behaviour or how SBW defoliation was quantified. We
 attempt to tease apart the relationship between SBW defoliation and
 wildfire behaviour by 1) modelling burn severity and post-fire recovery
-and 2) creating a synthetic index of SBW defoliation by combining
-different attributed used to describe defoliation into a compositie
-variable. To date, there are a lack of studies that have investigate the
-role of SBW defoliation on either wildfire burn severity or post-fire
-recovery. Likewise, to our knowledge no study have tried to model SBW
-defoliation using a composite variable that accounts for the different
-was to quantify SBW defoliation.</p>
+and 2) creating a composite of SBW defoliation by combining different
+attributes used to describe defoliation into a synthetic index. To date,
+there are a lack of studies that have investigate the role of SBW
+defoliation on either wildfire burn severity or post-fire recovery.
+Likewise, to our knowledge no study have tried to model SBW defoliation
+using a composite variable that accounts for the different was to
+quantify SBW defoliation.</p>
+<p>In addition, previous studies are concerned whether between fire
+variation in wildfire behaviour can be attributed to defoliation.
+However, isolation the effects of defoliation is difficult due to the
+amount of noise inherent to wildfire behaviour. Wildfire behaviour can
+be influenced by stand and landscape level drivers such as weather,
+climate, forest structure and topography. The influence of these drivers
+may impede the ability of previous studies to detect a signal between
+defoliation and burn severity. In an attempt to correct for this, we
+analyzed wildfire severity and forest recovery within fires that had
+areas that were defoliated, and areas that were not defoliated. This
+approach allows us to control for other drivers, and isolate the effects
+of defoliation while also allowing for between fire comparison.</p>
 </div>
 <div id="questions" class="section level2">
 <h2>Questions</h2>
@@ -1629,22 +1641,22 @@ modeled independently?</li>
 <h2>Methods</h2>
 <p>This study focuses on wildfire that burned in the boreal shield
 ecoregion of Ontario. Our analysis was restricted to wildfires that
-burned between 1986 and 2013 because (1) 1985 was chosen as the first
-fire year in our dataset because it is the first year that remotely
-sensed burn severity data are available and (2) in order to calculate
-forest recovery for 10 years following fire, 2013 is the last year where
-we were able to calculate remotely sensed imagery. We identified
-wildfires that contains areas that were previously defoliated and areas
-that were not defoliated. By analyzing wildfires that had both
-defoliated and non-defoliated areas, we were able to</p>
-<p>I will identify fires that overlap the defoliated area. I will limit
-the time since defoliation to 15 years, which has been identified as the
-latest time that the effects of defoliation on wildfire would be
-observed. I will only focus on large fire events (&gt; 10 000 ha)
-[98].</p>
-<p>Remotely sensed burn severity data will be retrieved using Google
-Earth Engine and Landsat. To retrieve remotely sensed burn severity data
-for each fire, I will separate each individual fire event into the
+burned between 1986 and 2013. 1985 was chosen as the first fire year in
+our dataset because it is the first year that remotely sensed burn
+severity data are available. Similarly, our analysis of forest recovery
+required landsat imagery for every year for 10 years post-fire,
+therefore 2013 is the last year where we were able to calculate remotely
+sensed imagery. We identified wildfires that were defoliated up to 15
+years prior to the year of fire. We chose to limit the defoliation to
+within 15 years because previous studies have shown that beyond 15
+years, defoliation is not significant due to enhanced regrowth. We only
+selected fires that contained both defoliated and non-defoliated areas.
+Once identified, we split each fire into two distinct areas. This
+resulted in a total of 34 (n = 68) fires containing both defoliated and
+non-defoliated areas.</p>
+<p>Remotely sensed burn severity data was retrieved using Google Earth
+Engine and Landsat. To retrieve remotely sensed burn severity data for
+each fire, I will separate each individual fire event into the
 defoliation affected area and the unaffected area and retrieve burn
 severity maps for each perimeter. Burn severity data will be generated
 at the pixel level using Landsat data at 30m spatial resolution. I will
@@ -1703,8 +1715,8 @@ which we call the slope of recovery or forest recovery.</p>
 forest recovery. Below is the directed acyclic graph (DAG) of our a
 priori causal hypothesis.</p>
 <pre class="r"><code>DiagrammeR::grViz(&quot;../Figures/chapter3-step1-dag.gv&quot;)</code></pre>
-<div class="grViz html-widget html-fill-item" id="htmlwidget-9167777e321e66d20a08" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-9167777e321e66d20a08">{"x":{"diagram":"../Figures/chapter3-step1-dag.gv","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-bf60e38b23e4f8beb574" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-bf60e38b23e4f8beb574">{"x":{"diagram":"../Figures/chapter3-step1-dag.gv","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <p>In this DAG we see that time since defoliation, presence/absence of
 defoliation (defoliated) and number of years defoliated are combined to
 form the synthetic index (defoliation intensity) which is then used to
@@ -1718,15 +1730,35 @@ decreasing severity which will lead to a change in the recovery
 trajectory by either increasing or decreasing the slope of recovery.</p>
 </div>
 </div>
+<div id="expected-results" class="section level2">
+<h2>Expected results</h2>
+</div>
 <div id="preliminary-results" class="section level2">
 <h2>Preliminary results</h2>
-<p>Hypothesis 1: Difference in median severity between defoliated and
-non defoliated</p>
-<pre class="r"><code>targets::tar_read(sev_ttest)</code></pre>
+<p>Hypothesis 1: There is a difference in median severity between
+defoliated and non defoliated</p>
+<pre><code>##              Test           t-value df P-value
+## 1 Median Severity -12.1647870670551 65 &lt;0.0001</code></pre>
+<p>Hypothesis 2: These is a difference in severity extremes between
+defoliated and non defoliated</p>
+<pre><code>##               Test           t-value df P-value
+## 1 Extreme Severity -25.3390680767449 65 &lt;0.0001</code></pre>
+<p>Hypothesis 3: These is a difference in variability in burn severity
+between defoliated and non defoliated</p>
 <pre><code>##                      Test           t-value df P-value
-## 1         Median Severity -12.1647870670551 65 &lt;0.0001
-## 2        Extreme Severity -25.3390680767449 65 &lt;0.0001
-## 3 Variability in Severity -2.83043157076872 65   0.006</code></pre>
+## 1 Variability in Severity -2.83043157076872 65   0.006</code></pre>
+</div>
+<div id="significance" class="section level2">
+<h2>Significance</h2>
+<p>Land managers in the boreal forest region require information about
+burn severity to address immediate hazards and outcomes resulting from
+wildfires. Understanding how previous disturbance history shapes
+patterns of burn severity is needed to guide management activities and
+ensure downstream ecosystem provisioning when threatened by multiple
+disturbances. Results from this chapter will provide a framework for
+modelling the effects of spruce budworm defoliation on wildfire severity
+and help managers identify areas that are at the highest risk of losing
+valuable ecosystem services.</p>
 </div>
 </div>
 

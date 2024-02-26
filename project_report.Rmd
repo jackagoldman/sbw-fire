@@ -39,7 +39,7 @@ Specifically we will address the following questions:
 
 This study focuses on wildfire that burned in the boreal shield ecoregion of Ontario. Our analysis was restricted to wildfires that burned between 1986 and 2013. 1985 was chosen as the first fire year in our dataset because it is the first year that remotely sensed burn severity data are available. Similarly, our analysis of forest recovery required landsat imagery for every year for 10 years post-fire, therefore 2013 is the last year where we were able to calculate remotely sensed imagery. We identified wildfires that were defoliated up to 15 years prior to the year of fire. We chose to limit the defoliation to within 15 years because previous studies have shown that beyond 15 years, defoliation is not significant due to enhanced regrowth. We only selected fires that contained both defoliated and non-defoliated areas. Once identified, we split each fire into two distinct areas. This resulted in a total of 34 (n = 68) fires containing both defoliated and non-defoliated areas.
 
-Remotely sensed burn severity data was  retrieved using Google Earth Engine and Landsat. To retrieve remotely sensed burn severity data for each fire, I will separate each individual fire event into the defoliation affected area and the unaffected area and retrieve burn severity maps for each perimeter. Burn severity data will be generated at the pixel level using Landsat data at 30m spatial resolution. I will then extract the burn severity value for each pixel and assign it to either the defoliated or non-defoliated category.
+Remotely sensed burn severity data was retrieved using Google Earth Engine and Landsat. To retrieve remotely sensed burn severity data for each fire, I will separate each individual fire event into the defoliation affected area and the unaffected area and retrieve burn severity maps for each perimeter. Burn severity data will be generated at the pixel level using Landsat data at 30m spatial resolution. I will then extract the burn severity value for each pixel and assign it to either the defoliated or non-defoliated category.
 
 I will quantify time since defoliation as the difference between fire year and the last year a cell was defoliated. I will also include fire seasonality (Spring, Summer, Fall). Using the centroid of each 30m pixel I will interpolate drought code for the day that the fire burned. This will allow me to control for trends in weather at the time of the fire. Using Daymet V4, I will retrieve climate averages for the years between defoliation and fire in Google Earth Engine. The exact climate metrics are yet to be determined. I will gather elevation data for each pixel as well as slope and aspect in google earth engine using the Canadian Digital Elevation Model provided by NRCAN.
 
@@ -63,10 +63,33 @@ DiagrammeR::grViz("../Figures/chapter3-step1-dag.gv")
 
 In this DAG we see that time since defoliation, presence/absence of defoliation (defoliated) and number of years defoliated are combined to form the synthetic index (defoliation intensity) which is then used to predict the effects on burn severity and forest recovery. Defolaition intensity will directly effect forest recovery by altering stand structure and forest composition prior to fire, which will impact the number and distribution species and their seed banks that are able to establish post fire, thus affecting the recovery trajectory. Similarly, defoliation intensity will effect burn severity by either increasing or decreasing severity which will lead to a change in the recovery trajectory by either increasing or decreasing the slope of recovery.
 
+## Expected results
+
+
+
 ## Preliminary results
 
-Hypothesis 1: Difference in median severity between defoliated and non defoliated
+Hypothesis 1: There is a difference in median severity between defoliated and non defoliated
 
-```{r}
-targets::tar_read(sev_ttest)
+```{r, echo = FALSE}
+targets::tar_read(sev_ttest) |> dplyr::filter(Test == "Median Severity")
+
 ```
+
+Hypothesis 2: These is a difference in severity extremes between defoliated and non defoliated
+```{r, echo = FALSE}
+targets::tar_read(sev_ttest) |> dplyr::filter(Test == "Extreme Severity")
+
+```
+
+Hypothesis 3: These is a difference in variability in burn severity between defoliated and non defoliated
+```{r, echo = FALSE}
+targets::tar_read(sev_ttest) |> dplyr::filter(Test == "Variability in Severity")
+
+```
+
+
+
+## Significance
+
+Land managers in the boreal forest region require information about burn severity to address immediate hazards and outcomes resulting from wildfires. Understanding how previous disturbance history shapes patterns of burn severity is needed to guide management activities and ensure downstream ecosystem provisioning when threatened by multiple disturbances. Results from this chapter will provide a framework for modelling the effects of spruce budworm defoliation on wildfire severity and help managers identify areas that are at the highest risk of losing valuable ecosystem services. 

@@ -13,6 +13,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Background
 
+Highlight forest complexity - 
+highlight uncertainty around sbw-fix interactions
+
 
 Wildfire behaviour is driven in part by the abundance, structure and connectivity of combustible fuels, therefore it is expected that spruce budworm defoliation will have strong bottom up effects on wildfire behaviour. However, current evidence on the impact that the spatial legacies of spruce budworm defoliation have on wildfire behaviour reports positive, negative and neutral effects. Limited evidence for the impact of SBW on wildfire behaviour may be result of the measure used to describe wildfire behaviour or how SBW defoliation was quantified. We attempt to tease apart the relationship between SBW defoliation and wildfire behaviour by 1) modelling burn severity and post-fire recovery and 2) creating a composite of SBW defoliation by combining different attributes used to describe defoliation into a synthetic index. To date, there are a lack of studies that have investigate the role of SBW defoliation on either wildfire burn severity or post-fire recovery. Likewise, to our knowledge no study have tried to model SBW defoliation using a composite variable that accounts for the different was to quantify SBW defoliation.
 

@@ -13,7 +13,7 @@
 #'
 #' @examples
 vis_prep <- function(severity, defoliation, slope){
-  
+  require(dplyr)
   defol <- dplyr::select(defoliation, c("id", "defoliated", "tsd", "cumltve_yrs"))
   slope <- dplyr::select(slope, -c("...1", "fire_name"))
   df <- dplyr::left_join(severity,defol, by ="id") 
@@ -81,7 +81,9 @@ createTib <- function(results, nrowSub){
 
 #' Boxplots comparing t-tests
 #'
-#' @param df 
+#' @param df dataframe returned from vis_prep function
+#' @param resSlope
+#' @param resSev
 #'
 #' @return
 #' @export
@@ -308,7 +310,38 @@ require(ggplot2)
 }
 
 
-
+#' lollipop charts
+#'
+#' @param data 
+#' @param resSlope 
+#' @param resSev 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+lollidot <- function(data, resSlope, resSev){
+  
+  # arrange data by fire name
+  data <- dplyr::arrange(data, fire_name)
+  
+  #
+  
+  ggplot(data) +
+    geom_segment( aes(x=defoliated, xend=defoliated, y=rbr_extreme, 
+                      yend=rbr_extreme, group = fire_name), color="grey") +
+    geom_point( aes(x=defoliated, y=rbr_extreme), color=rgb(0.2,0.7,0.1,0.5), size=3 ) +
+    geom_point( aes(x=defoliated, y=rbr_extreme), color=rgb(0.7,0.2,0.1,0.5), size=3 ) 
+    theme_ipsum() 
+    theme(
+      legend.position = "none",
+    ) +
+    xlab("") +
+    ylab("Value of Y")
+  
+  
+  
+}
 
 
 # Summarizes data.

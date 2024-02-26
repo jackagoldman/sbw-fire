@@ -57,11 +57,14 @@ We will fit these models to data of consisting of 34 paired defoliated/non-defol
 
 In our model, defoliation intensity will effect for burn severity and forest recovery. Below is the directed acyclic graph (DAG) of our a priori causal hypothesis.
 
-```{r}
-DiagrammeR::grViz("../Figures/chapter3-step1-dag.gv")
+```{r, echo=FALSE}
+DiagrammeR::grViz("Figures/chapter3-step1-dag.gv")
+
+
 ```
 
-In this DAG we see that time since defoliation, presence/absence of defoliation (defoliated) and number of years defoliated are combined to form the synthetic index (defoliation intensity) which is then used to predict the effects on burn severity and forest recovery. Defolaition intensity will directly effect forest recovery by altering stand structure and forest composition prior to fire, which will impact the number and distribution species and their seed banks that are able to establish post fire, thus affecting the recovery trajectory. Similarly, defoliation intensity will effect burn severity by either increasing or decreasing severity which will lead to a change in the recovery trajectory by either increasing or decreasing the slope of recovery.
+
+In this DAG we see that time since defoliation, presence/absence of defoliation (defoliated) and number of years defoliated are combined to form the synthetic index (defoliation intensity) which is then used to predict the effects on burn severity and forest recovery. Defoliation intensity will directly effect forest recovery by altering stand structure and forest composition prior to fire, which will impact the number and distribution species and their seed banks that are able to establish post fire, thus affecting the recovery trajectory. Similarly, defoliation intensity will effect burn severity by either increasing or decreasing severity which will lead to a change in the recovery trajectory by either increasing or decreasing the slope of recovery.
 
 ## Expected results
 
@@ -89,6 +92,13 @@ targets::tar_read(sev_ttest) |> dplyr::filter(Test == "Variability in Severity")
 ```
 
 
+```{r}
+targets::tar_read(boxplot)
+```
+
+
+
+Hypothesis 4: 
 
 ## Significance
 

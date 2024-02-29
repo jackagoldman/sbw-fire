@@ -145,3 +145,26 @@ recovery_ttest <- function(df){
   
   
 }
+
+
+
+#' chisq test for increase and decrease
+#'
+#' @param data 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+chisq <- function(data){
+  
+  # clean data for change_direction
+  data <- change_direction(data)
+  
+  # calculate the sample size
+  n_df <- n_direction(data)
+  
+  # chisq
+  
+  
+}

@@ -51,10 +51,14 @@ list(
   # join slope data
   tar_target(name = slope_order, order_data(slope_df, defol_df)),
   tar_target(name = slo_ttest, recovery_ttest(slope_order)),
+  
   # prep data for visualiation
   tar_target(name = vis_data, vis_prep(sev_df, defol_df, slope_df)),
-  # make boxplots
-  tar_target(name = boxplot, recovery_visBox(vis_data, slo_ttest, sev_ttest)),
+  
+  # make lollidots for severity and slope
+  tar_target(name = lolliplot_sev, lollidot(vis_data, "severity")),
+  tar_target(name = lolliplot_slope, lollidot(vis_data, "slope")),
+  
   # trend prep
   tar_target(name = ts_data , trendPrep(data, defol_df)),
   # trend plot

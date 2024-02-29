@@ -313,14 +313,16 @@ require(ggplot2)
 #' lollipop charts
 #'
 #' @param data dataframe returned from vis_prep function
-#'
+#' @param responseType
 #' @return
 #' @export
 #'
 #' @examples
-lollidot <- function(data){
+lollidot <- function(data, responseType){
   
   data <- dplyr::arrange(data, fire_name)
+  
+  # move geom_point to occur aftetr geom_line so the line is covered by the point
   
   # calculate difference between severity defoliated to non-defoliated
   data1 <- data |> 
@@ -332,64 +334,187 @@ lollidot <- function(data){
     mutate(med_diff = (med_diff * -1)) |> 
     mutate(ext_diff = (ext_diff * -1)) |> 
     mutate(cv_diff = (cv_diff * -1)) |> 
-    mutate(med_diff_fct = case_when(med_diff <0 ~ "Decreased Severity",
-                                    med_diff >0 ~ "Increased Severity")) |> 
-  mutate(ext_diff_fct = case_when(ext_diff <0 ~ "Decreased Severity",
-                                  ext_diff >0 ~ "Increased Severity")) |> 
-    mutate(cv_diff_fct = case_when(cv_diff <0 ~ "Decreased Severity",
-                                    cv_diff >0 ~ "Increased Severity"))
+    mutate(med_diff_fct = case_when(med_diff <0 ~ "Decreased",
+                                    med_diff >0 ~ "Increased")) |> 
+  mutate(ext_diff_fct = case_when(ext_diff <0 ~ "Decreased",
+                                  ext_diff >0 ~ "Increased")) |> 
+    mutate(cv_diff_fct = case_when(cv_diff <0 ~ "Decreased",
+                                    cv_diff >0 ~ "Increased")) |> 
+    mutate(s10_diff = (diff(sens10))) |> 
+    mutate(s1_diff = (diff(sens1))) |> 
+    mutate(s2_diff = (diff(sens2))) |> 
+    mutate(s10_diff = (s10_diff * -1)) |> 
+    mutate(s1_diff = (s1_diff * -1)) |> 
+    mutate(s2_diff = (s2_diff * -1)) |>
+    mutate(s10_diff_fct = case_when(s10_diff <0 ~ "Decreased",
+                                    s10_diff >0 ~ "Increased")) |> 
+    mutate(s1_diff_fct = case_when(s1_diff <0 ~ "Decreased",
+                                    s1_diff >0 ~ "Increased")) |> 
+    mutate(s2_diff_fct = case_when(s2_diff <0 ~ "Decreased",
+                                   s2_diff >0 ~ "Increased"))
   
   
-  
-  
-  
+  # calculate the n for increases and decreases for each response
+  n_dir <- n_direction(data1)
+    
+    
   # arrange data by fire name
   data1 <- dplyr::arrange(data1, fire_name)
   
+  # level order
+  level_order <- c('Non-Defoliated', 'Defoliated') 
+  
+  
   # median
-  ggplot(data1, aes(x = defoliated, y = rbr_median)) + 
-    geom_point(aes(color = defoliated),size = 3, show.legend = FALSE)+
+ med_plot <-  ggplot(data1, aes(x = factor(defoliated, level = level_order), y = rbr_median)) + 
     geom_line(aes(group = fire_name, color = med_diff_fct)) +
-    scale_color_manual(breaks = c("Increased Severity", "Decreased Severity"), values = c("Defoliated" = "#E69F00", 
+    geom_point(aes(color = defoliated),size = 3, show.legend = FALSE)+
+    scale_color_manual(breaks = c("Increased", "Decreased"), values = c("Defoliated" = "#E69F00", 
                                   "Non-Defoliated" = "#D55E00", 
-                                  "Decreased Severity" = "#CC79A7",
-                                  "Increased Severity" = "#009E73"))+
-    guides(color=guide_legend(title="Change in\nSeverity"))+
+                                  "Decreased" = "#CC79A7",
+                                  "Increased" = "#009E73"))+
+    guides(color=guide_legend(title="Change in\nBurn Severity"))+
     ylab("Median Severity") +
     xlab("Paired Defoliated/Non-Defolaited Fires") +
     scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
     theme_bw()
+ 
+ tgrob <- txtgrob_annttion(n_dir, "med")
+ 
+ 
+ med_plot1 <-  med_plot + annotation_custom(tgrob, xmin = 0.1, xmax =1.5,  ymin = 350, ymax = 400)
   
+ med_plot1
+ 
   # extreme
-  ggplot(data1, aes(x = defoliated, y = rbr_extreme)) + 
-    geom_point(aes(color = defoliated),size = 3, show.legend = FALSE)+
+  ext_plot <- ggplot(data1, aes(x = factor(defoliated, level = level_order), y = rbr_extreme)) + 
     geom_line(aes(group = fire_name, color = ext_diff_fct)) +
-    scale_color_manual(breaks = c("Increased Severity", "Decreased Severity"), values = c("Defoliated" = "#E69F00", 
+    geom_point(aes(color = defoliated),size = 3, show.legend = FALSE)+
+    scale_color_manual(breaks = c("Increased", "Decreased"), values = c("Defoliated" = "#E69F00", 
                                                                                           "Non-Defoliated" = "#D55E00", 
-                                                                                          "Decreased Severity" = "#CC79A7",
-                                                                                          "Increased Severity" = "#009E73"))+
-    guides(color=guide_legend(title="Change in\nSeverity"))+
+                                                                                          "Decreased" = "#CC79A7",
+                                                                                          "Increased" = "#009E73"))+
+    guides(color=guide_legend(title="Change in\nBurn Severity"))+
     ylab("Severity Extremes") +
     xlab("Paired Defoliated/Non-Defolaited Fires") +
-    scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 10),  limits = c(55,650)) +
     theme_bw()
   
+  tgrob <- txtgrob_annttion(n_dir, "ext")
+  
+  
+  ext_plot1 <-  ext_plot + annotation_custom(tgrob, xmin = 0.1, xmax =1.5,  ymin = 600, ymax = 650)
+  
+  ext_plot1
+  
   # cv
-  ggplot(data1, aes(x = defoliated, y = rbr_cv)) + 
-    geom_point(aes(color = defoliated),size = 3, show.legend = FALSE)+
+  cv_plot <- ggplot(data1, aes(x = factor(defoliated, level = level_order), y = rbr_cv)) + 
     geom_line(aes(group = fire_name, color = cv_diff_fct)) +
-    scale_color_manual(breaks = c("Increased Severity", "Decreased Severity"), values = c("Defoliated" = "#E69F00", 
+    geom_point(aes(color = defoliated),size = 3, show.legend = FALSE)+
+    scale_color_manual(breaks = c("Increased", "Decreased"), values = c("Defoliated" = "#E69F00", 
                                                                                           "Non-Defoliated" = "#D55E00", 
-                                                                                          "Decreased Severity" = "#CC79A7",
-                                                                                          "Increased Severity" = "#009E73"))+
-    guides(color=guide_legend(title="Change in\nSeverity"))+
+                                                                                          "Decreased" = "#CC79A7",
+                                                                                          "Increased" = "#009E73"))+
+    guides(color=guide_legend(title="Change in\nBurn Severity"))+
     ylab("Variability in Severity") +
     xlab("Paired Defoliated/Non-Defolaited Fires") +
     ggtitle("Variability in Severity")+
-    scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 5), limits = c(-3.5, 2.5)) +
     theme_bw()
   
+  tgrob <- txtgrob_annttion(n_dir, "cv")
+  
+  
+  cv_plot1 <-  cv_plot + annotation_custom(tgrob, xmin = 0.1, xmax =1.5,  ymin = 2, ymax = 2.5)
+  
+  cv_plot1
+  
   # slope
+  
+  s10_plot <- ggplot(data1, aes(x = factor(defoliated, level = level_order), y = sens10)) + 
+    geom_line(aes(group = fire_name, color = s10_diff_fct)) +
+    geom_point(aes(color = defoliated),size = 3, show.legend = FALSE)+
+    scale_color_manual(breaks = c("Increased", "Decreased"), values = c("Defoliated" = "#E69F00", 
+                                                                        "Non-Defoliated" = "#D55E00", 
+                                                                        "Decreased" = "#CC79A7",
+                                                                        "Increased" = "#009E73"))+
+    guides(color=guide_legend(title="Change in\nBurn Severity"))+
+    ylab("Slope of Recovery 10yr post-fire") +
+    xlab("Paired Defoliated/Non-Defolaited Fires") +
+    ggtitle("Slope of Recovery Over 10 Years Post-Fire")+
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 5), limits = c(-10, 20)) +
+    theme_bw()
+  
+  
+  tgrob <- txtgrob_annttion(n_dir, "sens10")
+  
+  
+  s10_plot1 <-  s10_plot + annotation_custom(tgrob, xmin = 0.1, xmax =1.5,  ymin = 16, ymax = 19)
+  
+  s10_plot1
+  
+  # sens 1-5
+  s1_plot <- ggplot(data1, aes(x = factor(defoliated, level = level_order), y = sens1)) + 
+    geom_line(aes(group = fire_name, color = s1_diff_fct)) +
+    geom_point(aes(color = defoliated),size = 3, show.legend = FALSE)+
+    scale_color_manual(breaks = c("Increased", "Decreased"), values = c("Defoliated" = "#E69F00", 
+                                                                        "Non-Defoliated" = "#D55E00", 
+                                                                        "Decreased" = "#CC79A7",
+                                                                        "Increased" = "#009E73"))+
+    guides(color=guide_legend(title="Change in\nBurn Severity"))+
+    ylab("Slope of Recovery 1-5yr post-fire") +
+    xlab("Paired Defoliated/Non-Defolaited Fires") +
+    ggtitle("Slope of Recovery Over 5 Years Post-Fire")+
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 5), limits = c(-25, 30)) +
+    theme_bw()
+  
+  tgrob <- txtgrob_annttion(n_dir, "sens1")
+  
+  
+  s1_plot1 <-  s1_plot + annotation_custom(tgrob, xmin = 0.1, xmax =1.5,  ymin = 25, ymax = 29.5)
+  
+  s1_plot1
+  
+  
+  # sens 5-10
+  s2_plot <- ggplot(data1, aes(x = factor(defoliated, level = level_order), y = sens2)) + 
+    geom_line(aes(group = fire_name, color = s1_diff_fct)) +
+    geom_point(aes(color = defoliated),size = 3, show.legend = FALSE)+
+    scale_color_manual(breaks = c("Increased", "Decreased"), values = c("Defoliated" = "#E69F00", 
+                                                                        "Non-Defoliated" = "#D55E00", 
+                                                                        "Decreased" = "#CC79A7",
+                                                                        "Increased" = "#009E73"))+
+    guides(color=guide_legend(title="Change in\nBurn Severity"))+
+    ylab("Slope of Recovery 6-10yr post-fire") +
+    xlab("Paired Defoliated/Non-Defolaited Fires") +
+    ggtitle("Slope of Recovery between 5-10 Years Post-Fire")+
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 5), limits = c(-35, 50)) +
+    theme_bw()
+  
+  tgrob <- txtgrob_annttion(n_dir, "sens1")
+  
+  
+  s2_plot1 <-  s2_plot + annotation_custom(tgrob, xmin = 0.1, xmax =1.5,  ymin = 42, ymax = 44)
+  
+  s2_plot1
+  
+  # arrange plots 
+  if(responseType == "severity"){
+    plot <- ggpubr::ggarrange(med_plot1, ext_plot1, cv_plot1, 
+                               ncol = 1, nrow =3, common.legend = TRUE, legend = "bottom")
+    
+    
+    
+  }else {
+    
+    plot <- ggpubr::ggarrange(s10_plot1, s1_plot1, s2_plot1,
+                              ncol = 1, nrow =3, common.legend = TRUE, legend = "bottom")
+    
+    
+  }
+  
+  
+  return(plot)
   
 }
 
@@ -437,3 +562,211 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
   return(datac)
 }
 
+
+
+#' Summarizes sample size.
+#' gets the sample size for the direction of the change in non-defoliated vs. defolaited
+#'
+#' @param data 
+#'
+#' @return dataframe with columns for direction, sample size (n) and response variable.
+#' @export
+#'
+#' @examples
+n_direction <- function(data){
+  
+  
+  
+  n_s10 <-  data |> 
+    group_by(s10_diff_fct) |> 
+    filter(defoliated == "Defoliated") |> 
+    mutate(pos = sum(s10_diff > 0),
+           neg = sum(s10_diff <0)) |> 
+    select(c(pos, neg)) |> 
+    distinct() |> 
+    rowwise() |> 
+    mutate(dir = case_when(s10_diff_fct == "Decreased"~ sum(c_across(pos:neg), na.rm = TRUE),
+                           s10_diff_fct == "Increased"~ sum(c_across(pos:neg), na.rm = TRUE))) |> 
+    select(-c(pos, neg)) |> 
+    rename(n = dir) |> 
+    rename(direction = s10_diff_fct) |> 
+    mutate(var = rep("sens10"))
+  
+  n_s1 <-  data |> 
+    group_by(s1_diff_fct) |> 
+    filter(defoliated == "Defoliated") |> 
+    mutate(pos = sum(s1_diff > 0),
+           neg = sum(s1_diff <0)) |> 
+    select(c(pos, neg)) |> 
+    distinct() |> 
+    rowwise() |> 
+    mutate(dir = case_when(s1_diff_fct == "Decreased"~ sum(c_across(pos:neg), na.rm = TRUE),
+                           s1_diff_fct == "Increased"~ sum(c_across(pos:neg), na.rm = TRUE))) |> 
+    select(-c(pos, neg)) |> 
+    rename(n = dir) |> 
+    rename(direction = s1_diff_fct)|> 
+    mutate(var = rep("sens1"))
+  
+  n_s2 <-  data |> 
+    group_by(s2_diff_fct) |> 
+    filter(defoliated == "Defoliated") |> 
+    mutate(pos = sum(s2_diff > 0),
+           neg = sum(s2_diff <0)) |> 
+    select(c(pos, neg)) |> 
+    distinct() |> 
+    rowwise() |> 
+    mutate(dir = case_when(s2_diff_fct == "Decreased"~ sum(c_across(pos:neg), na.rm = TRUE),
+                           s2_diff_fct == "Increased"~ sum(c_across(pos:neg), na.rm = TRUE))) |> 
+    select(-c(pos, neg)) |> 
+    rename(n = dir) |> 
+    rename(direction = s2_diff_fct)|> 
+    mutate(var = rep("sens2"))
+  
+  n_med <-  data |> 
+    group_by(med_diff_fct) |> 
+    filter(defoliated == "Defoliated") |> 
+    mutate(pos = sum(med_diff > 0),
+           neg = sum(med_diff <0)) |> 
+    select(c(pos, neg)) |> 
+    distinct() |> 
+    rowwise() |> 
+    mutate(dir = case_when(med_diff_fct == "Decreased"~ sum(c_across(pos:neg), na.rm = TRUE),
+                           med_diff_fct == "Increased"~ sum(c_across(pos:neg), na.rm = TRUE))) |> 
+    select(-c(pos, neg)) |> 
+    rename(n = dir) |> 
+    rename(direction = med_diff_fct)|> 
+    mutate(var = rep("med"))
+  
+  n_ext <-  data |> 
+    group_by(ext_diff_fct) |> 
+    filter(defoliated == "Defoliated") |> 
+    mutate(pos = sum(ext_diff > 0),
+           neg = sum(ext_diff <0)) |> 
+    select(c(pos, neg)) |> 
+    distinct() |> 
+    rowwise() |> 
+    mutate(dir = case_when(ext_diff_fct == "Decreased"~ sum(c_across(pos:neg), na.rm = TRUE),
+                           ext_diff_fct == "Increased"~ sum(c_across(pos:neg), na.rm = TRUE))) |> 
+    select(-c(pos, neg)) |> 
+    rename(n = dir) |> 
+    rename(direction = ext_diff_fct)|> 
+    mutate(var = rep("ext"))
+  
+  n_cv <-  data1 |> 
+    group_by(cv_diff_fct) |> 
+    filter(defoliated == "Defoliated") |> 
+    mutate(pos = sum(cv_diff > 0),
+           neg = sum(cv_diff <0)) |> 
+    select(c(pos, neg)) |> 
+    distinct() |> 
+    rowwise() |> 
+    mutate(dir = case_when(cv_diff_fct == "Decreased"~ sum(c_across(pos:neg), na.rm = TRUE),
+                           cv_diff_fct == "Increased"~ sum(c_across(pos:neg), na.rm = TRUE))) |> 
+    select(-c(pos, neg)) |> 
+    rename(n = dir) |> 
+    rename(direction = cv_diff_fct)|> 
+    mutate(var = rep("cv"))
+  
+  df <- rbind(n_med, n_ext, n_cv, n_s10, n_s1, n_s2)
+  
+  return(df)
+  
+}
+
+
+#' Prepare textgrob annotation
+#'
+#' @param n_dir 
+#' @param var 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+txtgrob_annttion <- function(n_dir, var) {
+  
+  if(var == "med"){
+  
+  n_med <- n_dir[n_dir$var == "med",] 
+  
+  n_med <- n_med |> select(-c(var))
+  
+  text1 <- paste(n_med[1,1], n_med[1,2], sep = " = ")
+  text2 <- paste(n_med[2,1], n_med[2,2], sep = " = ")
+  text <- paste(text1, text2, sep = "\n")
+  
+  tgrob <- ggpubr::text_grob(text, size = 8, color = "black")
+  
+  return(tgrob)
+  } else if(var == "ext"){
+    
+    n_med <- n_dir[n_dir$var == "ext",] 
+    
+    n_med <- n_med |> select(-c(var))
+    
+    text1 <- paste(n_med[1,1], n_med[1,2], sep = " = ")
+    text2 <- paste(n_med[2,1], n_med[2,2], sep = " = ")
+    text <- paste(text1, text2, sep = "\n")
+    
+    tgrob <- ggpubr::text_grob(text, size = 8, color = "black")
+    
+    return(tgrob)
+    
+  }else if(var == "cv"){
+    n_med <- n_dir[n_dir$var == "cv",] 
+    
+    n_med <- n_med |> select(-c(var))
+    
+    text1 <- paste(n_med[1,1], n_med[1,2], sep = " = ")
+    text2 <- paste(n_med[2,1], n_med[2,2], sep = " = ")
+    text <- paste(text1, text2, sep = "\n")
+    
+    tgrob <- ggpubr::text_grob(text, size = 8,color = "black")
+    return(tgrob)
+    
+    
+  }else if(var == "sens10"){
+    n_med <- n_dir[n_dir$var == "sens10",] 
+    
+    n_med <- n_med |> select(-c(var))
+    
+    text1 <- paste(n_med[1,1], n_med[1,2], sep = " = ")
+    text2 <- paste(n_med[2,1], n_med[2,2], sep = " = ")
+    text <- paste(text1, text2, sep = "\n")
+    
+    tgrob <- ggpubr::text_grob(text,size = 8, color = "black")
+    return(tgrob)
+    
+    
+  }else if(var == "sens1"){
+    n_med <- n_dir[n_dir$var == "sens1",] 
+    
+    n_med <- n_med |> select(-c(var))
+    
+    text1 <- paste(n_med[1,1], n_med[1,2], sep = " = ")
+    text2 <- paste(n_med[2,1], n_med[2,2], sep = " = ")
+    text <- paste(text1, text2, sep = "\n")
+    
+    tgrob <- ggpubr::text_grob(text,size = 8, color = "black")
+    return(tgrob)
+    
+    
+  }else if(var == "sens2"){
+    n_med <- n_dir[n_dir$var == "sens2",] 
+    
+    n_med <- n_med |> select(-c(var))
+    
+    text1 <- paste(n_med[1,1], n_med[1,2], sep = " = ")
+    text2 <- paste(n_med[2,1], n_med[2,2], sep = " = ")
+    text <- paste(text1, text2, sep = "\n")
+    
+    tgrob <- ggpubr::text_grob(text,size = 8, color = "black")
+    return(tgrob)
+    
+  }
+  
+  return(tgrob)
+  
+  
+  
+}

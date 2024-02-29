@@ -320,6 +320,7 @@ require(ggplot2)
 #' @examples
 lollidot <- function(data, responseType){
   
+  require(ggplot2)
   data <- dplyr::arrange(data, fire_name)
   
   # move geom_point to occur aftetr geom_line so the line is covered by the point
@@ -418,7 +419,6 @@ lollidot <- function(data, responseType){
     guides(color=guide_legend(title="Change in\nBurn Severity"))+
     ylab("Variability in Severity") +
     xlab("Paired Defoliated/Non-Defolaited Fires") +
-    ggtitle("Variability in Severity")+
     scale_y_continuous(breaks = scales::pretty_breaks(n = 5), limits = c(-3.5, 2.5)) +
     theme_bw()
   
@@ -427,7 +427,8 @@ lollidot <- function(data, responseType){
   
   cv_plot1 <-  cv_plot + annotation_custom(tgrob, xmin = 0.1, xmax =1.5,  ymin = 2, ymax = 2.5)
   
-  cv_plot1
+  cv_plot1 
+
   
   # slope
   
@@ -500,16 +501,17 @@ lollidot <- function(data, responseType){
   
   # arrange plots 
   if(responseType == "severity"){
-    plot <- ggpubr::ggarrange(med_plot1, ext_plot1, cv_plot1, 
-                               ncol = 1, nrow =3, common.legend = TRUE, legend = "bottom")
+    plot <- ggpubr::ggarrange(med_plot1, ext_plot1, cv_plot1,
+                              ncol = 1, nrow =3, common.legend = TRUE, legend = "bottom")    
+   
+
+    return(plot)
     
-    
-    
-  }else {
+  }else if(responseType == "slope"){
     
     plot <- ggpubr::ggarrange(s10_plot1, s1_plot1, s2_plot1,
                               ncol = 1, nrow =3, common.legend = TRUE, legend = "bottom")
-    
+    return(plot)
     
   }
   
@@ -652,7 +654,7 @@ n_direction <- function(data){
     rename(direction = ext_diff_fct)|> 
     mutate(var = rep("ext"))
   
-  n_cv <-  data1 |> 
+  n_cv <-  data |> 
     group_by(cv_diff_fct) |> 
     filter(defoliated == "Defoliated") |> 
     mutate(pos = sum(cv_diff > 0),

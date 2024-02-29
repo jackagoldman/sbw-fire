@@ -7,6 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
 ```
 
 # The impact of the spatial legacies of spruce budworm defoliation on wildfire burn severity and post-fire recovery
@@ -94,9 +95,10 @@ targets::tar_read(sev_ttest) |> dplyr::filter(Test == "Variability in Severity")
 
 ```
 
+Severity visualization
+```{r, echo = FALSE}
+targets::tar_read(lolliplot_sev)
 
-```{r}
-targets::tar_read(boxplot)
 ```
 
 

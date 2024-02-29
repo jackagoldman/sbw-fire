@@ -14,11 +14,14 @@ ids|stem|ids|0|skipped
 ts_data|stem|ts_data|0|skipped
 cleanData|stem|cleanData|0|skipped
 sev_ttest|stem|sev_ttest|0|skipped
+lolliplot_slope|stem|lolliplot_slope|0|dispatched
+lolliplot_slope|stem|lolliplot_slope|0|completed
+lolliplot_sev|stem|lolliplot_sev|0|dispatched
+lolliplot_sev|stem|lolliplot_sev|0|completed
 slo_ttest|stem|slo_ttest|0|skipped
 trendPlot|stem|trendPlot|0|skipped
 lm_recovery|stem|lm_recovery|0|skipped
 sens_recovery|stem|sens_recovery|0|skipped
-boxplot|stem|boxplot|0|skipped
-output|stem|output|0|skipped
 project_report|stem|project_report|0|dispatched
 project_report|stem|project_report|0|completed
+output|stem|output|0|skipped

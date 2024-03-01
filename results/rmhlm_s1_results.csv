@@ -1,0 +1,9 @@
+"","terms","F","Df","Df.res","p.value"
+"1","(Intercept)",2.537,1,58.094,0.117
+"2","defoliated",0.005,1,32.922,0.943
+"3","tsd",0.752,1,33.74,0.392
+"4","cumltve_yrs",0.068,1,33.74,0.796
+"5","defoliated:tsd",NA,0,0,NA
+"6","defoliated:cumltve_yrs",NA,0,0,NA
+"7","tsd:cumltve_yrs",0.306,1,33.74,0.584
+"8","defoliated:tsd:cumltve_yrs",NA,0,0,NA

@@ -44,3 +44,41 @@ return(data1)
 }
 
 
+chisq_table <- function(chisqRes, responseGroup){
+ 
+  x <- chisqRes[[1]]
+  df <- chisqRes[[2]]
+  p <- chisqRes[[3]]
+  
+  if(responseGroup == "Median"){
+    name <- "Median Severity"
+    return(name)
+  }else if(responseGroup == "Extreme"){
+    name <- "Extreme Severity"
+    return(name)
+  }else if(responseGroup == "CV"){
+    name <- "Varibility in Severity"
+    return(name)
+  }else if(responseGroup == "s10"){
+    name <- "10 yr slope of recovery"
+    return(name)
+  }else if(responseGroup == "s1"){
+    name <- "1-5 yr slope of recovery"
+    return(name)
+  }else{
+    name <- "6-10 yr slope of recovery"
+    return(name)
+    }
+  
+  
+  #make df
+  cols <- c("Independent Variable of Interest", "x\u00B2", "df", "P-value")
+  table <- cbind(name, x, df, p)
+  table <- as.data.frame(table)
+  colnames(table) <- cols
+  
+  return(table)
+  
+  
+}
+

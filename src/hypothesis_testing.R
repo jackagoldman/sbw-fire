@@ -159,12 +159,25 @@ recovery_ttest <- function(df){
 chisq <- function(data){
   
   # clean data for change_direction
-  data <- change_direction(data)
-  
-  # calculate the sample size
-  n_df <- n_direction(data)
+  data2 <- change_direction(data)
   
   # chisq
+  med.chisq <- chisq.test(x = table(data2$med_diff_fct))
+  ext.chisq <- chisq.test(x = table(data2$ext_diff_fct))
+  cv.chisq <- chisq.test(x = table(data2$cv_diff_fct))
+  s10.chisq <- chisq.test(x = table(data2$s10_diff_fct))
+  s1.chisq <- chisq.test(x = table(data2$s1_diff_fct))
+  s2.chisq <- chisq.test(x = table(data2$s2_diff_fct))
   
+ # indiv table
+  med <- chisq_table(med.chisq, "Median")
+  ext <- chisq_table(ext.chisq, "Extreme")
+  cv <- chisq_table(ext.chisq, "CV")
+  s10 <- chisq_table(ext.chisq, "s10")
+  s1 <- chisq_table(ext.chisq, "s1")
+  s2 <- chisq_table(ext.chisq, "s2")
+  
+  # combine tables
+  res.table <- rbind(med, ext, cv, s10, s1, s2)
   
 }

@@ -3,7 +3,7 @@ library(tarchetypes)
 
 # Set target options:
 tar_option_set(
-  packages = c("tibble", "dplyr", "trend", "readr", "tidyr", "quarto") 
+  packages = c("tibble", "dplyr", "trend", "readr", "tidyr", "quarto", "car", "lme4") 
 )
 
 # R functions

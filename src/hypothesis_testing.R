@@ -182,3 +182,50 @@ chisq <- function(data){
   
   return(res.table)
 }
+
+
+
+
+#' Repeated Measures HLM
+#' This function preforms are repeated measures hierachical linear model using the lme4 package
+#' 
+#'
+#' @param data raw data frame over severity, slopes and defoliation
+#'
+#' @return list of dataframes 1 = median severity, 2 = extreme severity, 3 = variability in severity
+#'          4 = slope 10 years, 5 = slope 1-5 years, 6 = slope 6-10 years
+#' @export
+#'
+#' @examples
+rm_hlm <- function(data){
+  require(lme4)
+  
+  # clean data
+  data <- rmHlm_prep(data)
+  
+  # models
+  med.mod <- lmer(formula = rbr_median ~ defoliated*tsd*cumltve_yrs + (1 | id_nest),
+                       data = data)
+  ext.mod <- lmer(formula = rbr_extreme ~ defoliated*tsd*cumltve_yrs + (1 | id_nest),
+                        data = data)
+  cv.mod <- lmer(formula = rbr_cv ~ defoliated*tsd*cumltve_yrs + (1 | id_nest),
+                        data = data)
+  s10.mod <- lmer(formula = sens10 ~ defoliated*tsd*cumltve_yrs + (1 | id_nest),
+                  data = data)
+  s1.mod <- lmer(formula = sens1 ~ defoliated*tsd*cumltve_yrs + (1 | id_nest),
+                  data = data)
+  s2.mod <- lmer(formula = sens2 ~ defoliated*tsd*cumltve_yrs + (1 | id_nest),
+                 data = data)
+  # results
+  med.res <- rmHlm_results(med.mod, "Median")
+  ext.res <- rmHlm_results(ext.mod, "Extreme")
+  cv.res <- rmHlm_results(cv.mod, "CV")
+  s10.res <- rmHlm_results(s10.mod, "s10")
+  s1.res <- rmHlm_results(s1.mod, "s1")
+  s2.res <- rmHlm_results(s2.mod, "s2")
+  
+  df.list = list(med.res, ext.res, cv.res, s10.res, s1.res, s2.res)
+  
+  return(df.list)
+  
+}

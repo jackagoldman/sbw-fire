@@ -96,6 +96,15 @@ chisq_table <- function(chisqRes, responseGroup){
 }
 
 
+#' ouput results from chisq test
+#'
+#' @param chisqTable 
+#' @param RES_DIR 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 output_chisq <- function(chisqTable, RES_DIR){
   
   # build outputpath
@@ -107,6 +116,16 @@ output_chisq <- function(chisqTable, RES_DIR){
   
 }
 
+#' output results from ttest
+#'
+#' @param sevTtest 
+#' @param slopeTtest 
+#' @param RES_DIR 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 output_ttest <- function(sevTtest, slopeTtest, RES_DIR){
   
   # build outputpath
@@ -119,4 +138,115 @@ output_ttest <- function(sevTtest, slopeTtest, RES_DIR){
   write.csv(slopeTtest, pathTtest_slope)
   
   
+}
+
+
+
+#' Prep data for repeated measures hierachical linear model
+#'
+#' @param data dataframe. from the vis_prep function. 
+#'
+#' @return cleaned data frame with unique id for each fire_name combo and all NA's = 0.
+#'
+#' @examples
+rmHlm_prep <- function(data){
+  
+  data2 <- data |> 
+    group_by(fire_name) |> 
+    mutate(id_nest =cur_group_id()) 
+  
+  data2[(is.na(data2))] <- 0
+  
+ 
+  
+  return(data2)
+  
+  
+}
+
+
+
+#' Get results from repeated measures hierarchical linear model
+#' This function creates tables from repeated measures hierarchical linear model
+#'
+#' @param mod lme4 dataframe: lmer model
+#' @param responseType character. Response variable of interest
+#'
+#' @return dataframe consisting of results (terms, F, DF, df.res, p-value)
+#'
+#' @examples
+rmHlm_results <- function(mod, responseType){
+  require(car)
+
+  
+  if(responseType == "Median"){
+    mod <- Anova(mod, test = "F", type = "III")
+  }else if(responseType == "Extreme"){
+    mod <- Anova(mod, test = "F", type = "III")
+  }else if(responseType == "CV"){
+    mod <- Anova(mod, test = "F", type = "III")
+  }else if(responseType == "s10"){
+     mod <- Anova(mod, test = "F", type = "III")
+  }else if(responseType == "s1"){
+    mod <- Anova(mod, test = "F", type = "III")
+  }else if(responseType == "s2"){
+    mod <- Anova(mod, test = "F", type = "III")
+  }
+  
+  # row names to column
+  mod <- tibble::rownames_to_column(mod, "terms")
+  
+  # rename columns
+  mod <- dplyr::rename(mod, `p-value` = `Pr(>F)`)
+  
+  # format p-value column
+  mod$`p-value` <- format(mod$`p-value`,scientific = FALSE)
+  
+  # character
+  mod$`p-value` <- as.numeric(mod$`p-value`)
+  
+  # round p value, f and df
+  mod <- dplyr::mutate(mod, `p-value` = round(`p-value`, 3))
+  mod <- dplyr::mutate(mod, `F` = round(`F`, 3))
+  mod <- dplyr::mutate(mod, Df.res = round(Df.res, 3))
+
+
+return(mod)  
+  
+}
+
+
+#' save results from repeated measures hlm 
+#'
+#' @param modList list. results from rh_hlm function
+#' @param RES_DIR path to file directory
+#' 
+#' @return csv written to results fold
+#'
+#' @examples
+output_rmHlm <- function(modList, RES_DIR){
+  
+  # get results as dataframes
+  med <- as.data.frame(modList[1])
+  ext <- as.data.frame(modList[2])
+  cv <- as.data.frame(modList[3])
+  s10 <- as.data.frame(modList[4])
+  s1 <- as.data.frame(modList[5])
+  s1 <- as.data.frame(modList[6])
+  
+  # build outputpath
+  pathRmHlm_med <- paste0(RES_DIR, "rmhlm_med_results.csv")
+  pathRmHlm_ext <- paste0(RES_DIR, "rmhlm_ext_results.csv")
+  pathRmHlm_cv <- paste0(RES_DIR, "rmhlm_cv_results.csv")
+  pathRmHlm_s10 <- paste0(RES_DIR, "rmhlm_s10_results.csv")
+  pathRmHlm_s1 <- paste0(RES_DIR, "rmhlm_s1_results.csv")
+  pathRmHlm_s2 <- paste0(RES_DIR, "rmhlm_s2_results.csv")
+  
+  # output dataframes
+  write.csv(med, pathRmHlm_med)
+  write.csv(ext, pathRmHlm_ext)
+  write.csv(cv, pathRmHlm_cv)
+  write.csv(s10, pathRmHlm_s10)
+  write.csv(s1, pathRmHlm_s1)
+  write.csv(s2, pathRmHlm_s2)
 }

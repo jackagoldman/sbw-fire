@@ -172,12 +172,13 @@ chisq <- function(data){
  # indiv table
   med <- chisq_table(med.chisq, "Median")
   ext <- chisq_table(ext.chisq, "Extreme")
-  cv <- chisq_table(ext.chisq, "CV")
-  s10 <- chisq_table(ext.chisq, "s10")
-  s1 <- chisq_table(ext.chisq, "s1")
-  s2 <- chisq_table(ext.chisq, "s2")
+  cv <- chisq_table(cv.chisq, "CV")
+  s10 <- chisq_table(s10.chisq, "s10")
+  s1 <- chisq_table(s1.chisq, "s1")
+  s2 <- chisq_table(s2.chisq, "s2")
   
   # combine tables
   res.table <- rbind(med, ext, cv, s10, s1, s2)
   
+  return(res.table)
 }

@@ -44,6 +44,16 @@ return(data1)
 }
 
 
+#' Creates chisq table
+#' This function is used in the chisq analysis and creates a table of all chisq test results
+#'
+#' @param chisqRes results from chisq analysis
+#' @param responseGroup response group, one of median, extreme, cv, s10, s1, s2
+#'
+#' @return
+#' @export
+#'
+#' @examples
 chisq_table <- function(chisqRes, responseGroup){
  
   x <- chisqRes[[1]]
@@ -52,22 +62,16 @@ chisq_table <- function(chisqRes, responseGroup){
   
   if(responseGroup == "Median"){
     name <- "Median Severity"
-    return(name)
   }else if(responseGroup == "Extreme"){
     name <- "Extreme Severity"
-    return(name)
   }else if(responseGroup == "CV"){
     name <- "Varibility in Severity"
-    return(name)
   }else if(responseGroup == "s10"){
     name <- "10 yr slope of recovery"
-    return(name)
   }else if(responseGroup == "s1"){
     name <- "1-5 yr slope of recovery"
-    return(name)
   }else{
     name <- "6-10 yr slope of recovery"
-    return(name)
     }
   
   
@@ -76,9 +80,43 @@ chisq_table <- function(chisqRes, responseGroup){
   table <- cbind(name, x, df, p)
   table <- as.data.frame(table)
   colnames(table) <- cols
+  rownames(table) <- NULL
+  table$`x²` <- as.numeric(table$`x²`)
+  table$df <- as.numeric(table$df)
+  table$`P-value` <- as.numeric(table$`P-value`)
+  table <- dplyr::mutate(table, `x²` = round(`x²`, 3))
+  table <- dplyr::mutate(table, `P-value` = round(`P-value`, 3))
+  
+  
+  
   
   return(table)
   
   
 }
 
+
+output_chisq <- function(chisqTable, RES_DIR){
+  
+  # build outputpath
+  pathChisq <- paste0(RES_DIR, "chisq_results.csv")
+
+  # output dataframes
+  write.csv(chisqTable, pathChisq)
+  
+  
+}
+
+output_ttest <- function(sevTtest, slopeTtest, RES_DIR){
+  
+  # build outputpath
+  pathTtest_sev <- paste0(RES_DIR, "severity_ttest_results.csv")
+  pathTtest_slope <- paste0(RES_DIR, "slope_ttest_results.csv")
+  
+  
+  # output dataframes
+  write.csv(sevTtest, pathTtest_sev)
+  write.csv(slopeTtest, pathTtest_slope)
+  
+  
+}

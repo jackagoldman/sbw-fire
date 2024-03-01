@@ -1,6 +1,11 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-.Random.seed|object|b434d33ae0be0455|||||||||||||||
+.Random.seed|object|ee5c30e042c30905|||||||||||||||
 boxplot|stem|7c04f20829425d15|307a2130f4723f41|4c648ed5707b81b4|1882849275||t19776.2538292949s|c5b11fac212a3cb3|552146|rds|local|vector|||0.479|package ggplot2 was built under R version 4.3.1|
+change_direction|function|33757ae1949c3552|||||||||||||||
+chisq|function|d3920b94a6c41bf3|||||||||||||||
+chisq_result|stem|5a40183a40a99cb5|52d1b53ae0a21b11|0220a9f24d7a6e44|877451311||t19783.5712557967s|29b7562759c60885|336|rds|local|vector|||0.065||
+chisq_results|stem|d36ea1299fa8d732|1d692a1bc509e45c|93d3e76b68b50312|-1287941389||t19783.5738140986s|44e327d1ee1978d7|43|rds|local|vector|||0.001||
+chisq_table|function|2e30f2c3f61cf968|||||||||||||||
 cleanData|stem|94dc382d7f521610|9553a15a2190bf51|5fdd9c7715dace9c|-1238940090||t19770.0373188226s|2312b72c94a875ca|6242|rds|local|vector|||0.021||
 createTib|function|dda78c3bfc442c02|||||||||||||||
 data|stem|bed8d26d97ac237b|b037d15277b5d0b8|5a6d751b5c26cd10|33550471||t19770.0373185509s|66a33d849417603b|6564|rds|local|vector|||0.099||
@@ -18,11 +23,14 @@ matchIds|function|dcad42c014eddd5f|||||||||||||||
 n_direction|function|f05e32e5273659e8|||||||||||||||
 order_data|function|de7d4bab997b7b2e|||||||||||||||
 output|stem|d36ea1299fa8d732|3e55602db209f4b0|bd8e60347693348d|3939470||t19776.2538295122s|44e327d1ee1978d7|43|rds|local|vector|||0.015||
-project_report|stem|841299fd0fc10761|e9e3306d251da835|50e4097f777119b1|97448406|project_report.html*project_report.Rmd|t19782.7185072637s|f9080047fd77486a|3518713|file|local|vector|||1.239||
+output_chisq|function|eb04cec0cfb47f77|||||||||||||||
+output_ttest|function|11d7a7c25b6a4f96|||||||||||||||
+project_report|stem|8bb9b3fbf7495859|e9e3306d251da835|50e4097f777119b1|97448406|project_report.html*project_report.Rmd|t19783.5738131038s|85b5acbc41b15f1d|3120940|file|local|vector|||2.298||
 recovery_ttest|function|68716afe83dfe7ac|||||||||||||||
 recovery_visBox|function|a34dc7232973252e|||||||||||||||
 recoverySlope_lm|function|291cd77f9dffd1cd|||||||||||||||
 recoverySlope_sens|function|1ac34e9eecdea84b|||||||||||||||
+RES_DIR|object|6a16ec02c5d7f2e2|||||||||||||||
 sens_recovery|stem|c502c389989d2cf4|8ad202bc93e05bdc|78ef8a5e63cfc218|1249831624||t19770.0393803066s|ee2e52779bcc455e|5285|rds|local|vector|||3.02|cols is now required when using unnest.ℹ Please use cols  cfId, sens1, sens2, uppr1, uppr2, lwr1, lwr2, sens10,  uppr10, lwr10.|
 sev_df|stem|cb1df8cf18fbbd9e|2165c5dc26b67743|f3629d03a87d94ae|1279755305||t19776.0240096257s|0131d98b4b4dc9f6|2527|rds|local|vector|||0.098||
 sev_order|stem|a68985c5736027ee|180f2f06df19d406|c6cc88c51b2b9371|-1741845067||t19776.024010305s|7f2a484b6af6e7e1|2317|rds|local|vector|||0.006||
@@ -40,6 +48,7 @@ trend_plot|function|f9ab2e8ffb2bdf7a|||||||||||||||
 trendPlot|stem|88d90cf581508cf9|e1371293df490668|f21ea514455f92b8|-1730397295||t19776.2421806747s|8a0c859820c41d52|96807|rds|local|vector|||0.104|package plyr was built under R version 4.3.1. package ggplot2 was built under R version 4.3.1|
 trendPrep|function|c58ed64f559353ed|||||||||||||||
 ts_data|stem|3167a92191341c20|1740a42df7f8c75a|c357e682b59d251c|1309911760||t19776.0394071143s|bc904a872d6d330d|6222|rds|local|vector|||0.009||
+ttest_results|stem|d36ea1299fa8d732|e90aabb79ef7c378|0ddc914ddcccc89a|1690389573||t19783.5738141303s|44e327d1ee1978d7|43|rds|local|vector|||0||
 txtgrob_annttion|function|077dc0aeea0d06fb|||||||||||||||
 vis_data|stem|5e8f4a5b123ea1e7|59d94cced49baad4|15f7dc0600c822d3|-1567248242||t19782.5231966062s|15f33c306bcba030|7211|rds|local|vector|||0.011||
 vis_prep|function|57b5b4638b97fda5|||||||||||||||

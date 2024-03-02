@@ -229,3 +229,35 @@ rm_hlm <- function(data){
   return(df.list)
   
 }
+
+
+rhHlm_lme <- function(data){
+  
+  # clean data
+  data <- rmHlm_prep(data)
+  
+  # rbr median
+  mod.med <- nlme::lme(rbr_median ~ tsd*cumltve_yrs  , random = ~1| id_nest, data = data)
+  # rbr extreme
+  mod.ext <- nlme::lme(rbr_extreme ~ tsd*cumltve_yrs  , random = ~ 1 | id_nest, data = data)
+  #rbr cv 
+  mod.cv <- nlme::lme(rbr_cv ~ tsd*cumltve_yrs  , random = ~ 1 | id_nest, data = data)
+  #sens 10
+  mod.s10 <- nlme::lme(sens10 ~ tsd*cumltve_yrs  , random = ~ 1 | id_nest, data = data)
+  #sens 1
+  mod.s1 <- nlme::lme(sens1 ~ tsd*cumltve_yrs  , random = ~ 1 | id_nest, data = data)
+  #sens 2
+  mod.s2 <- nlme::lme(sens2 ~ tsd*cumltve_yrs  , random = ~ 1 | id_nest, data = data)
+
+  # results
+  med.res <- rmHlm_results(med.mod, "Median")
+  ext.res <- rmHlm_results(ext.mod, "Extreme")
+  cv.res <- rmHlm_results(cv.mod, "CV")
+  s10.res <- rmHlm_results(s10.mod, "s10")
+  s1.res <- rmHlm_results(s1.mod, "s1")
+  s2.res <- rmHlm_results(s2.mod, "s2")
+  
+  df.list = list(med.res, ext.res, cv.res, s10.res, s1.res, s2.res)
+  
+  return(df.list)
+}

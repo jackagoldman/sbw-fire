@@ -217,15 +217,47 @@ rm_hlm <- function(data){
   s2.mod <- lmer(formula = sens2 ~ defoliated*tsd*cumltve_yrs + (1 | id_nest),
                  data = data)
   # results
-  med.res <- rmHlm_results(med.mod, "Median")
-  ext.res <- rmHlm_results(ext.mod, "Extreme")
-  cv.res <- rmHlm_results(cv.mod, "CV")
-  s10.res <- rmHlm_results(s10.mod, "s10")
-  s1.res <- rmHlm_results(s1.mod, "s1")
-  s2.res <- rmHlm_results(s2.mod, "s2")
+  med.res <- rmHlm_results(med.mod, "Median", "lme4")
+  ext.res <- rmHlm_results(ext.mod, "Extreme", "lme4")
+  cv.res <- rmHlm_results(cv.mod, "CV", "lme4")
+  s10.res <- rmHlm_results(s10.mod, "s10", "lme4")
+  s1.res <- rmHlm_results(s1.mod, "s1", "lme4")
+  s2.res <- rmHlm_results(s2.mod, "s2", "lme4")
   
   df.list = list(med.res, ext.res, cv.res, s10.res, s1.res, s2.res)
   
   return(df.list)
   
+}
+
+
+rhHlm_lme <- function(data){
+  require(nlme)
+  # clean data
+  data <- rmHlm_prep(data)
+  
+  # rbr median
+  mod.med <- nlme::lme(rbr_median ~ tsd*cumltve_yrs  , random = ~1| id_nest, data = data)
+  # rbr extreme
+  mod.ext <- nlme::lme(rbr_extreme ~ tsd*cumltve_yrs  , random = ~ 1 | id_nest, data = data)
+  #rbr cv 
+  mod.cv <- nlme::lme(rbr_cv ~ tsd*cumltve_yrs  , random = ~ 1 | id_nest, data = data)
+  #sens 10
+  mod.s10 <- nlme::lme(sens10 ~ tsd*cumltve_yrs  , random = ~ 1 | id_nest, data = data)
+  #sens 1
+  mod.s1 <- nlme::lme(sens1 ~ tsd*cumltve_yrs  , random = ~ 1 | id_nest, data = data)
+  #sens 2
+  mod.s2 <- nlme::lme(sens2 ~ tsd*cumltve_yrs  , random = ~ 1 | id_nest, data = data)
+
+  # results
+  med.res <- rmHlm_results(med.mod, "Median", "nlme")
+  ext.res <- rmHlm_results(ext.mod, "Extreme", "nlme")
+  cv.res <- rmHlm_results(cv.mod, "CV", "nlme")
+  s10.res <- rmHlm_results(s10.mod, "s10", "nlme")
+  s1.res <- rmHlm_results(s1.mod, "s1", "nlme")
+  s2.res <- rmHlm_results(s2.mod, "s2", "nlme")
+  
+  df.list = list(med.res, ext.res, cv.res, s10.res, s1.res, s2.res)
+  
+  return(df.list)
 }

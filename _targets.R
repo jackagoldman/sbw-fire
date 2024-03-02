@@ -81,7 +81,7 @@ list(
   tar_target(name = chisq_result, chisq(vis_data)),
   
   # save chisq results
-  tar_target(name = chisq_results, output_chisq(chisq_result, RES_DIR)),
+  tar_target(name = chisq_output, output_chisq(chisq_result, RES_DIR)),
   
   # make lollidots for severity and slope
   tar_target(name = lolliplot_sev, lollidot(vis_data, "severity")),
@@ -92,6 +92,12 @@ list(
   
   # trend plot
   tar_target(name = trendPlot, trend_plot(ts_data)),
+  
+  # repeated measure hierarchical linear model
+  tar_target(name = rmHlm_results, rm_hlm(vis_data)),
+  
+  # save rm hlm results
+  tar_target(name = rmHlm_ouput,output_rmHlm(rmHlm_results, RES_DIR)),
   
   #render report
   tarchetypes::tar_render(project_report, "project_report.Rmd") 

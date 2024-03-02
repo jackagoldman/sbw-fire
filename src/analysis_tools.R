@@ -232,7 +232,7 @@ output_rmHlm <- function(modList, RES_DIR){
   cv <- as.data.frame(modList[3])
   s10 <- as.data.frame(modList[4])
   s1 <- as.data.frame(modList[5])
-  s1 <- as.data.frame(modList[6])
+  s2 <- as.data.frame(modList[6])
   
   # build outputpath
   pathRmHlm_med <- paste0(RES_DIR, "rmhlm_med_results.csv")

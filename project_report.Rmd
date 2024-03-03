@@ -5,9 +5,11 @@ date: "2024-02-23"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, results = 'hide'}
 knitr::opts_chunk$set(echo = TRUE)
-
+my_path <- c("./src/")             # set your path
+source_files <- list.files(my_path, "*.R$")  # locate all .R files
+purrr::map(paste0(my_path, source_files), source)
 ```
 
 # The impact of the spatial legacies of spruce budworm defoliation on wildfire burn severity and post-fire recovery
@@ -34,8 +36,8 @@ Specifically we will address the following questions:
     II. Is there a difference in severity extremes between defoliated and non-defoliated fires
     III. Is there a difference in variability in burn severity between defoliated and non-defoliated fires
 2.  How does spruce budworm defoliation influence post-fire recovery?
-    1.  Is there a difference in forest recovery 10 years post-fire between defoliated and non-defoliated fires?
-    2.  Is there a difference in forest recovery between 1-5 years and 6-10 years between defoliated and non-defoliated fires?
+    I.  Is there a difference in forest recovery 10 years post-fire between defoliated and non-defoliated fires?
+    II.  Is there a difference in forest recovery between 1-5 years and 6-10 years between defoliated and non-defoliated fires?
 3.  Is the strength of the relationship between defoliation intensity (synthetic index) and burn severity or forest recovery greater than independent metrics of defoliation?
 4.  Does defoliation intensity (synthetic index) capture more variation in burn severity and forest recovery relative to defoliation metrics modeled independently?
 
@@ -76,23 +78,16 @@ In this DAG we see that time since defoliation, presence/absence of defoliation 
 
 ## Preliminary results
 
-Hypothesis 1: There is a difference in median severity between defoliated and non defoliated
+How does spruce budworm defoliation influence burn severity?
 
 ```{r, echo = FALSE}
-targets::tar_read(sev_ttest) |> dplyr::filter(Test == "Median Severity")
-
+severity_table(targets::tar_read(sev_ttest))
 ```
 
-Hypothesis 2: These is a difference in severity extremes between defoliated and non defoliated
+How does spruce budworm defoliation influence post-fire recovery?
+
 ```{r, echo = FALSE}
-targets::tar_read(sev_ttest) |> dplyr::filter(Test == "Extreme Severity")
-
-```
-
-Hypothesis 3: These is a difference in variability in burn severity between defoliated and non defoliated
-```{r, echo = FALSE}
-targets::tar_read(sev_ttest) |> dplyr::filter(Test == "Variability in Severity")
-
+slope_table(targets::tar_read(slo_ttest))
 ```
 
 Severity visualization
@@ -100,6 +95,9 @@ Severity visualization
 targets::tar_read(lolliplot_sev)
 
 ```
+
+
+#### Is there a difference in the direction of the effects ?
 
 
 

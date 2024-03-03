@@ -175,9 +175,12 @@ rmHlm_prep <- function(data){
 #' @return dataframe consisting of results (terms, F, DF, df.res, p-value)
 #'
 #' @examples
-rmHlm_results <- function(mod, responseType){
+rmHlm_results <- function(mod, responseType, modelType){
   require(car)
+  require(broom.mixed)
 
+
+  if(modelType == "lme4"){
   
   if(responseType == "Median"){
     mod <- Anova(mod, test = "F", type = "III")
@@ -210,11 +213,35 @@ rmHlm_results <- function(mod, responseType){
   mod <- dplyr::mutate(mod, `F` = round(`F`, 3))
   mod <- dplyr::mutate(mod, Df.res = round(Df.res, 3))
 
+  }else if(modelType == "nlme"){
+    
+    if(responseType == "Median"){
+      mod <- broom.mixed::tidy(mod)
+      
+    }else if(responseType == "Extreme"){
+      mod <- broom.mixed::tidy(mod)
+    }else if(responseType == "CV"){
+      mod <- broom.mixed::tidy(mod)
+    }else if(responseType == "s10"){
+      mod <- broom.mixed::tidy(mod)
+    }else if(responseType == "s1"){
+      mod <- broom.mixed::tidy(mod)
+    }else if(responseType == "s2"){
+      mod <- broom.mixed::tidy(mod)
+    }
+    
+    mod <- mod |> 
+      select(-c(effect, group)) |> 
+      slice(1:4)
+    
+    mod$p.value <- format(mod$p.value,scientific = FALSE)
+    mod$p.value <- as.numeric(mod$p.value)
+    mod<- dplyr::mutate(mod, p.value = round(p.value, 3))
+  }
 
 return(mod)  
   
 }
-
 
 #' save results from repeated measures hlm 
 #'

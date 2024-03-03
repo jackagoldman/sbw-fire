@@ -231,7 +231,7 @@ rm_hlm <- function(data){
 }
 
 
-rhHlm_lme <- function(data){
+rmHlm_lme <- function(data){
   require(nlme)
   # clean data
   data <- rmHlm_prep(data)
@@ -250,12 +250,12 @@ rhHlm_lme <- function(data){
   mod.s2 <- nlme::lme(sens2 ~ tsd*cumltve_yrs  , random = ~ 1 | id_nest, data = data)
 
   # results
-  med.res <- rmHlm_results(med.mod, "Median", "nlme")
-  ext.res <- rmHlm_results(ext.mod, "Extreme", "nlme")
-  cv.res <- rmHlm_results(cv.mod, "CV", "nlme")
-  s10.res <- rmHlm_results(s10.mod, "s10", "nlme")
-  s1.res <- rmHlm_results(s1.mod, "s1", "nlme")
-  s2.res <- rmHlm_results(s2.mod, "s2", "nlme")
+  med.res <- rmHlm_results(mod.med, "Median", "nlme")
+  ext.res <- rmHlm_results(mod.ext, "Extreme", "nlme")
+  cv.res <- rmHlm_results(mod.cv, "CV", "nlme")
+  s10.res <- rmHlm_results(mod.s10, "s10", "nlme")
+  s1.res <- rmHlm_results(mod.s1, "s1", "nlme")
+  s2.res <- rmHlm_results(mod.s2, "s2", "nlme")
   
   df.list = list(med.res, ext.res, cv.res, s10.res, s1.res, s2.res)
   

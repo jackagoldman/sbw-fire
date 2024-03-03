@@ -3,7 +3,7 @@ library(tarchetypes)
 
 # Set target options:
 tar_option_set(
-  packages = c("tibble", "dplyr", "trend", "readr", "tidyr", "quarto", "car", "lme4") 
+  packages = c("tibble", "dplyr", "trend", "readr", "tidyr", "quarto", "car", "lme4", "nlme") 
 )
 
 # R functions
@@ -93,11 +93,11 @@ list(
   # trend plot
   tar_target(name = trendPlot, trend_plot(ts_data)),
   
-  # repeated measure hierarchical linear model
-  tar_target(name = rmHlm_results, rm_hlm(vis_data)),
+  # repeated measure hierarchical linear model (nlme)
+  tar_target(name = rmHlm_models, rmHlm_lme(vis_data)),
   
   # save rm hlm results
-  tar_target(name = rmHlm_ouput,output_rmHlm(rmHlm_results, RES_DIR)),
+  tar_target(name = rmHlm_ouput,output_rmHlm(rmHlm_models, RES_DIR)),
   
   #render report
   tarchetypes::tar_render(project_report, "project_report.Rmd") 

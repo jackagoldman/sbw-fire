@@ -9,10 +9,11 @@
 #' 
 #'
 #' @examples
-rmHlm_table <- function(table, reponseType){
+rmHlm_table <- function(table, responseType){
   require(gt)
+  require(tidyr)
   # make sure dataframe is a tibble
-  table <- as.tibble(table)
+  table <- as_tibble(table)
   
   
   
@@ -170,14 +171,38 @@ slope_table <- function(table){
 #'
 #' @examples
 colour_cell <- function(table){
-  
+  require(dplyr)
   
     table1 <- table[table$p.value <0.05, ]
     
     table1 <- table1 |> 
-      filter(!(term == "(Intercept)"))
+      dplyr::filter(!(term == "(Intercept)"))
     
     val <-table1$p.value
  
   return(val)
+}
+
+
+chisq_table <- function(table){
+  
+  table1 <- table[table$`P-value` < 0.05, ]
+  val <- table1$`P-value`
+  
+  #as gt
+  gt.table <- gt(table)
+  
+  # add header
+  gt.table <-  gt.table |> 
+    tab_header(
+      title = md("**Significant Difference in Direction of Trend between Paired Fires**"),
+      subtitle = "Results from chi-square tst"
+    ) |> 
+    tab_style_body(
+      style = cell_fill(color = "orange"),
+      values = c(val)
+    )
+  
+  return(gt.table)
+  
 }

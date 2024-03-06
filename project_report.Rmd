@@ -1,13 +1,16 @@
 ---
-title: "project_report"
+title: "SBW x Fire Interaction"
 author: "Jack A Goldman"
 date: "2024-02-23"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, results = 'hide'}
 knitr::opts_chunk$set(echo = TRUE)
-
+my_path <- c("./src/")             # set your path
+source_files <- list.files(my_path, "*.R$")  # locate all .R files
+purrr::map(paste0(my_path, source_files), source)
+library(readr)
 ```
 
 # The impact of the spatial legacies of spruce budworm defoliation on wildfire burn severity and post-fire recovery
@@ -34,8 +37,8 @@ Specifically we will address the following questions:
     II. Is there a difference in severity extremes between defoliated and non-defoliated fires
     III. Is there a difference in variability in burn severity between defoliated and non-defoliated fires
 2.  How does spruce budworm defoliation influence post-fire recovery?
-    1.  Is there a difference in forest recovery 10 years post-fire between defoliated and non-defoliated fires?
-    2.  Is there a difference in forest recovery between 1-5 years and 6-10 years between defoliated and non-defoliated fires?
+    I.  Is there a difference in forest recovery 10 years post-fire between defoliated and non-defoliated fires?
+    II.  Is there a difference in forest recovery between 1-5 years and 6-10 years between defoliated and non-defoliated fires?
 3.  Is the strength of the relationship between defoliation intensity (synthetic index) and burn severity or forest recovery greater than independent metrics of defoliation?
 4.  Does defoliation intensity (synthetic index) capture more variation in burn severity and forest recovery relative to defoliation metrics modeled independently?
 
@@ -76,23 +79,16 @@ In this DAG we see that time since defoliation, presence/absence of defoliation 
 
 ## Preliminary results
 
-Hypothesis 1: There is a difference in median severity between defoliated and non defoliated
+#### How does spruce budworm defoliation influence burn severity?
 
 ```{r, echo = FALSE}
-targets::tar_read(sev_ttest) |> dplyr::filter(Test == "Median Severity")
-
+severity_table(targets::tar_read(sev_ttest))
 ```
 
-Hypothesis 2: These is a difference in severity extremes between defoliated and non defoliated
+#### How does spruce budworm defoliation influence post-fire recovery?
+
 ```{r, echo = FALSE}
-targets::tar_read(sev_ttest) |> dplyr::filter(Test == "Extreme Severity")
-
-```
-
-Hypothesis 3: These is a difference in variability in burn severity between defoliated and non defoliated
-```{r, echo = FALSE}
-targets::tar_read(sev_ttest) |> dplyr::filter(Test == "Variability in Severity")
-
+slope_table(targets::tar_read(slo_ttest))
 ```
 
 Severity visualization
@@ -102,8 +98,57 @@ targets::tar_read(lolliplot_sev)
 ```
 
 
+#### Is there a difference in the direction of the effects ?
 
-Hypothesis 4: 
+```{r}
+chisq_table(targets::tar_read(chisq_result))
+```
+
+#### Does a synthetic index of defoliation intensity capture more variation in burn severity and forest recovery relative to defoliation metrics modelled using an interaction? Are the strengths of the effects different?
+
+First, we fit repeated measures linear mixed effects models with an interaction terms between time since defoliation and cumulative years of defoliation for each response variable:
+
+$Y_{i} = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} +\beta_3X_{1i}X_{2i} + u_{i} \epsilon_{i}$.
+
+Where Y = the response variable of interest and </i>i</i> = for the </i>i</i> th fire,  $\beta_1X_{1i}$ = time since disturbance (tsd), $\beta_2X_{2i}$ = cumulative years of defoliation (cyd), $+\beta_3X_{1i}X_{2i}$  = interaction between tsd and cyd, $u_{i}$ = random intercept for paired fire id.
+
+Median Severity
+```{r, echo=FALSE, message=FALSE}
+rmHlm_table(read_csv("results/rmhlm_med_results.csv", col_select = c(2:7)), "Median")
+
+```
+
+Extreme Severity
+```{r, echo = FALSE, message=FALSE}
+rmHlm_table(read_csv("results/rmhlm_ext_results.csv", col_select = c(2:7)), "Extreme")
+
+```
+Variability in Severity
+```{r, echo = FALSE, message=FALSE}
+rmHlm_table(read_csv("results/rmhlm_cv_results.csv", col_select = c(2:7)), "CV")
+
+```
+
+Slope of recovery 10 year
+
+```{r, echo = FALSE, message=FALSE}
+rmHlm_table(read_csv("results/rmhlm_s10_results.csv", col_select = c(2:7)), "s10")
+
+```
+
+Slope of recovery 1-5 year
+
+```{r, echo = FALSE, message=FALSE}
+rmHlm_table(read_csv("results/rmhlm_s1_results.csv", col_select = c(2:7)), "s1")
+
+```
+Slope of recovery 6-10 year
+
+```{r, echo = FALSE, message=FALSE}
+rmHlm_table(read_csv("results/rmhlm_s2_results.csv", col_select = c(2:7)), "s2")
+
+```
+
 
 ## Significance
 

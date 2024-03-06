@@ -386,3 +386,65 @@ synthetic_index <- function(data, responseType){
   
   
 }
+
+
+sem_results <- function(model){
+  require(piecewiseSEM)
+  results <- piecewiseSEM::coefs(model) |> dplyr::select(-c(9))
+  fishC <- piecewiseSEM::fisherC(model) |> 
+    dplyr::rename("fisherC.P.Value" = "P.Value") |> 
+    dplyr::rename("fisherC.df" = "df") |> rbind(NA)
+  chisq <- piecewiseSEM::LLchisq(model)|> 
+    dplyr::rename("chisq.P.Value" = "P.Value") |> 
+    dplyr::rename("chisq.df" = "df") |> rbind( NA)
+  
+  #add fishC cols
+  results <- cbind(results, fishC, chisq)
+  
+  #
+  res_tib <- tibble::as_tibble(results)
+  
+  return(res_tib)
+}
+
+
+output_sem <- function(model, RES_DIR){
+    
+    # if state to match pattern of file name
+    if(stringr::str_detect(c(model[[1]]$terms[[2]]), "rbr_cv")){
+      if (stringr::str_detect(c(model[[2]]$terms[[2]]), "sens10")){
+        path <- paste0(RES_DIR, "sem_cv_s10.csv")
+      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "sens1")){
+        path <- paste0(RES_DIR, "sem_cv_s1.csv")
+      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "sens2")){
+        path <- paste0(RES_DIR, "sem_cv_s2.csv")
+      }
+    }else if(stringr::str_detect(c(model[[1]]$terms[[2]]), "rbr_extreme")){
+      if (stringr::str_detect(c(model[[2]]$terms[[2]]), "sens10")){
+        path <- paste0(RES_DIR, "sem_ext_s10.csv")
+      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "sens1")){
+        path <- paste0(RES_DIR, "sem_ext_s1.csv")
+      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "sens2")){
+        path <- paste0(RES_DIR, "sem_ext_s2.csv")
+      }
+      
+    }else if(stringr::str_detect(c(model[[1]]$terms[[2]]), "rbr_median")){
+      
+      if (stringr::str_detect(c(model[[2]]$terms[[2]]), "sens10")){
+        path <- paste0(RES_DIR, "sem_med_s10.csv")
+      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "sens1")){
+        path <- paste0(RES_DIR, "sem_med_s1.csv")
+      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "sens2")){
+        path <- paste0(RES_DIR, "sem_med_s2.csv")
+      }
+      
+      
+      
+    }
+  
+  table <- sem_results(model)
+
+    # output dataframes
+    write.csv(table, path)
+    
+}

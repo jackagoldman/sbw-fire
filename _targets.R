@@ -17,14 +17,6 @@ tar_source("src/analysis_tools.R")
 DATA_DIR <- "data/paired_fires/"
 RES_DIR <- "results/"
 
-#parameters names for SEM
-params <- tribble(
-  ~responseType, ~slopeClass,  
-  "Median",  "s10",   
-  "Extreme",  "s1", 
-  "CV",  "s1",  
-) |> tidyr::expand(responseType, slopeClass)
-
 
 # target list
 list(
@@ -106,6 +98,20 @@ list(
   
   # save rm hlm results
   tar_target(name = rmHlm_ouput,output_rmHlm(rmHlm_models, RES_DIR)),
+  
+  #sem
+  tarchetypes::tar_map(
+    values = tibble::tribble(
+      ~responseType, ~slopeClass,  
+      "Median",  "s10",   
+      "Extreme",  "s1", 
+      "CV",  "s2",  
+    ) |> tidyr::expand(responseType, slopeClass),
+    
+    tar_target(sem,sem_mod(data, responseType, slopeClass)),
+    tar_target(sem_output, output_sem(sem, RES_DIR))
+    
+  ),
   
   #render report
   tarchetypes::tar_render(project_report, "project_report.Rmd") 

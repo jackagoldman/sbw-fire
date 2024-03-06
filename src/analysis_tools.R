@@ -1,5 +1,21 @@
 # various tools for analysis
 
+#' Join defoliation data and order for t-test
+#'
+#' @param df1 either burn severity of slope results
+#' @param df2 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+order_data <- function(df1, df2){
+  defol <- dplyr::select(df2, c("id", "defoliated"))
+  df <- dplyr::left_join(df1,defol, by ="id") 
+  df <- df[order(df$fire_name),]
+  return(df)
+}
+
 
 
 # calculate difference between severity defoliated to non-defoliated
@@ -276,4 +292,159 @@ output_rmHlm <- function(modList, RES_DIR){
   write.csv(s10, pathRmHlm_s10)
   write.csv(s1, pathRmHlm_s1)
   write.csv(s2, pathRmHlm_s2)
+}
+
+
+
+
+#' Calculates synthetic of defoliation severity
+#'
+#' @param data 
+#' @param responseType 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+synthetic_index <- function(data, responseType){
+  
+  
+  if(responseType == "Median"){
+  
+  comp_model <- lm(rbr_median ~ tsd + cumltve_yrs, data = data)
+  
+  beta_td <- summary(comp_model)$coefficients[2, 1]
+
+  beta_years <- summary(comp_model)$coefficients[3, 1]
+  
+  composite <- beta_td * data$tsd + beta_years * data$cumltve_yrs
+  
+  
+  return(composite)
+  
+  }else if(responseType == "Extreme"){
+    
+    comp_model <- lm(rbr_extreme ~ tsd + cumltve_yrs, data = data)
+    
+    beta_td <- summary(comp_model)$coefficients[2, 1]
+    
+    beta_years <- summary(comp_model)$coefficients[3, 1]
+    
+    composite <- beta_td * data$tsd + beta_years * data$cumltve_yrs
+    
+    return(composite)
+    
+  }else if(responseType == "CV"){
+    
+    comp_model <- lm(rbr_cv ~ tsd + cumltve_yrs, data = data)
+    
+    beta_td <- summary(comp_model)$coefficients[2, 1]
+    
+    beta_years <- summary(comp_model)$coefficients[3, 1]
+    
+    composite <- beta_td * data$tsd + beta_years * data$cumltve_yrs
+    
+    return(composite)
+    
+  }else if(responseType == "s10"){
+    
+    comp_model <- lm(sens10 ~ tsd + cumltve_yrs, data = data)
+    
+    beta_td <- summary(comp_model)$coefficients[2, 1]
+    
+    beta_years <- summary(comp_model)$coefficients[3, 1]
+    
+    composite <- beta_td * data$tsd + beta_years * data$cumltve_yrs
+    
+    return(composite)
+    
+  }else if(responseType == "s1"){
+    
+    comp_model <- lm(sens1 ~ tsd + cumltve_yrs, data = data)
+    
+    beta_td <- summary(comp_model)$coefficients[2, 1]
+    
+    beta_years <- summary(comp_model)$coefficients[3, 1]
+    
+    composite <- beta_td * data$tsd + beta_years * data$cumltve_yrs
+    
+    return(composite)
+    
+  }else if(responseType == "s2"){
+    
+    comp_model <- lm(sens2 ~ tsd + cumltve_yrs, data = data)
+    
+    beta_td <- summary(comp_model)$coefficients[2, 1]
+    
+    beta_years <- summary(comp_model)$coefficients[3, 1]
+    
+    composite <- beta_td * data$tsd + beta_years * data$cumltve_yrs
+    
+    return(composite)
+    
+  }
+  
+  
+}
+
+
+sem_results <- function(model){
+  require(piecewiseSEM)
+  results <- piecewiseSEM::coefs(model) |> dplyr::select(-c(9))
+  fishC <- piecewiseSEM::fisherC(model) |> 
+    dplyr::rename("fisherC.P.Value" = "P.Value") |> 
+    dplyr::rename("fisherC.df" = "df") |> rbind(NA)
+  chisq <- piecewiseSEM::LLchisq(model)|> 
+    dplyr::rename("chisq.P.Value" = "P.Value") |> 
+    dplyr::rename("chisq.df" = "df") |> rbind( NA)
+  
+  #add fishC cols
+  results <- cbind(results, fishC, chisq)
+  
+  #
+  res_tib <- tibble::as_tibble(results)
+  
+  return(res_tib)
+}
+
+
+output_sem <- function(model, RES_DIR){
+    
+    # if state to match pattern of file name
+    if(stringr::str_detect(c(model[[1]]$terms[[2]]), "rbr_cv")){
+      if (stringr::str_detect(c(model[[2]]$terms[[2]]), "sens10")){
+        path <- paste0(RES_DIR, "sem_cv_s10.csv")
+      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "sens1")){
+        path <- paste0(RES_DIR, "sem_cv_s1.csv")
+      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "sens2")){
+        path <- paste0(RES_DIR, "sem_cv_s2.csv")
+      }
+    }else if(stringr::str_detect(c(model[[1]]$terms[[2]]), "rbr_extreme")){
+      if (stringr::str_detect(c(model[[2]]$terms[[2]]), "sens10")){
+        path <- paste0(RES_DIR, "sem_ext_s10.csv")
+      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "sens1")){
+        path <- paste0(RES_DIR, "sem_ext_s1.csv")
+      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "sens2")){
+        path <- paste0(RES_DIR, "sem_ext_s2.csv")
+      }
+      
+    }else if(stringr::str_detect(c(model[[1]]$terms[[2]]), "rbr_median")){
+      
+      if (stringr::str_detect(c(model[[2]]$terms[[2]]), "sens10")){
+        path <- paste0(RES_DIR, "sem_med_s10.csv")
+      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "sens1")){
+        path <- paste0(RES_DIR, "sem_med_s1.csv")
+      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "sens2")){
+        path <- paste0(RES_DIR, "sem_med_s2.csv")
+      }
+      
+      
+      
+    }
+  
+  table <- sem_results(model)
+
+    # output dataframes
+    write.csv(table, path)
+    
 }

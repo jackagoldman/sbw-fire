@@ -1,23 +1,6 @@
 ## hypothesis testing
 
 
-#' Join defoliation data and order for t-test
-#'
-#' @param df1 either burn severity of slope results
-#' @param df2 
-#'
-#' @return
-#' @export
-#'
-#' @examples
-order_data <- function(df1, df2){
-  defol <- dplyr::select(df2, c("id", "defoliated"))
-  df <- dplyr::left_join(df1,defol, by ="id") 
-  df <- df[order(df$fire_name),]
-  return(df)
-}
-
-
 
 #' Burn severity t-test function
 #'
@@ -231,6 +214,14 @@ rm_hlm <- function(data){
 }
 
 
+#' Title
+#'
+#' @param data 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 rmHlm_lme <- function(data){
   require(nlme)
   # clean data
@@ -265,22 +256,118 @@ rmHlm_lme <- function(data){
 
 
 
-sem_mod <- function(data, responseType){
+#' Piecewise sem models
+#'
+#' @param data dataframe. from vis_prep function
+#' @param responseType one of Median, Extreme, CV
+#' @param slopeClass one of s1, s2, s10
+#'
+#' @return piecewise sem results
+#' @export
+#'
+#' @examples
+sem_mod <- function(data, responseType, slopeClass){
   
   require(piecewiseSEM)
   
-  if(responseType == "Median")
+  if(slopeClass == "s10"){
   
-  sem <- piecewiseSEM::psem(
+  if(responseType == "Median"){
+  
+    data$composite <- synthetic_index(data, "Median")
     
+  sem <- piecewiseSEM::psem(
     lm(rbr_median ~ composite, data = data),
-    lm(sens10 ~ rbr_median, data = data)
-  )
-  
-  summary(sem)
-  
-  
-  
+    lm(sens10 ~ rbr_median, data = data))
+  }else if(responseType == "Extreme"){
+    
+    data$composite <- synthetic_index(data, "Extreme")
+    
+    
+    sem <- piecewiseSEM::psem(
+      lm(rbr_extreme ~ composite, data = data),
+      lm(sens10 ~ rbr_extreme, data = data))
+    
+    
+  }else if(responseType == "CV"){
+    
+    data$composite <- synthetic_index(data, "CV")
+    
+    
+   sem <- piecewiseSEM::psem(
+      lm(rbr_cv ~ composite, data = data),
+      lm(sens10 ~ rbr_cv, data = data))
+    
+    
+  }}else if(slopeClass == "s1"){
+    
+    if(responseType == "Median"){
+      
+      data$composite <- synthetic_index(data, "Median")
+      
+      sem <- piecewiseSEM::psem(
+        lm(rbr_median ~ composite, data = data),
+        lm(sens1 ~ rbr_median, data = data))
+    }else if(responseType == "Extreme"){
+      
+      data$composite <- synthetic_index(data, "Extreme")
+      
+      
+      sem <- piecewiseSEM::psem(
+        lm(rbr_extreme ~ composite, data = data),
+        lm(sens1 ~ rbr_extreme, data = data))
+      
+      
+    }else if(responseType == "CV"){
+      
+      data$composite <- synthetic_index(data, "CV")
+      
+      
+      sem <- piecewiseSEM::psem(
+        lm(rbr_cv ~ composite, data = data),
+        lm(sens1 ~ rbr_cv, data = data))
+      
+      
+    }
+    
+    
+    
+  }else if(slopeClass == "s2"){
+    
+    if(responseType == "Median"){
+      
+      data$composite <- synthetic_index(data, "Median")
+      
+      sem <- piecewiseSEM::psem(
+        lm(rbr_median ~ composite, data = data),
+        lm(sens2 ~ rbr_median, data = data))
+    }else if(responseType == "Extreme"){
+      
+      data$composite <- synthetic_index(data, "Extreme")
+      
+      
+      sem <- piecewiseSEM::psem(
+        lm(rbr_extreme ~ composite, data = data),
+        lm(sens2 ~ rbr_extreme, data = data))
+      
+      
+    }else if(responseType == "CV"){
+      
+      data$composite <- synthetic_index(data, "CV")
+      
+      
+      sem <- piecewiseSEM::psem(
+        lm(rbr_cv ~ composite, data = data),
+        lm(sens2 ~ rbr_cv, data = data))
+      
+      
+    }
+    
+    
+    
+  }
+ 
+  return(sem)
   
   
   

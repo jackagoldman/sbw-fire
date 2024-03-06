@@ -1,5 +1,21 @@
 # various tools for analysis
 
+#' Join defoliation data and order for t-test
+#'
+#' @param df1 either burn severity of slope results
+#' @param df2 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+order_data <- function(df1, df2){
+  defol <- dplyr::select(df2, c("id", "defoliated"))
+  df <- dplyr::left_join(df1,defol, by ="id") 
+  df <- df[order(df$fire_name),]
+  return(df)
+}
+
 
 
 # calculate difference between severity defoliated to non-defoliated
@@ -302,6 +318,7 @@ synthetic_index <- function(data, responseType){
   beta_years <- summary(comp_model)$coefficients[3, 1]
   
   composite <- beta_td * data$tsd + beta_years * data$cumltve_yrs
+  
   
   return(composite)
   

@@ -1,0 +1,3 @@
+"","Response","Predictor","Estimate","Std.Error","DF","Crit.Value","P.Value","Std.Estimate","Fisher.C","fisherC.df","fisherC.P.Value","Chisq","chisq.df","chisq.P.Value"
+"1","rbr_median","composite",1,0.729,31,1.3718,0.18,0.2573,0.066,2,0.967,262.645,1,0
+"2","sens2","rbr_median",0.0258,0.0171,64,1.5076,0.1366,0.1852,NA,NA,NA,NA,NA,NA

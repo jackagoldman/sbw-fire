@@ -261,3 +261,27 @@ rmHlm_lme <- function(data){
   
   return(df.list)
 }
+
+
+
+
+sem_mod <- function(data, responseType){
+  
+  require(piecewiseSEM)
+  
+  if(responseType == "Median")
+  
+  sem <- piecewiseSEM::psem(
+    
+    lm(rbr_median ~ composite, data = data),
+    lm(sens10 ~ rbr_median, data = data)
+  )
+  
+  summary(sem)
+  
+  
+  
+  
+  
+  
+}

@@ -277,3 +277,95 @@ output_rmHlm <- function(modList, RES_DIR){
   write.csv(s1, pathRmHlm_s1)
   write.csv(s2, pathRmHlm_s2)
 }
+
+
+
+
+#' Calculates synthetic of defoliation severity
+#'
+#' @param data 
+#' @param responseType 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+synthetic_index <- function(data, responseType){
+  
+  
+  if(responseType == "Median"){
+  
+  comp_model <- lm(rbr_median ~ tsd + cumltve_yrs, data = data)
+  
+  beta_td <- summary(comp_model)$coefficients[2, 1]
+
+  beta_years <- summary(comp_model)$coefficients[3, 1]
+  
+  composite <- beta_td * data$tsd + beta_years * data$cumltve_yrs
+  
+  return(composite)
+  
+  }else if(responseType == "Extreme"){
+    
+    comp_model <- lm(rbr_extreme ~ tsd + cumltve_yrs, data = data)
+    
+    beta_td <- summary(comp_model)$coefficients[2, 1]
+    
+    beta_years <- summary(comp_model)$coefficients[3, 1]
+    
+    composite <- beta_td * data$tsd + beta_years * data$cumltve_yrs
+    
+    return(composite)
+    
+  }else if(responseType == "CV"){
+    
+    comp_model <- lm(rbr_cv ~ tsd + cumltve_yrs, data = data)
+    
+    beta_td <- summary(comp_model)$coefficients[2, 1]
+    
+    beta_years <- summary(comp_model)$coefficients[3, 1]
+    
+    composite <- beta_td * data$tsd + beta_years * data$cumltve_yrs
+    
+    return(composite)
+    
+  }else if(responseType == "s10"){
+    
+    comp_model <- lm(sens10 ~ tsd + cumltve_yrs, data = data)
+    
+    beta_td <- summary(comp_model)$coefficients[2, 1]
+    
+    beta_years <- summary(comp_model)$coefficients[3, 1]
+    
+    composite <- beta_td * data$tsd + beta_years * data$cumltve_yrs
+    
+    return(composite)
+    
+  }else if(responseType == "s1"){
+    
+    comp_model <- lm(sens1 ~ tsd + cumltve_yrs, data = data)
+    
+    beta_td <- summary(comp_model)$coefficients[2, 1]
+    
+    beta_years <- summary(comp_model)$coefficients[3, 1]
+    
+    composite <- beta_td * data$tsd + beta_years * data$cumltve_yrs
+    
+    return(composite)
+    
+  }else if(responseType == "s2"){
+    
+    comp_model <- lm(sens2 ~ tsd + cumltve_yrs, data = data)
+    
+    beta_td <- summary(comp_model)$coefficients[2, 1]
+    
+    beta_years <- summary(comp_model)$coefficients[3, 1]
+    
+    composite <- beta_td * data$tsd + beta_years * data$cumltve_yrs
+    
+    return(composite)
+    
+  }
+  
+  
+}

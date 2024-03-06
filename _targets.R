@@ -13,9 +13,17 @@ tar_source("src/hypothesis_testing.R")
 tar_source("src/visualization.R")
 tar_source("src/analysis_tools.R")
 
-
+# directories
 DATA_DIR <- "data/paired_fires/"
 RES_DIR <- "results/"
+
+#parameters names for SEM
+params <- tribble(
+  ~responseType, ~slopeClass,  
+  "Median",  "s10",   
+  "Extreme",  "s1", 
+  "CV",  "s1",  
+) |> tidyr::expand(responseType, slopeClass)
 
 
 # target list

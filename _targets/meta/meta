@@ -1,5 +1,5 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-.Random.seed|object|9119e2d43ba7c1df|||||||||||||||
+.Random.seed|object|4bddd49e14967073|||||||||||||||
 boxplot|stem|7c04f20829425d15|307a2130f4723f41|4c648ed5707b81b4|1882849275||t19776.2538292949s|c5b11fac212a3cb3|552146|rds|local|vector|||0.479|package ggplot2 was built under R version 4.3.1|
 change_direction|function|33757ae1949c3552|||||||||||||||
 chisq|function|d3920b94a6c41bf3|||||||||||||||
@@ -26,8 +26,9 @@ order_data|function|de7d4bab997b7b2e|||||||||||||||
 output|stem|d36ea1299fa8d732|3e55602db209f4b0|bd8e60347693348d|3939470||t19776.2538295122s|44e327d1ee1978d7|43|rds|local|vector|||0.015||
 output_chisq|function|eb04cec0cfb47f77|||||||||||||||
 output_rmHlm|function|899913bb8d723c96|||||||||||||||
+output_sem|function|69f4bb12b49c5040|||||||||||||||
 output_ttest|function|11d7a7c25b6a4f96|||||||||||||||
-project_report|stem|8bb9b3fbf7495859|e9e3306d251da835|50e4097f777119b1|97448406|project_report.html*project_report.Rmd|t19783.5979177438s|85b5acbc41b15f1d|3120940|file|local|vector|||2.298||
+project_report|stem|ad10941f36136105|a7b31f4f3c7afa2b|6f05bb4520aa57d7|97448406|project_report.html*project_report.Rmd|t19788.6884967441s|1375d513b665a8ce|3224227|file|local|vector|||3.031||
 recovery_ttest|function|68716afe83dfe7ac|||||||||||||||
 recovery_visBox|function|a34dc7232973252e|||||||||||||||
 recoverySlope_lm|function|291cd77f9dffd1cd|||||||||||||||
@@ -40,6 +41,26 @@ rmHlm_models|stem|6fc85475f3f723f7|d2505b011f3b4f8a|5519cf53841332c4|-478090533|
 rmHlm_ouput|stem|d36ea1299fa8d732|066721b79d80e16a|d8205188d900bb91|-422834683||t19785.557300334s|44e327d1ee1978d7|43|rds|local|vector|||0.008||
 rmHlm_prep|function|d78accf08f1c7763|||||||||||||||
 rmHlm_results|function|100336301245e420|||||||||||||||
+sem_CV_s1|stem|b80d647851c749f5|d62fd8303c6f10b0|2b48fe434c99ba0e|-1197582666||t19788.6884545663s|c9ae3798f694fa77|12270|rds|local|vector|||0.003|NAs detected in the dataset. Consider removing all rows with NAs to prevent fitting to different subsets of data|
+sem_CV_s10|stem|5f6460a333a8a102|6466a03fed51b981|2b48fe434c99ba0e|-2125717681||t19788.6884541897s|c9ae3798f694fa77|12270|rds|local|vector|||0.045|NAs detected in the dataset. Consider removing all rows with NAs to prevent fitting to different subsets of data|
+sem_CV_s2|stem|dc7781899614ee56|71b270f2fe3a714a|2b48fe434c99ba0e|-2128086298||t19788.688454627s|306cbe1c05511981|12272|rds|local|vector|||0.003|NAs detected in the dataset. Consider removing all rows with NAs to prevent fitting to different subsets of data|
+sem_Extreme_s1|stem|0b7f2684dbe45a87|ee477d30247aa448|2b48fe434c99ba0e|1831284550||t19788.688454259s|d79b60667ba3c2cb|12238|rds|local|vector|||0.003|NAs detected in the dataset. Consider removing all rows with NAs to prevent fitting to different subsets of data|
+sem_Extreme_s10|stem|d8491c7c16298aeb|d16f973001fd54c8|2b48fe434c99ba0e|-1534255802||t19788.6884545107s|6aac9061dd99fc98|12251|rds|local|vector|||0.002|NAs detected in the dataset. Consider removing all rows with NAs to prevent fitting to different subsets of data|
+sem_Extreme_s2|stem|8356e86fdc5ba8f6|bbf2b1766e2c9c40|2b48fe434c99ba0e|-1429724988||t19788.6884543199s|75a47b2678448c12|12239|rds|local|vector|||0.003|NAs detected in the dataset. Consider removing all rows with NAs to prevent fitting to different subsets of data|
+sem_Median_s1|stem|f1e195c180aa3b70|7cd4eddf73897683|2b48fe434c99ba0e|124283264||t19788.6884543845s|aad086a12c143996|12213|rds|local|vector|||0.002|NAs detected in the dataset. Consider removing all rows with NAs to prevent fitting to different subsets of data|
+sem_Median_s10|stem|859299f8f0c6cb5b|256d77b613707da7|2b48fe434c99ba0e|291365727||t19788.6884535715s|02a809cb61eb27e1|12236|rds|local|vector|||0.405|NAs detected in the dataset. Consider removing all rows with NAs to prevent fitting to different subsets of data|
+sem_Median_s2|stem|adca2d561af68514|ffff7c978b8b213b|2b48fe434c99ba0e|1904338547||t19788.6884544437s|0575bb21b7c9cdc7|12219|rds|local|vector|||0.002|NAs detected in the dataset. Consider removing all rows with NAs to prevent fitting to different subsets of data|
+sem_mod|function|37d719fa89171787|||||||||||||||
+sem_output_CV_s1|stem|d36ea1299fa8d732|a41ec39f4827ff23|abde8a4e2147bd49|-148728002||t19788.6884601387s|44e327d1ee1978d7|43|rds|local|vector|||0.012|argument is not an atomic vector coercing. argument is not an atomic vector coercing. argument is not an atomic vector coercing|
+sem_output_CV_s10|stem|d36ea1299fa8d732|99aecc6420b04843|83205b1595a7b3e7|-1124457408||t19788.688459092s|44e327d1ee1978d7|43|rds|local|vector|||0.037|argument is not an atomic vector coercing. argument is not an atomic vector coercing|
+sem_output_CV_s2|stem|d36ea1299fa8d732|1f4e196a65c1fe49|0e8dd5a958eeffec|-2084205031||t19788.6884603464s|44e327d1ee1978d7|43|rds|local|vector|||0.016|argument is not an atomic vector coercing. argument is not an atomic vector coercing. argument is not an atomic vector coercing. argument is not an atomic vector coercing|
+sem_output_Extreme_s1|stem|d36ea1299fa8d732|0688f61fe80c5752|b5411f37fda20c80|-351643688||t19788.6884592562s|44e327d1ee1978d7|43|rds|local|vector|||0.012|argument is not an atomic vector coercing. argument is not an atomic vector coercing. argument is not an atomic vector coercing. argument is not an atomic vector coercing|
+sem_output_Extreme_s10|stem|d36ea1299fa8d732|0f6c481054314b50|ee70d7ad86b11fa9|1178613032||t19788.6884599751s|44e327d1ee1978d7|43|rds|local|vector|||0.012|argument is not an atomic vector coercing. argument is not an atomic vector coercing. argument is not an atomic vector coercing|
+sem_output_Extreme_s2|stem|d36ea1299fa8d732|576633b403a794d8|dcca3473c2caa718|-845325020||t19788.688459424s|44e327d1ee1978d7|43|rds|local|vector|||0.012|argument is not an atomic vector coercing. argument is not an atomic vector coercing. argument is not an atomic vector coercing. argument is not an atomic vector coercing. argument is not an atomic vector coercing|
+sem_output_Median_s1|stem|d36ea1299fa8d732|f9df5d33771443a2|b2ab9c5ab2b6d95d|361238562||t19788.688459598s|44e327d1ee1978d7|43|rds|local|vector|||0.013|argument is not an atomic vector coercing. argument is not an atomic vector coercing. argument is not an atomic vector coercing. argument is not an atomic vector coercing. argument is not an atomic vector coercing|
+sem_output_Median_s10|stem|d36ea1299fa8d732|452374ad7d19cba9|e56d94e327518732|1635251527||t19788.6884586213s|44e327d1ee1978d7|43|rds|local|vector|||0.337|argument is not an atomic vector coercing. argument is not an atomic vector coercing. argument is not an atomic vector coercing. argument is not an atomic vector coercing|
+sem_output_Median_s2|stem|d36ea1299fa8d732|22d1fcf086a6c2d5|543c2c4649479e98|494698100||t19788.6884598113s|44e327d1ee1978d7|43|rds|local|vector|||0.013|argument is not an atomic vector coercing. argument is not an atomic vector coercing. argument is not an atomic vector coercing. argument is not an atomic vector coercing. argument is not an atomic vector coercing. argument is not an atomic vector coercing|
+sem_results|function|416728ac1d232972|||||||||||||||
 sens_recovery|stem|c502c389989d2cf4|8ad202bc93e05bdc|78ef8a5e63cfc218|1249831624||t19770.0393803066s|ee2e52779bcc455e|5285|rds|local|vector|||3.02|cols is now required when using unnest.ℹ Please use cols  cfId, sens1, sens2, uppr1, uppr2, lwr1, lwr2, sens10,  uppr10, lwr10.|
 sev_df|stem|cb1df8cf18fbbd9e|2165c5dc26b67743|f3629d03a87d94ae|1279755305||t19776.0240096257s|0131d98b4b4dc9f6|2527|rds|local|vector|||0.098||
 sev_order|stem|a68985c5736027ee|180f2f06df19d406|c6cc88c51b2b9371|-1741845067||t19776.024010305s|7f2a484b6af6e7e1|2317|rds|local|vector|||0.006||
@@ -53,6 +74,7 @@ slope_order|stem|6d48155d0c4298b9|2dd85dc845c8e5f2|a7c21a49e63735e7|-220059367||
 slopePostProcess|function|9c32d64a04f05af5|||||||||||||||
 slopePrep|function|20a786a6dd2972d6|||||||||||||||
 summarySE|function|b21c86fc802a79c5|||||||||||||||
+synthetic_index|function|368959249d2c9a2e|||||||||||||||
 trend_plot|function|f9ab2e8ffb2bdf7a|||||||||||||||
 trendPlot|stem|88d90cf581508cf9|e1371293df490668|f21ea514455f92b8|-1730397295||t19776.2421806747s|8a0c859820c41d52|96807|rds|local|vector|||0.104|package plyr was built under R version 4.3.1. package ggplot2 was built under R version 4.3.1|
 trendPrep|function|c58ed64f559353ed|||||||||||||||

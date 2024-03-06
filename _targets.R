@@ -108,7 +108,7 @@ list(
       "CV",  "s2",  
     ) |> tidyr::expand(responseType, slopeClass),
     
-    tar_target(sem,sem_mod(data, responseType, slopeClass)),
+    tar_target(sem,sem_mod(vis_data, responseType, slopeClass)),
     tar_target(sem_output, output_sem(sem, RES_DIR))
     
   ),

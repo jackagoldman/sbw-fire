@@ -142,6 +142,11 @@ rmHlm_table(read_csv("results/rmhlm_s2_results.csv", col_select = c(2:7)), "s2")
 ```
 
 
+SEM RESULTS
+
+```{r}
+
+```
 
 
 

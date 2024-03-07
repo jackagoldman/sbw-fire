@@ -71,10 +71,7 @@ DiagrammeR::grViz("Figures/chapter3-step1-dag.gv")
 ```
 
 
-In this DAG we see that time since defoliation, presence/absence of defoliation (defoliated) and number of years defoliated are combined to form the synthetic index (defoliation intensity) which is then used to predict the effects on burn severity and forest recovery. Defoliation intensity will directly effect forest recovery by altering stand structure and forest composition prior to fire, which will impact the number and distribution species and their seed banks that are able to establish post fire, thus affecting the recovery trajectory. Similarly, defoliation intensity will effect burn severity by either increasing or decreasing severity which will lead to a change in the recovery trajectory by either increasing or decreasing the slope of recovery.
-
-## Expected results
-
+In this DAG we see that time since defoliation, and number of years defoliated are combined to form the synthetic index (defoliation intensity) which is then used to predict the effects on burn severity and forest recovery. Defoliation intensity will indirectly effect forest recovery by altering stand structure and forest composition prior to fire, which will impact the number and distribution species and their seed banks that are able to establish post fire, thus affecting the recovery trajectory. Similarly, defoliation intensity will effect burn severity by either increasing or decreasing severity which will lead to a change in the recovery trajectory by either increasing or decreasing the slope of recovery.
 
 
 ## Preliminary results
@@ -85,15 +82,20 @@ In this DAG we see that time since defoliation, presence/absence of defoliation 
 severity_table(targets::tar_read(sev_ttest))
 ```
 
+Severity visualization
+```{r, echo = FALSE, fig.width=8,fig.height=20}
+targets::tar_read(lolliplot_sev)
+
+```
 #### How does spruce budworm defoliation influence post-fire recovery?
 
 ```{r, echo = FALSE}
 slope_table(targets::tar_read(slo_ttest))
 ```
 
-Severity visualization
-```{r, echo = FALSE}
-targets::tar_read(lolliplot_sev)
+Slope visualization
+```{r, fig.width=8,fig.height=20}
+targets::tar_read(lolliplot_slope)
 
 ```
 
@@ -148,6 +150,13 @@ Slope of recovery 6-10 year
 rmHlm_table(read_csv("results/rmhlm_s2_results.csv", col_select = c(2:7)), "s2")
 
 ```
+
+
+
+
+
+
+
 
 
 ## Significance

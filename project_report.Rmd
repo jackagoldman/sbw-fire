@@ -17,10 +17,9 @@ library(readr)
 
 ## Background
 
-Boreal forests are highly complex ecosystems that are shaped by the interaction between forest structure and composition, topography, climate and weather, and disturbance regimes. This complexity causes general uncertainty around what are the particular drivers of ecosystem processes, such as wildfires. Wildfires are the primary disturbance agent that allows for forest regeneration and helps to maintain forest structure and function. Because of the central role that wildfires play in the boreal forest, it is therefore crucial to understand where they occur, why they occur and what factors influence their behaviour. Many researchers have posited that insect disturbance such as spruce budworm defoliation, which is another widespread disturbance agent across the boreal forest, has a strong impact on wildfire likelihood and behaviour by changing the abundance, structure and connectivity of combustible fuels. However, wildfires are relatively uncommon in the boreal forest, occurring on average between 50 and 200 years and the spatial legacies of insect disturbance persist just for a short window (~15 years). Additionally, both wildfires and spruce budworm defoliation affect a vast amount of area annually (give stats), therefore it is difficult to detect a small signal increas noise....
+Boreal forests are highly complex ecosystems that are shaped by the interaction between forest structure and composition, topography, climate and weather, and disturbance regimes. This complexity causes general uncertainty around what are the particular drivers of ecosystem processes, such as wildfires. Wildfires are the primary disturbance agent that allows for forest regeneration and helps to maintain forest structure and function. Because of the central role that wildfires play in the boreal forest, it is therefore crucial to understand where they occur, why they occur and what factors influence their behaviour. Many researchers have posited that insect disturbance such as spruce budworm defoliation, which is another widespread disturbance agent across the boreal forest, has a strong impact on wildfire likelihood and behaviour by changing the abundance, structure and connectivity of combustible fuels. However, wildfires are relatively uncommon in the boreal forest, occurring on average between 50 and 200 years and the spatial legacies of insect disturbance persist just for a short window (\~15 years). Additionally, both wildfires and spruce budworm defoliation affect a vast amount of area annually (give stats), therefore it is difficult to detect a small signal increas noise....
 
 To date, current evidence on the impact of the spatial legacies of defoliation is mixed, reporting positive, negative and neutral effects. This uncertainty is in part driven by the ability to detect where particular changes in fuel or legacies of defoliation have overlapped with wildfires. Recent advances in remote sensing offers exciting prospects to utilize novel spatial data combined with thoughtful experimental design to reduce uncertainty around the effects of spruce budworm defoliation on fuels and wildfire behaviour. We are now able to remove or reduce uncertainty through better experimental design and approaches to big data problems. Here, we used a paired design within fires that have both areas that were affected by insect defoliation and not affected to attempt to resolve this uncertainty,
-
 
 ## Questions
 
@@ -34,7 +33,7 @@ Specifically we will address the following questions:
     III. Is there a difference in variability in burn severity between defoliated and non-defoliated fires
 2.  How does spruce budworm defoliation influence post-fire recovery?
     I.  Is there a difference in forest recovery 10 years post-fire between defoliated and non-defoliated fires?
-    II.  Is there a difference in forest recovery between 1-5 years and 6-10 years between defoliated and non-defoliated fires?
+    II. Is there a difference in forest recovery between 1-5 years and 6-10 years between defoliated and non-defoliated fires?
 3.  Is the strength of the relationship between defoliation intensity (synthetic index) and burn severity or forest recovery greater than independent metrics of defoliation?
 4.  Does defoliation intensity (synthetic index) capture more variation in burn severity and forest recovery relative to defoliation metrics modeled independently?
 
@@ -60,9 +59,7 @@ DiagrammeR::grViz("Figures/chapter3-step1-dag.gv")
 
 ```
 
-
 In this DAG we see that time since defoliation, and number of years defoliated are combined to form the synthetic index (defoliation intensity) which is then used to predict the effects on burn severity and forest recovery. Defoliation intensity will indirectly effect forest recovery by altering stand structure and forest composition prior to fire, which will impact the number and distribution species and their seed banks that are able to establish post fire, thus affecting the recovery trajectory. Similarly, defoliation intensity will effect burn severity by either increasing or decreasing severity which will lead to a change in the recovery trajectory by either increasing or decreasing the slope of recovery.
-
 
 ## Preliminary results
 
@@ -73,10 +70,12 @@ severity_table(targets::tar_read(sev_ttest))
 ```
 
 Severity visualization
+
 ```{r, echo = FALSE, fig.width=8,fig.height=20}
 targets::tar_read(lolliplot_sev)
 
 ```
+
 #### How does spruce budworm defoliation influence post-fire recovery?
 
 ```{r, echo = FALSE}
@@ -84,11 +83,11 @@ slope_table(targets::tar_read(slo_ttest))
 ```
 
 Slope visualization
+
 ```{r, fig.width=8,fig.height=20}
 targets::tar_read(lolliplot_slope)
 
 ```
-
 
 #### Is there a difference in the direction of the effects ?
 
@@ -102,20 +101,24 @@ First, we fit repeated measures linear mixed effects models with an interaction 
 
 $Y_{i} = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} +\beta_3X_{1i}X_{2i} + u_{i} \epsilon_{i}$.
 
-Where Y = the response variable of interest and </i>i</i> = for the </i>i</i> th fire,  $\beta_1X_{1i}$ = time since disturbance (tsd), $\beta_2X_{2i}$ = cumulative years of defoliation (cyd), $+\beta_3X_{1i}X_{2i}$  = interaction between tsd and cyd, $u_{i}$ = random intercept for paired fire id.
+Where Y = the response variable of interest and </i>i</i> = for the </i>i</i> th fire, $\beta_1X_{1i}$ = time since disturbance (tsd), $\beta_2X_{2i}$ = cumulative years of defoliation (cyd), $+\beta_3X_{1i}X_{2i}$ = interaction between tsd and cyd, $u_{i}$ = random intercept for paired fire id.
 
 Median Severity
+
 ```{r, echo=FALSE, message=FALSE}
 rmHlm_table(read_csv("results/rmhlm_med_results.csv", col_select = c(2:7)), "Median")
 
 ```
 
 Extreme Severity
+
 ```{r, echo = FALSE, message=FALSE}
 rmHlm_table(read_csv("results/rmhlm_ext_results.csv", col_select = c(2:7)), "Extreme")
 
 ```
+
 Variability in Severity
+
 ```{r, echo = FALSE, message=FALSE}
 rmHlm_table(read_csv("results/rmhlm_cv_results.csv", col_select = c(2:7)), "CV")
 
@@ -134,6 +137,7 @@ Slope of recovery 1-5 year
 rmHlm_table(read_csv("results/rmhlm_s1_results.csv", col_select = c(2:7)), "s1")
 
 ```
+
 Slope of recovery 6-10 year
 
 ```{r, echo = FALSE, message=FALSE}
@@ -141,19 +145,12 @@ rmHlm_table(read_csv("results/rmhlm_s2_results.csv", col_select = c(2:7)), "s2")
 
 ```
 
-
 SEM RESULTS
 
 ```{r}
 
 ```
 
-
-
-
-
-
-
 ## Significance
 
-Land managers in the boreal forest region require information about burn severity to address immediate hazards and outcomes resulting from wildfires. Understanding how previous disturbance history shapes patterns of burn severity is needed to guide management activities and ensure downstream ecosystem provisioning when threatened by multiple disturbances. Results from this chapter will provide a framework for modelling the effects of spruce budworm defoliation on wildfire severity and help managers identify areas that are at the highest risk of losing valuable ecosystem services. 
+Land managers in the boreal forest region require information about burn severity to address immediate hazards and outcomes resulting from wildfires. Understanding how previous disturbance history shapes patterns of burn severity is needed to guide management activities and ensure downstream ecosystem provisioning when threatened by multiple disturbances. Results from this chapter will provide a framework for modelling the effects of spruce budworm defoliation on wildfire severity and help managers identify areas that are at the highest risk of losing valuable ecosystem services.

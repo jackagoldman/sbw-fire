@@ -20,7 +20,7 @@ RES_DIR <- "results/"
 
 # target list
 list(
-  # set file path
+  # set file paths
   tar_target(name = file, "data/paired_fires/fire_recovery.csv", format = "file"),
   
   # read in file

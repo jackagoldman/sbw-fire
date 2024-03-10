@@ -1,4 +1,4 @@
 "","Test","t-value","df","P-value"
-"1","Median Severity","-12.1647870670551","65","<0.0001"
-"2","Extreme Severity","-25.3390680767449","65","<0.0001"
-"3","Variability in Severity","-2.83043157076872","65","0.006"
+"1","Median Severity","-1.15710069513515","32","0.256"
+"2","Extreme Severity","1.44909280189284","32","0.157"
+"3","Variability in Severity","1.64244842875907","32","0.110"

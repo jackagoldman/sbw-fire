@@ -16,9 +16,9 @@ severity_ttest <-  function(df){
   op <- options(scipen=999)
   on.exit(options(op), add = TRUE)
   # run paired t-test
-  res_median <- t.test(df$defoliated, df$rbr_median, paired = TRUE) 
-  res_extreme <- t.test(df$defoliated, df$rbr_extreme, paired  = TRUE)
-  res_cv <- t.test(df$defoliated, df$rbr_cv, paired = TRUE)
+  res_median <- t.test(df$rbr_median ~ df$defoliated, paired = TRUE) 
+  res_extreme <- t.test(df$rbr_extreme ~ df$defoliated, paired  = TRUE)
+  res_cv <- t.test(df$rbr_cv ~ df$defoliated, paired = TRUE)
   
   # extract values
   median_t <- res_median$statistic[[1]]
@@ -79,9 +79,9 @@ recovery_ttest <- function(df){
   on.exit(options(op), add = TRUE)
   
   # run paired t-test
-  sens10 <- t.test(df$defoliated, df$sens10, paired = TRUE) 
-  sens1 <- t.test(df$defoliated, df$sens1, paired = TRUE) 
-  sens2 <- t.test(df$defoliated, df$sens2, paired = TRUE) 
+  sens10 <- t.test(df$sens10 ~ df$defoliated, paired = TRUE) 
+  sens1 <- t.test(df$sens1 ~ df$defoliated, paired = TRUE) 
+  sens2 <- t.test(df$sens2 ~ df$defoliated, paired = TRUE) 
   
   # extract values
   s10_t <- sens10$statistic[[1]]

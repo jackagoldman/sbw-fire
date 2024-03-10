@@ -1,5 +1,5 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-.Random.seed|object|8176a2c48acd9267|||||||||||||||
+.Random.seed|object|7018e55e650bc30c|||||||||||||||
 boxplot|stem|7c04f20829425d15|307a2130f4723f41|4c648ed5707b81b4|1882849275||t19776.2538292949s|c5b11fac212a3cb3|552146|rds|local|vector|||0.479|package ggplot2 was built under R version 4.3.1|
 change_direction|function|33757ae1949c3552|||||||||||||||
 chisq|function|d3920b94a6c41bf3|||||||||||||||
@@ -28,8 +28,8 @@ output_chisq|function|eb04cec0cfb47f77|||||||||||||||
 output_rmHlm|function|899913bb8d723c96|||||||||||||||
 output_sem|function|69f4bb12b49c5040|||||||||||||||
 output_ttest|function|11d7a7c25b6a4f96|||||||||||||||
-project_report|stem|dd05fb066542d879|e861d7695f41274f|559afb20589e235e|97448406|project_report.html*project_report.Rmd|t19789.8199966392s|485f1bf27d642d50|4662568|file|local|vector|||3.486||
-recovery_ttest|function|68716afe83dfe7ac|||||||||||||||
+project_report|stem|40bc0d314e86306b|e861d7695f41274f|16aee9a6e19c6958|97448406|project_report.html*project_report.Rmd*project_report_files|t19792.8514602398s|5a1026aaad4a7d19|5226516|file|local|vector|||3.09||
+recovery_ttest|function|522b8480a28304d5|||||||||||||||
 recovery_visBox|function|a34dc7232973252e|||||||||||||||
 recoverySlope_lm|function|291cd77f9dffd1cd|||||||||||||||
 recoverySlope_sens|function|1ac34e9eecdea84b|||||||||||||||
@@ -64,10 +64,10 @@ sem_results|function|416728ac1d232972|||||||||||||||
 sens_recovery|stem|c502c389989d2cf4|8ad202bc93e05bdc|78ef8a5e63cfc218|1249831624||t19770.0393803066s|ee2e52779bcc455e|5285|rds|local|vector|||3.02|cols is now required when using unnest.ℹ Please use cols  cfId, sens1, sens2, uppr1, uppr2, lwr1, lwr2, sens10,  uppr10, lwr10.|
 sev_df|stem|cb1df8cf18fbbd9e|2165c5dc26b67743|f3629d03a87d94ae|1279755305||t19776.0240096257s|0131d98b4b4dc9f6|2527|rds|local|vector|||0.098||
 sev_order|stem|a68985c5736027ee|180f2f06df19d406|c6cc88c51b2b9371|-1741845067||t19776.024010305s|7f2a484b6af6e7e1|2317|rds|local|vector|||0.006||
-sev_ttest|stem|0a8be5f11053eca7|46bee33b4e4cb884|cec3183985b4f4d4|264167306||t19776.0394073498s|bd9cdb2e6c3ecc89|253|rds|local|vector|||0.017||
+sev_ttest|stem|f76b7d73f2ce87dd|46bee33b4e4cb884|984e243fad801473|264167306||t19792.8495399571s|24647c65900306d3|252|rds|local|vector|||0.025||
 severity_data|stem|e6d1b0e6f599eeda|f8479d83f5abde9b|ef46db3751d8e999|-323836516|data/paired_fires/fire_severity.csv|t19769.6375532199s|26495ecc5a6815fa|4900|file|local|vector|||0.092|package dplyr was built under R version 4.3.1. package trend was built under R version 4.3.1|
-severity_ttest|function|4f91bd762a17376b|||||||||||||||
-slo_ttest|stem|3625599622432a46|57e09bf48aa569f4|03936b34f819f3f4|-1809464938||t19776.2491305738s|036fa79c5dd9944c|238|rds|local|vector|||0.013||
+severity_ttest|function|0a07834baf7e1e99|||||||||||||||
+slo_ttest|stem|f06f2e1999276476|57e09bf48aa569f4|7982d06f7eba8a7e|-1809464938||t19792.8514185766s|5447202e06fd19c7|241|rds|local|vector|||0.03||
 slope_data|stem|e398ef7d5c3984da|9f233ffbbcc0fcef|ef46db3751d8e999|-1713951195|data/paired_fires/recovery_sensSlope.csv|t19779.2349680297s|1f92ea9b4244a66f|12010|file|local|vector|||0||
 slope_df|stem|896708e530b4f9fe|cebc180869115b60|cd6ebeeb370a1814|1114952362||t19776.0240101997s|870b4c7f9ab1f6f8|5680|rds|local|vector|||0.028||
 slope_order|stem|6d48155d0c4298b9|2dd85dc845c8e5f2|a7c21a49e63735e7|-220059367||t19776.2488491104s|d73ead1037cc20ac|5450|rds|local|vector|||0.005||
@@ -79,7 +79,8 @@ trend_plot|function|f9ab2e8ffb2bdf7a|||||||||||||||
 trendPlot|stem|88d90cf581508cf9|e1371293df490668|f21ea514455f92b8|-1730397295||t19776.2421806747s|8a0c859820c41d52|96807|rds|local|vector|||0.104|package plyr was built under R version 4.3.1. package ggplot2 was built under R version 4.3.1|
 trendPrep|function|c58ed64f559353ed|||||||||||||||
 ts_data|stem|3167a92191341c20|1740a42df7f8c75a|c357e682b59d251c|1309911760||t19776.0394071143s|bc904a872d6d330d|6222|rds|local|vector|||0.009||
-ttest_results|stem|d36ea1299fa8d732|e90aabb79ef7c378|0ddc914ddcccc89a|1690389573||t19783.5738141303s|44e327d1ee1978d7|43|rds|local|vector|||0||
+ttest_results|stem|d36ea1299fa8d732|e90aabb79ef7c378|8da23c3d1f185a78|1690389573||t19792.8514622966s|44e327d1ee1978d7|43|rds|local|vector|||0.002||
 txtgrob_annttion|function|077dc0aeea0d06fb|||||||||||||||
 vis_data|stem|5e8f4a5b123ea1e7|59d94cced49baad4|15f7dc0600c822d3|-1567248242||t19782.5231966062s|15f33c306bcba030|7211|rds|local|vector|||0.011||
 vis_prep|function|57b5b4638b97fda5|||||||||||||||
+wide_order|function|1a4b6eb0e0729a98|||||||||||||||

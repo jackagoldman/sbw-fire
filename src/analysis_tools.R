@@ -17,7 +17,6 @@ order_data <- function(df1, df2){
 }
 
 
-
 # calculate difference between severity defoliated to non-defoliated
 #' This function computes the difference between burn severity and slope for paired fires and returns columns with 
 #' amout difference and whether the overall trend was increasing or decreasing

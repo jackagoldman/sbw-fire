@@ -25,24 +25,26 @@ recoverySlope_lm <- function(data){
     mod1 <- lm(nbr ~ (recovery_interval == 1), data = row2)
     #run second model
     mod2 <- lm(nbr ~ (recovery_interval == 2), data = row2)
-    summary(mod1)
+    #run third model
+    mod3 <- lm(nbr ~ recovery_interval, data = row2)
+    
     #get coefficients
     cf1 <- coef(mod1)
     cf2 <- coef(mod2)
-    
+    cf10 <- coef(mod3)
     #get slope
     slope1 <- cf1[2]
     slope2 <- cf2[2]
-    
+    slope10 <- cf10[2]
     #get se
     se1 <- sqrt(diag(vcov(mod1)))[2]
     se2 <- sqrt(diag(vcov(mod2)))[2]
-    
+    se3 <- sqrt(diag(vcov(mod3)))[2]
 
-    vec <- c(fId, slope1, slope2, se1, se2)
-    names(vec) <- c("fId", "slope1", "slope2", "se1", "se2")
+    vec <- c(fId, slope10, slope1, slope2,se10, se1, se2)
+    names(vec) <- c("fId", "slope10", "slope1", "slope2", "se10", "se1", "se2")
     
-    vec <-  vec[1:5]
+    vec <-  vec[1:7]
     
     mylist[[i]] <- vec
     i+1

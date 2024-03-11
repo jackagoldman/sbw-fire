@@ -21,7 +21,7 @@ RES_DIR <- "results/"
 # target list
 list(
   # set file paths
-  tar_target(name = file, "data/paired_fires/fire_recovery.csv", format = "file"),
+  tar_target(name = file, "data/paired_fires/on-qc-recovery-table.csv", format = "file"),
   
   # read in file
   tar_target(name = data, getData(file)),
@@ -42,10 +42,10 @@ list(
   tar_target(name = output, slopePostProcess(lm_recovery, sens_recovery, ids, DATA_DIR)),
   
   # set file path to severity data
-  tar_target(name = severity_data, "data/paired_fires/fire_severity.csv", format = "file"),
+  tar_target(name = severity_data, "data/paired_fires/on-qc-severity-table.csv", format = "file"),
   
   # set file path to defol data
-  tar_target(name = defol_data, "data/paired_fires/fire_defol.csv", format = "file"),
+  tar_target(name = defol_data, "data/paired_fires/on-qc-defol-table.csv", format = "file"),
   
   #  read in severity data
   tar_target(name = sev_df, getData(severity_data)),

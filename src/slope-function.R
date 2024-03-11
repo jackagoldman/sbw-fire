@@ -9,7 +9,7 @@
 #'
 #' @examples
 recoverySlope_lm <- function(data){
-  
+  require(tidyr)
   # create empty list
   mylist <- list()
   
@@ -39,7 +39,7 @@ recoverySlope_lm <- function(data){
     #get se
     se1 <- sqrt(diag(vcov(mod1)))[2]
     se2 <- sqrt(diag(vcov(mod2)))[2]
-    se3 <- sqrt(diag(vcov(mod3)))[2]
+    se10 <- sqrt(diag(vcov(mod3)))[2]
 
     vec <- c(fId, slope10, slope1, slope2,se10, se1, se2)
     names(vec) <- c("fId", "slope10", "slope1", "slope2", "se10", "se1", "se2")
@@ -50,7 +50,7 @@ recoverySlope_lm <- function(data){
     i+1
   }
   res <- do.call(rbind, mylist)
-  res <- res |> as.tibble(.name_repair = 'unique') |>  
+  res <- res |> tidyr::as_tibble(.name_repair = 'unique') |>  
     group_by(fId) |> 
     slice_head(n = 1) |> 
     unnest( )

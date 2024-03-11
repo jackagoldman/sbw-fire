@@ -69,7 +69,7 @@ list(
   tar_target(name = slope_order, order_data(slope_df, defol_df)),
   
   #slope ttest
-  tar_target(name = slo_ttest, recovery_ttest(slope_order)),
+  tar_target(name = slo_ttest, recovery_ttest(slope_order, "sens")),
   
   # save severity and slope ttest results
   tar_target(name = ttest_results, output_ttest(sev_ttest, slo_ttest, RES_DIR)),
@@ -94,7 +94,7 @@ list(
   tar_target(name = trendPlot, trend_plot(ts_data)),
   
   # repeated measure hierarchical linear model (nlme)
-  tar_target(name = rmHlm_models, rmHlm_lme(vis_data)),
+  tar_target(name = rmHlm_models, rmHlm_lme(vis_data, "lm")),
   
   # save rm hlm results
   tar_target(name = rmHlm_ouput,output_rmHlm(rmHlm_models, RES_DIR)),

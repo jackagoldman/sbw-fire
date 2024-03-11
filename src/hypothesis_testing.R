@@ -72,11 +72,14 @@ severity_ttest <-  function(df){
 #' @export
 #'
 #' @examples
-recovery_ttest <- function(df){
+recovery_ttest <- function(df, slopeType){
+  
   
   # make sure function does not use scientific notation 
   op <- options(scipen=999)
   on.exit(options(op), add = TRUE)
+  
+  if(slopeType == "sens"){
   
   # run paired t-test
   sens10 <- t.test(df$sens10 ~ df$defoliated, paired = TRUE) 
@@ -95,6 +98,28 @@ recovery_ttest <- function(df){
   s2_t <- sens2$statistic[[1]]
   s2_p <- sens2$p.value
   s2_df <- sens2$parameter[[1]]
+  
+  }else if(slopeType == "lm"){
+    
+    # run paired t-test
+    sens10 <- t.test(df$slope10 ~ df$defoliated, paired = TRUE) 
+    sens1 <- t.test(df$slope1 ~ df$defoliated, paired = TRUE) 
+    sens2 <- t.test(df$slope2 ~ df$defoliated, paired = TRUE) 
+    
+    # extract values
+    s10_t <- sens10$statistic[[1]]
+    s10_p <- sens10$p.value
+    s10_df <- sens10$parameter[[1]]
+    
+    s1_t <- sens1$statistic[[1]]
+    s1_p <- sens1$p.value
+    s1_df <- sens1$parameter[[1]]
+    
+    s2_t <- sens2$statistic[[1]]
+    s2_p <- sens2$p.value
+    s2_df <- sens2$parameter[[1]]
+    
+  }
   
   #make df
   cols <- c("Test", "t-value", "df", "P-value")
@@ -222,11 +247,12 @@ rm_hlm <- function(data){
 #' @export
 #'
 #' @examples
-rmHlm_lme <- function(data){
+rmHlm_lme <- function(data, slopeType){
   require(nlme)
   # clean data
   data <- rmHlm_prep(data)
   
+  if(slopeType == "sens"){
   # rbr median
   mod.med <- nlme::lme(rbr_median ~ tsd*cumltve_yrs  , random = ~1| id_nest, data = data)
   # rbr extreme
@@ -249,6 +275,33 @@ rmHlm_lme <- function(data){
   s2.res <- rmHlm_results(mod.s2, "s2", "nlme")
   
   df.list = list(med.res, ext.res, cv.res, s10.res, s1.res, s2.res)
+  }else if(slopeType == "lm"){
+    
+    # rbr median
+    mod.med <- nlme::lme(rbr_median ~ tsd*cumltve_yrs  , random = ~1| id_nest, data = data)
+    # rbr extreme
+    mod.ext <- nlme::lme(rbr_extreme ~ tsd*cumltve_yrs  , random = ~ 1 | id_nest, data = data)
+    #rbr cv 
+    mod.cv <- nlme::lme(rbr_cv ~ tsd*cumltve_yrs  , random = ~ 1 | id_nest, data = data)
+    #sens 10
+    mod.s10 <- nlme::lme(slope10 ~ tsd*cumltve_yrs  , random = ~ 1 | id_nest, data = data)
+    #sens 1
+    mod.s1 <- nlme::lme(slope1 ~ tsd*cumltve_yrs  , random = ~ 1 | id_nest, data = data)
+    #sens 2
+    mod.s2 <- nlme::lme(slope2 ~ tsd*cumltve_yrs  , random = ~ 1 | id_nest, data = data)
+    
+    # results
+    med.res <- rmHlm_results(mod.med, "Median", "nlme")
+    ext.res <- rmHlm_results(mod.ext, "Extreme", "nlme")
+    cv.res <- rmHlm_results(mod.cv, "CV", "nlme")
+    s10.res <- rmHlm_results(mod.s10, "s10", "nlme")
+    s1.res <- rmHlm_results(mod.s1, "s1", "nlme")
+    s2.res <- rmHlm_results(mod.s2, "s2", "nlme")
+    
+    df.list = list(med.res, ext.res, cv.res, s10.res, s1.res, s2.res)
+    
+    
+  }
   
   return(df.list)
 }

@@ -26,7 +26,9 @@ order_data <- function(df1, df2){
 #' @export
 #'
 #' @examples
-change_direction <- function(data){
+change_direction <- function(data, slopeType){
+  
+  if(slopeType == "sens"){
 data1 <- data |> 
   arrange(fire_name, defoliated) |>  
   group_by(fire_name) |> 
@@ -54,6 +56,38 @@ data1 <- data |>
                                  s1_diff >0 ~ "Increased")) |> 
   mutate(s2_diff_fct = case_when(s2_diff <0 ~ "Decreased",
                                  s2_diff >0 ~ "Increased"))
+  }else if(slopeType == "lm"){
+    data1 <- data |> 
+      arrange(fire_name, defoliated) |>  
+      group_by(fire_name) |> 
+      mutate(med_diff = (diff(rbr_median))) |> 
+      mutate(ext_diff = (diff(rbr_extreme))) |> 
+      mutate(cv_diff = (diff(rbr_cv))) |> 
+      mutate(med_diff = (med_diff * -1)) |> 
+      mutate(ext_diff = (ext_diff * -1)) |> 
+      mutate(cv_diff = (cv_diff * -1)) |> 
+      mutate(med_diff_fct = case_when(med_diff <0 ~ "Decreased",
+                                      med_diff >0 ~ "Increased")) |> 
+      mutate(ext_diff_fct = case_when(ext_diff <0 ~ "Decreased",
+                                      ext_diff >0 ~ "Increased")) |> 
+      mutate(cv_diff_fct = case_when(cv_diff <0 ~ "Decreased",
+                                     cv_diff >0 ~ "Increased")) |> 
+      mutate(s10_diff = (diff(slope10))) |> 
+      mutate(s1_diff = (diff(slope1))) |> 
+      mutate(s2_diff = (diff(slope2))) |> 
+      mutate(s10_diff = (s10_diff * -1)) |> 
+      mutate(s1_diff = (s1_diff * -1)) |> 
+      mutate(s2_diff = (s2_diff * -1)) |>
+      mutate(s10_diff_fct = case_when(s10_diff <0 ~ "Decreased",
+                                      s10_diff >0 ~ "Increased")) |> 
+      mutate(s1_diff_fct = case_when(s1_diff <0 ~ "Decreased",
+                                     s1_diff >0 ~ "Increased")) |> 
+      mutate(s2_diff_fct = case_when(s2_diff <0 ~ "Decreased",
+                                     s2_diff >0 ~ "Increased"))
+    
+    
+    
+}
 
 return(data1)
 }

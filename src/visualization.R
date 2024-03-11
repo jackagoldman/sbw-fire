@@ -318,41 +318,19 @@ require(ggplot2)
 #' @export
 #'
 #' @examples
-lollidot <- function(data, responseType){
+lollidot <- function(data, responseType, slopeType){
   
   require(ggplot2)
   data <- dplyr::arrange(data, fire_name)
   
   # move geom_point to occur aftetr geom_line so the line is covered by the point
+  if(slopeType == "lm"){
+    data1 <- change_direction(data, "lm" )
+  } else if(slopeType == "sens"){
+    data1 <- change_direction(data, "sens" )
+    
+  }
   
-  # calculate difference between severity defoliated to non-defoliated
-  data1 <- data |> 
-    arrange(fire_name, defoliated) |>  
-    group_by(fire_name) |> 
-    mutate(med_diff = (diff(rbr_median))) |> 
-    mutate(ext_diff = (diff(rbr_extreme))) |> 
-    mutate(cv_diff = (diff(rbr_cv))) |> 
-    mutate(med_diff = (med_diff * -1)) |> 
-    mutate(ext_diff = (ext_diff * -1)) |> 
-    mutate(cv_diff = (cv_diff * -1)) |> 
-    mutate(med_diff_fct = case_when(med_diff <0 ~ "Decreased",
-                                    med_diff >0 ~ "Increased")) |> 
-  mutate(ext_diff_fct = case_when(ext_diff <0 ~ "Decreased",
-                                  ext_diff >0 ~ "Increased")) |> 
-    mutate(cv_diff_fct = case_when(cv_diff <0 ~ "Decreased",
-                                    cv_diff >0 ~ "Increased")) |> 
-    mutate(s10_diff = (diff(sens10))) |> 
-    mutate(s1_diff = (diff(sens1))) |> 
-    mutate(s2_diff = (diff(sens2))) |> 
-    mutate(s10_diff = (s10_diff * -1)) |> 
-    mutate(s1_diff = (s1_diff * -1)) |> 
-    mutate(s2_diff = (s2_diff * -1)) |>
-    mutate(s10_diff_fct = case_when(s10_diff <0 ~ "Decreased",
-                                    s10_diff >0 ~ "Increased")) |> 
-    mutate(s1_diff_fct = case_when(s1_diff <0 ~ "Decreased",
-                                    s1_diff >0 ~ "Increased")) |> 
-    mutate(s2_diff_fct = case_when(s2_diff <0 ~ "Decreased",
-                                   s2_diff >0 ~ "Increased"))
   
   
   # calculate the n for increases and decreases for each response
@@ -431,8 +409,16 @@ lollidot <- function(data, responseType){
 
   
   # slope
-  
-  s10_plot <- ggplot(data1, aes(x = factor(defoliated, level = level_order), y = sens10)) + 
+  if(slopeType == "lm"){
+    s10 <- "slope10"
+    s1 <- "slope1"
+    s2 <- "slope2"
+  }else if(slopeType == "sens"){
+    s10 <- "sens10"
+    s1 <- "sens1"
+    s2 <- "sens2"
+  }
+  s10_plot <- ggplot(data1, aes(x = factor(defoliated, level = level_order), y = s10)) + 
     geom_line(aes(group = fire_name, color = s10_diff_fct)) +
     geom_point(aes(color = defoliated),size = 3, show.legend = FALSE)+
     scale_color_manual(breaks = c("Increased", "Decreased"), values = c("Defoliated" = "#E69F00", 
@@ -455,7 +441,7 @@ lollidot <- function(data, responseType){
   s10_plot1
   
   # sens 1-5
-  s1_plot <- ggplot(data1, aes(x = factor(defoliated, level = level_order), y = sens1)) + 
+  s1_plot <- ggplot(data1, aes(x = factor(defoliated, level = level_order), y = s1)) + 
     geom_line(aes(group = fire_name, color = s1_diff_fct)) +
     geom_point(aes(color = defoliated),size = 3, show.legend = FALSE)+
     scale_color_manual(breaks = c("Increased", "Decreased"), values = c("Defoliated" = "#E69F00", 
@@ -478,7 +464,7 @@ lollidot <- function(data, responseType){
   
   
   # sens 5-10
-  s2_plot <- ggplot(data1, aes(x = factor(defoliated, level = level_order), y = sens2)) + 
+  s2_plot <- ggplot(data1, aes(x = factor(defoliated, level = level_order), y = s2)) + 
     geom_line(aes(group = fire_name, color = s1_diff_fct)) +
     geom_point(aes(color = defoliated),size = 3, show.legend = FALSE)+
     scale_color_manual(breaks = c("Increased", "Decreased"), values = c("Defoliated" = "#E69F00", 
@@ -576,7 +562,6 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
 #'
 #' @examples
 n_direction <- function(data){
-  
   
   
   n_s10 <-  data |> 
@@ -755,6 +740,44 @@ txtgrob_annttion <- function(n_dir, var) {
     
   }else if(var == "sens2"){
     n_med <- n_dir[n_dir$var == "sens2",] 
+    
+    n_med <- n_med |> select(-c(var))
+    
+    text1 <- paste(n_med[1,1], n_med[1,2], sep = " = ")
+    text2 <- paste(n_med[2,1], n_med[2,2], sep = " = ")
+    text <- paste(text1, text2, sep = "\n")
+    
+    tgrob <- ggpubr::text_grob(text,size = 8, color = "black")
+    return(tgrob)
+    
+  }else if(var == "slope10"){
+    n_med <- n_dir[n_dir$var == "slope10",] 
+    
+    n_med <- n_med |> select(-c(var))
+    
+    text1 <- paste(n_med[1,1], n_med[1,2], sep = " = ")
+    text2 <- paste(n_med[2,1], n_med[2,2], sep = " = ")
+    text <- paste(text1, text2, sep = "\n")
+    
+    tgrob <- ggpubr::text_grob(text,size = 8, color = "black")
+    return(tgrob)
+    
+    
+  }else if(var == "slope1"){
+    n_med <- n_dir[n_dir$var == "slope1",] 
+    
+    n_med <- n_med |> select(-c(var))
+    
+    text1 <- paste(n_med[1,1], n_med[1,2], sep = " = ")
+    text2 <- paste(n_med[2,1], n_med[2,2], sep = " = ")
+    text <- paste(text1, text2, sep = "\n")
+    
+    tgrob <- ggpubr::text_grob(text,size = 8, color = "black")
+    return(tgrob)
+    
+    
+  }else if(var == "slope2"){
+    n_med <- n_dir[n_dir$var == "slope2",] 
     
     n_med <- n_med |> select(-c(var))
     

@@ -84,8 +84,8 @@ list(
   tar_target(name = chisq_output, output_chisq(chisq_result, RES_DIR)),
   
   # make lollidots for severity and slope
-  tar_target(name = lolliplot_sev, lollidot(vis_data, "severity")),
-  tar_target(name = lolliplot_slope, lollidot(vis_data, "slope")),
+  tar_target(name = lolliplot_sev, lollidot(vis_data, "severity", "NULL")),
+  tar_target(name = lolliplot_slope, lollidot(vis_data, "slope", "lm")),
   
   # trend prep
   tar_target(name = ts_data , trendPrep(data, defol_df)),

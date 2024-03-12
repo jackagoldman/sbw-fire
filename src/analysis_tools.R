@@ -445,29 +445,29 @@ output_sem <- function(model, RES_DIR){
     
     # if state to match pattern of file name
     if(stringr::str_detect(c(model[[1]]$terms[[2]]), "rbr_cv")){
-      if (stringr::str_detect(c(model[[2]]$terms[[2]]), "sens10")){
+      if (stringr::str_detect(c(model[[2]]$terms[[2]]), "slope10")){
         path <- paste0(RES_DIR, "sem_cv_s10.csv")
-      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "sens1")){
+      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "slope1")){
         path <- paste0(RES_DIR, "sem_cv_s1.csv")
-      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "sens2")){
+      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "slope2")){
         path <- paste0(RES_DIR, "sem_cv_s2.csv")
       }
     }else if(stringr::str_detect(c(model[[1]]$terms[[2]]), "rbr_extreme")){
-      if (stringr::str_detect(c(model[[2]]$terms[[2]]), "sens10")){
+      if (stringr::str_detect(c(model[[2]]$terms[[2]]), "slope10")){
         path <- paste0(RES_DIR, "sem_ext_s10.csv")
-      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "sens1")){
+      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "slope1")){
         path <- paste0(RES_DIR, "sem_ext_s1.csv")
-      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "sens2")){
+      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "slope2")){
         path <- paste0(RES_DIR, "sem_ext_s2.csv")
       }
       
     }else if(stringr::str_detect(c(model[[1]]$terms[[2]]), "rbr_median")){
       
-      if (stringr::str_detect(c(model[[2]]$terms[[2]]), "sens10")){
+      if (stringr::str_detect(c(model[[2]]$terms[[2]]), "slope10")){
         path <- paste0(RES_DIR, "sem_med_s10.csv")
-      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "sens1")){
+      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "slope1")){
         path <- paste0(RES_DIR, "sem_med_s1.csv")
-      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "sens2")){
+      }else if(stringr::str_detect(c(model[[2]]$terms[[2]]), "slope2")){
         path <- paste0(RES_DIR, "sem_med_s2.csv")
       }
       

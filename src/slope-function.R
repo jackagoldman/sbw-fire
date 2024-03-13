@@ -15,32 +15,37 @@ recoverySlope_lm <- function(data){
   
   # calculate slopes
   for(i in 1:nrow(data)){
-     #subset data
+    #subset data
     row <- data[i,]
     #get fire id
     fId <- row |> select(c(id)) |> slice(1)
     # subset data for fire id
     row2 <- data |> filter(id == c(fId))
-    #run first model
-    mod1 <- lm(nbr ~ (recovery_interval == 1), data = row2)
-    #run second model
-    mod2 <- lm(nbr ~ (recovery_interval == 2), data = row2)
-    #run third model
-    mod3 <- lm(nbr ~ recovery_interval, data = row2)
+    
+    df_1 <- row2[row2$recovery_interval == 1, ]
+    df_2 <- row2[row2$recovery_interval == 2, ]
+    
+    
+    ts1 <- ts(df_1, start = 1, frequency = 5)
+    ts2 <- ts(df_2, start = 1, frequency = 5)
+    ts3 <- ts(row2, start = 1, frequency = 10)
+    
+    mod1 <- forecast::tslm(nbr ~ recovery_time, data = ts1)
+    
+    mod2 <- forecast::tslm(nbr ~ recovery_time, data = ts2)
+    mod3 <- forecast::tslm(nbr ~ recovery_time, data = ts3)
+    
     
     #get coefficients
-    cf1 <- coef(mod1)
-    cf2 <- coef(mod2)
-    cf10 <- coef(mod3)
-    #get slope
-    slope1 <- cf1[2]
-    slope2 <- cf2[2]
-    slope10 <- cf10[2]
+    slope1 <- coef(mod1)[2]
+    slope2 <- coef(mod2)[2]
+    slope10 <- coef(mod3)[2]
+    
     #get se
     se1 <- sqrt(diag(vcov(mod1)))[2]
     se2 <- sqrt(diag(vcov(mod2)))[2]
     se10 <- sqrt(diag(vcov(mod3)))[2]
-
+    
     vec <- c(fId, slope10, slope1, slope2,se10, se1, se2)
     names(vec) <- c("fId", "slope10", "slope1", "slope2", "se10", "se1", "se2")
     
@@ -54,9 +59,8 @@ recoverySlope_lm <- function(data){
     group_by(fId) |> 
     slice_head(n = 1) |> 
     unnest( )
- 
+  
 }
-
 
 #' slope function using theil-sen regression
 #'

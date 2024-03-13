@@ -2542,17 +2542,17 @@ text-indent: 25px;
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers="Test" class="gt_row gt_left">10yr post-fire</td>
-<td headers="t-value" class="gt_row gt_right">-0.76853930119384</td>
+<td headers="t-value" class="gt_row gt_right">-0.0437357769415193</td>
 <td headers="df" class="gt_row gt_right">69</td>
-<td headers="P-value" class="gt_row gt_right">0.445</td></tr>
+<td headers="P-value" class="gt_row gt_right">0.965</td></tr>
     <tr><td headers="Test" class="gt_row gt_left">1-5yr post-fire</td>
-<td headers="t-value" class="gt_row gt_right">0.768539301193843</td>
+<td headers="t-value" class="gt_row gt_right">0.0732978798141436</td>
 <td headers="df" class="gt_row gt_right">69</td>
-<td headers="P-value" class="gt_row gt_right">0.445</td></tr>
+<td headers="P-value" class="gt_row gt_right">0.942</td></tr>
     <tr><td headers="Test" class="gt_row gt_left">6-10yr post-fire</td>
-<td headers="t-value" class="gt_row gt_right">-0.768539301193842</td>
+<td headers="t-value" class="gt_row gt_right">0.160403093096384</td>
 <td headers="df" class="gt_row gt_right">69</td>
-<td headers="P-value" class="gt_row gt_right">0.445</td></tr>
+<td headers="P-value" class="gt_row gt_right">0.873</td></tr>
   </tbody>
   
   
@@ -2562,7 +2562,7 @@ text-indent: 25px;
 <pre class="r"><code>targets::tar_read(lolliplot_slope)</code></pre>
 <pre><code>## function (x, y, ...) 
 ## UseMethod(&quot;plot&quot;)
-## &lt;bytecode: 0x172a44448&gt;
+## &lt;bytecode: 0x13bec47a8&gt;
 ## &lt;environment: namespace:base&gt;</code></pre>
 </div>
 <div id="is-there-a-difference-in-the-direction-of-the-effects" class="section level4">
@@ -2986,13 +2986,13 @@ text-indent: 25px;
 <td headers="df" class="gt_row gt_right">1</td>
 <td headers="P-value" class="gt_row gt_right">0.091</td></tr>
     <tr><td headers="Independent Variable of Interest" class="gt_row gt_left">10 yr slope of recovery</td>
-<td headers="x²" class="gt_row gt_right">0.457</td>
+<td headers="x²" class="gt_row gt_right">1.029</td>
 <td headers="df" class="gt_row gt_right">1</td>
-<td headers="P-value" class="gt_row gt_right">0.499</td></tr>
+<td headers="P-value" class="gt_row gt_right">0.310</td></tr>
     <tr><td headers="Independent Variable of Interest" class="gt_row gt_left">1-5 yr slope of recovery</td>
-<td headers="x²" class="gt_row gt_right">0.457</td>
+<td headers="x²" class="gt_row gt_right">0.114</td>
 <td headers="df" class="gt_row gt_right">1</td>
-<td headers="P-value" class="gt_row gt_right">0.499</td></tr>
+<td headers="P-value" class="gt_row gt_right">0.735</td></tr>
     <tr><td headers="Independent Variable of Interest" class="gt_row gt_left">6-10 yr slope of recovery</td>
 <td headers="x²" class="gt_row gt_right">0.457</td>
 <td headers="df" class="gt_row gt_right">1</td>
@@ -4739,29 +4739,29 @@ text-indent: 25px;
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers="term" class="gt_row gt_left">(Intercept)</td>
-<td headers="estimate" class="gt_row gt_right">28.17649948</td>
-<td headers="std.error" class="gt_row gt_right">2.9293722</td>
+<td headers="estimate" class="gt_row gt_right">1.84723349</td>
+<td headers="std.error" class="gt_row gt_right">0.44525916</td>
 <td headers="df" class="gt_row gt_right">69</td>
-<td headers="statistic" class="gt_row gt_right">9.6186135</td>
+<td headers="statistic" class="gt_row gt_right">4.1486704</td>
 <td headers="p.value" class="gt_row gt_right">0.000</td></tr>
     <tr><td headers="term" class="gt_row gt_left">tsd</td>
-<td headers="estimate" class="gt_row gt_right">0.08380483</td>
-<td headers="std.error" class="gt_row gt_right">0.2826215</td>
+<td headers="estimate" class="gt_row gt_right">-0.02679336</td>
+<td headers="std.error" class="gt_row gt_right">0.04001403</td>
 <td headers="df" class="gt_row gt_right">67</td>
-<td headers="statistic" class="gt_row gt_right">0.2965268</td>
-<td headers="p.value" class="gt_row gt_right">0.768</td></tr>
+<td headers="statistic" class="gt_row gt_right">-0.6695992</td>
+<td headers="p.value" class="gt_row gt_right">0.505</td></tr>
     <tr><td headers="term" class="gt_row gt_left">cumltve_yrs</td>
-<td headers="estimate" class="gt_row gt_right">-1.07757844</td>
-<td headers="std.error" class="gt_row gt_right">0.9961991</td>
+<td headers="estimate" class="gt_row gt_right">-0.16395671</td>
+<td headers="std.error" class="gt_row gt_right">0.14116052</td>
 <td headers="df" class="gt_row gt_right">67</td>
-<td headers="statistic" class="gt_row gt_right">-1.0816899</td>
-<td headers="p.value" class="gt_row gt_right">0.283</td></tr>
+<td headers="statistic" class="gt_row gt_right">-1.1614913</td>
+<td headers="p.value" class="gt_row gt_right">0.250</td></tr>
     <tr><td headers="term" class="gt_row gt_left">tsd:cumltve_yrs</td>
-<td headers="estimate" class="gt_row gt_right">0.16475475</td>
-<td headers="std.error" class="gt_row gt_right">0.1658791</td>
+<td headers="estimate" class="gt_row gt_right">0.03577155</td>
+<td headers="std.error" class="gt_row gt_right">0.02351789</td>
 <td headers="df" class="gt_row gt_right">67</td>
-<td headers="statistic" class="gt_row gt_right">0.9932218</td>
-<td headers="p.value" class="gt_row gt_right">0.324</td></tr>
+<td headers="statistic" class="gt_row gt_right">1.5210355</td>
+<td headers="p.value" class="gt_row gt_right">0.133</td></tr>
   </tbody>
   
   
@@ -5176,29 +5176,29 @@ text-indent: 25px;
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers="term" class="gt_row gt_left">(Intercept)</td>
-<td headers="estimate" class="gt_row gt_right">-28.17649948</td>
-<td headers="std.error" class="gt_row gt_right">2.9293722</td>
+<td headers="estimate" class="gt_row gt_right">7.74731090</td>
+<td headers="std.error" class="gt_row gt_right">1.37382265</td>
 <td headers="df" class="gt_row gt_right">69</td>
-<td headers="statistic" class="gt_row gt_right">-9.6186135</td>
+<td headers="statistic" class="gt_row gt_right">5.6392366</td>
 <td headers="p.value" class="gt_row gt_right">0.000</td></tr>
     <tr><td headers="term" class="gt_row gt_left">tsd</td>
-<td headers="estimate" class="gt_row gt_right">-0.08380483</td>
-<td headers="std.error" class="gt_row gt_right">0.2826215</td>
+<td headers="estimate" class="gt_row gt_right">-0.16753985</td>
+<td headers="std.error" class="gt_row gt_right">0.10026842</td>
 <td headers="df" class="gt_row gt_right">67</td>
-<td headers="statistic" class="gt_row gt_right">-0.2965268</td>
-<td headers="p.value" class="gt_row gt_right">0.768</td></tr>
+<td headers="statistic" class="gt_row gt_right">-1.6709134</td>
+<td headers="p.value" class="gt_row gt_right">0.099</td></tr>
     <tr><td headers="term" class="gt_row gt_left">cumltve_yrs</td>
-<td headers="estimate" class="gt_row gt_right">1.07757844</td>
-<td headers="std.error" class="gt_row gt_right">0.9961991</td>
+<td headers="estimate" class="gt_row gt_right">-0.10279099</td>
+<td headers="std.error" class="gt_row gt_right">0.35434595</td>
 <td headers="df" class="gt_row gt_right">67</td>
-<td headers="statistic" class="gt_row gt_right">1.0816899</td>
-<td headers="p.value" class="gt_row gt_right">0.283</td></tr>
+<td headers="statistic" class="gt_row gt_right">-0.2900865</td>
+<td headers="p.value" class="gt_row gt_right">0.773</td></tr>
     <tr><td headers="term" class="gt_row gt_left">tsd:cumltve_yrs</td>
-<td headers="estimate" class="gt_row gt_right">-0.16475475</td>
-<td headers="std.error" class="gt_row gt_right">0.1658791</td>
+<td headers="estimate" class="gt_row gt_right">0.08959767</td>
+<td headers="std.error" class="gt_row gt_right">0.05910411</td>
 <td headers="df" class="gt_row gt_right">67</td>
-<td headers="statistic" class="gt_row gt_right">-0.9932218</td>
-<td headers="p.value" class="gt_row gt_right">0.324</td></tr>
+<td headers="statistic" class="gt_row gt_right">1.5159296</td>
+<td headers="p.value" class="gt_row gt_right">0.134</td></tr>
   </tbody>
   
   
@@ -5613,29 +5613,29 @@ text-indent: 25px;
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers="term" class="gt_row gt_left">(Intercept)</td>
-<td headers="estimate" class="gt_row gt_right">28.17649948</td>
-<td headers="std.error" class="gt_row gt_right">2.9293722</td>
+<td headers="estimate" class="gt_row gt_right">-6.31023413</td>
+<td headers="std.error" class="gt_row gt_right">1.04229898</td>
 <td headers="df" class="gt_row gt_right">69</td>
-<td headers="statistic" class="gt_row gt_right">9.6186135</td>
+<td headers="statistic" class="gt_row gt_right">-6.0541498</td>
 <td headers="p.value" class="gt_row gt_right">0.000</td></tr>
     <tr><td headers="term" class="gt_row gt_left">tsd</td>
-<td headers="estimate" class="gt_row gt_right">0.08380483</td>
-<td headers="std.error" class="gt_row gt_right">0.2826215</td>
+<td headers="estimate" class="gt_row gt_right">0.01438870</td>
+<td headers="std.error" class="gt_row gt_right">0.05223303</td>
 <td headers="df" class="gt_row gt_right">67</td>
-<td headers="statistic" class="gt_row gt_right">0.2965268</td>
-<td headers="p.value" class="gt_row gt_right">0.768</td></tr>
+<td headers="statistic" class="gt_row gt_right">0.2754712</td>
+<td headers="p.value" class="gt_row gt_right">0.784</td></tr>
     <tr><td headers="term" class="gt_row gt_left">cumltve_yrs</td>
-<td headers="estimate" class="gt_row gt_right">-1.07757844</td>
-<td headers="std.error" class="gt_row gt_right">0.9961991</td>
+<td headers="estimate" class="gt_row gt_right">-0.19731614</td>
+<td headers="std.error" class="gt_row gt_right">0.18489980</td>
 <td headers="df" class="gt_row gt_right">67</td>
-<td headers="statistic" class="gt_row gt_right">-1.0816899</td>
-<td headers="p.value" class="gt_row gt_right">0.283</td></tr>
+<td headers="statistic" class="gt_row gt_right">-1.0671517</td>
+<td headers="p.value" class="gt_row gt_right">0.290</td></tr>
     <tr><td headers="term" class="gt_row gt_left">tsd:cumltve_yrs</td>
-<td headers="estimate" class="gt_row gt_right">0.16475475</td>
-<td headers="std.error" class="gt_row gt_right">0.1658791</td>
+<td headers="estimate" class="gt_row gt_right">0.01998152</td>
+<td headers="std.error" class="gt_row gt_right">0.03087495</td>
 <td headers="df" class="gt_row gt_right">67</td>
-<td headers="statistic" class="gt_row gt_right">0.9932218</td>
-<td headers="p.value" class="gt_row gt_right">0.324</td></tr>
+<td headers="statistic" class="gt_row gt_right">0.6471758</td>
+<td headers="p.value" class="gt_row gt_right">0.520</td></tr>
   </tbody>
   
   

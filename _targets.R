@@ -3,7 +3,7 @@ library(tarchetypes)
 
 # Set target options:
 tar_option_set(
-  packages = c("tibble", "dplyr", "trend", "readr", "tidyr", "quarto", "car", "lme4", "nlme") 
+  packages = c("tibble", "dplyr", "trend", "readr", "tidyr", "quarto", "car", "lme4", "nlme")
 )
 
 # R functions
@@ -60,7 +60,7 @@ list(
   tar_target(name = sev_ttest, severity_ttest(sev_order)),
   
   # set path to slope results 
-  tar_target(name = slope_data, "data/paired_fires/recovery_sensSlope.csv", format = "file"),
+  tar_target(name = slope_data, "data/paired_fires/recovery_lm.csv", format = "file"),
   
   # read in slope data
   tar_target(name = slope_df, getData(slope_data)),
@@ -69,7 +69,7 @@ list(
   tar_target(name = slope_order, order_data(slope_df, defol_df)),
   
   #slope ttest
-  tar_target(name = slo_ttest, recovery_ttest(slope_order, "sens")),
+  tar_target(name = slo_ttest, recovery_ttest(slope_order, "lm")),
   
   # save severity and slope ttest results
   tar_target(name = ttest_results, output_ttest(sev_ttest, slo_ttest, RES_DIR)),
@@ -78,14 +78,14 @@ list(
   tar_target(name = vis_data, vis_prep(sev_df, defol_df, slope_df)),
   
   #chisquare test
-  tar_target(name = chisq_result, chisq(vis_data)),
+  tar_target(name = chisq_result, chisq(vis_data, "lm")),
   
   # save chisq results
   tar_target(name = chisq_output, output_chisq(chisq_result, RES_DIR)),
   
   # make lollidots for severity and slope
-  tar_target(name = lolliplot_sev, lollidot(vis_data, "severity")),
-  tar_target(name = lolliplot_slope, lollidot(vis_data, "slope")),
+  tar_target(name = lolliplot_sev, lollidot(vis_data, "severity", "NULL")),
+  tar_target(name = lolliplot_slope, lollidot(vis_data, "slope", "lm")),
   
   # trend prep
   tar_target(name = ts_data , trendPrep(data, defol_df)),

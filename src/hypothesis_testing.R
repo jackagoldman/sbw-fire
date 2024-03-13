@@ -164,10 +164,17 @@ recovery_ttest <- function(df, slopeType){
 #' @export
 #'
 #' @examples
-chisq <- function(data){
+chisq <- function(data, slopeType){
   
-  # clean data for change_direction
-  data2 <- change_direction(data)
+  if(slopeType == "lm"){
+    # clean data for change_direction
+    data2 <- change_direction(data, "lm")
+  } else {
+    # clean data for change_direction
+    data2 <- change_direction(data, "sens")
+  }
+  
+  
   
   # chisq
   med.chisq <- chisq.test(x = table(data2$med_diff_fct))
@@ -275,6 +282,7 @@ rmHlm_lme <- function(data, slopeType){
   s2.res <- rmHlm_results(mod.s2, "s2", "nlme")
   
   df.list = list(med.res, ext.res, cv.res, s10.res, s1.res, s2.res)
+  
   }else if(slopeType == "lm"){
     
     # rbr median
@@ -331,7 +339,7 @@ sem_mod <- function(data, responseType, slopeClass){
     
   sem <- piecewiseSEM::psem(
     lm(rbr_median ~ composite, data = data),
-    lm(sens10 ~ rbr_median, data = data))
+    lm(slope10 ~ rbr_median, data = data))
   }else if(responseType == "Extreme"){
     
     data$composite <- synthetic_index(data, "Extreme")
@@ -339,7 +347,7 @@ sem_mod <- function(data, responseType, slopeClass){
     
     sem <- piecewiseSEM::psem(
       lm(rbr_extreme ~ composite, data = data),
-      lm(sens10 ~ rbr_extreme, data = data))
+      lm(slope10 ~ rbr_extreme, data = data))
     
     
   }else if(responseType == "CV"){
@@ -349,7 +357,7 @@ sem_mod <- function(data, responseType, slopeClass){
     
    sem <- piecewiseSEM::psem(
       lm(rbr_cv ~ composite, data = data),
-      lm(sens10 ~ rbr_cv, data = data))
+      lm(slope10 ~ rbr_cv, data = data))
     
     
   }}else if(slopeClass == "s1"){
@@ -360,7 +368,7 @@ sem_mod <- function(data, responseType, slopeClass){
       
       sem <- piecewiseSEM::psem(
         lm(rbr_median ~ composite, data = data),
-        lm(sens1 ~ rbr_median, data = data))
+        lm(slope1 ~ rbr_median, data = data))
     }else if(responseType == "Extreme"){
       
       data$composite <- synthetic_index(data, "Extreme")
@@ -368,7 +376,7 @@ sem_mod <- function(data, responseType, slopeClass){
       
       sem <- piecewiseSEM::psem(
         lm(rbr_extreme ~ composite, data = data),
-        lm(sens1 ~ rbr_extreme, data = data))
+        lm(slope1 ~ rbr_extreme, data = data))
       
       
     }else if(responseType == "CV"){
@@ -378,7 +386,7 @@ sem_mod <- function(data, responseType, slopeClass){
       
       sem <- piecewiseSEM::psem(
         lm(rbr_cv ~ composite, data = data),
-        lm(sens1 ~ rbr_cv, data = data))
+        lm(slope1 ~ rbr_cv, data = data))
       
       
     }
@@ -393,7 +401,7 @@ sem_mod <- function(data, responseType, slopeClass){
       
       sem <- piecewiseSEM::psem(
         lm(rbr_median ~ composite, data = data),
-        lm(sens2 ~ rbr_median, data = data))
+        lm(slope2 ~ rbr_median, data = data))
     }else if(responseType == "Extreme"){
       
       data$composite <- synthetic_index(data, "Extreme")
@@ -401,7 +409,7 @@ sem_mod <- function(data, responseType, slopeClass){
       
       sem <- piecewiseSEM::psem(
         lm(rbr_extreme ~ composite, data = data),
-        lm(sens2 ~ rbr_extreme, data = data))
+        lm(slope2 ~ rbr_extreme, data = data))
       
       
     }else if(responseType == "CV"){
@@ -411,7 +419,7 @@ sem_mod <- function(data, responseType, slopeClass){
       
       sem <- piecewiseSEM::psem(
         lm(rbr_cv ~ composite, data = data),
-        lm(sens2 ~ rbr_cv, data = data))
+        lm(slope2 ~ rbr_cv, data = data))
       
       
     }

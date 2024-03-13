@@ -1,3 +1,3 @@
 "","Response","Predictor","Estimate","Std.Error","DF","Crit.Value","P.Value","Std.Estimate","Fisher.C","fisherC.df","fisherC.P.Value","Chisq","chisq.df","chisq.P.Value"
-"1","rbr_extreme","composite",1,0.4279,105,2.3372,0.0213,0.2298,1.577,2,0.454,240.304,1,0
-"2","sens1","rbr_extreme",0.0329,0.0097,64,3.3744,0.0013,0.4002,NA,NA,NA,NA,NA,NA
+"1","rbr_extreme","composite",1,0.4279,105,2.3372,0.0213,0.2298,0.105,2,0.949,234.476,1,0
+"2","slope1","rbr_extreme",0.0393,0.0067,138,5.8416,0,0.4453,NA,NA,NA,NA,NA,NA
